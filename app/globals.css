@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+:root {
+  height: 100%;
+}
+
+.back-btn {
+  background-color: black;
+  color: white;
+  position: fixed;
+  top: 3rem;
+  z-index: 20;
+  left: 2rem;
+  padding: 0.5rem;
+  border-radius: 100%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+
+}
+
+.back-btn>svg {
+  transition: all 0.3s;
+}
+
+.back-btn:hover svg {
+  translate: -0.25rem;
+}
