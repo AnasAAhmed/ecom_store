@@ -4,6 +4,7 @@ import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import Customer from "@/lib/models/Customer";
+// import { reduceStock } from "@/lib/actions/actions";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -43,8 +44,8 @@ export const POST = async (req: NextRequest) => {
       const orderItems = lineItems!.map((item: any) => {
         return {
           product: item.price.product.metadata.productId,
-          color: item.price.product.metadata.color || "N/A",
-          size: item.price.product.metadata.size || "N/A",
+          color: item.price.product.metadata.color|| undefined,
+          size: item.price.product.metadata.size || undefined,
           quantity: item.quantity,
         }
       })
@@ -60,7 +61,9 @@ export const POST = async (req: NextRequest) => {
         status: "Payment-Successfull & Processing",
       })
 
+      // await reduceStock(orderItems);
       await newOrder.save();
+
       let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
 
       if (customer) {

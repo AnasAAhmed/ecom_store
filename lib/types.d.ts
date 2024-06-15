@@ -47,6 +47,7 @@ type OrderType = {
   shippingRate: string;
   status: string;
   totalAmount: number
+  createdAt: string;
 }
 
 type OrderItemType = {

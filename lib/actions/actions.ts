@@ -158,6 +158,7 @@ export async function getRelatedProducts(productId: string) {
 
 // export const reduceStock = async () => {
 type OrderProducts = {
+  // product: string,//it is productId
   item: { _id: string; },//it is productId
   color: string,
   size: string,
@@ -174,7 +175,7 @@ export const reduceStock = async (cartItems: OrderProducts[]) => {
 
       if (!product) {
         console.error(`Product not found: ${order.item._id}`);
-        throw new Error("Product Not Found");
+        throw new Error(`Product Not Found: ${order.item._id}`);
       }
 
       // Reduce the general stock

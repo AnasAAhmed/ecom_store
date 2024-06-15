@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
           currency: "usd",
           product_data: {
             name: cartItem.item.title,
+            images: [cartItem.item.media[0]],
             metadata: {
               productId: cartItem.item._id,
               ...(cartItem.size && { size: cartItem.size }),
@@ -49,8 +50,6 @@ export async function POST(req: NextRequest) {
       client_reference_id: customer.clerkId,
       success_url: `${process.env.ECOM_STORE_URL}/payment_success`,
       cancel_url: `${process.env.ECOM_STORE_URL}/cart`,
-      // ui_mode: 'embedded',
-      // return_url: `${process.env.ECOM_STORE_URL}/payment_success`,
     },{
       idempotencyKey
     });

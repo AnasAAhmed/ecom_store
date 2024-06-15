@@ -169,13 +169,12 @@ const Cart = () => {
                 required
                 type="radio"
                 name="shippingRate"
-                id="fast-delivery"
-                className="hiddaen peer"
-                value="Fast delivery 3-5 Days"
+                id="COD"
+                disabled={loading}
                 onChange={(e) => { setIsCOD("COD"); setMessage(false) }}
               />
-              <label htmlFor="fast-delivery" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
-                Cash On Delivery ($5)
+              <label htmlFor="COD" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
+                C.O.D (Pakistan Only) (Rs 250)
               </label>
             </div>
             <div className="flex border rounded-lg px-3  hover:bg-gray-300 border-gray-300 items-center gap-2">
@@ -183,12 +182,11 @@ const Cart = () => {
                 required
                 type="radio"
                 name="shippingRate"
-                id="standard-delivery"
-                className=" peer"
-                value="Standard delivery 5-8 Days"
+                id="ONLINE-PAYMENT"
+                disabled={loading}
                 onChange={(e) => { setIsCOD("ONLINE"); setMessage(false) }}
               />
-              <label htmlFor="standard-delivery" className="cursor-pointer flex items-center gap-2  rounded-lg py-3 px-4 w-full ">
+              <label htmlFor="ONLINE-PAYMENT" className="cursor-pointer flex items-center gap-2  rounded-lg py-3 px-4 w-full ">
 
                 Online Payment
               </label>
