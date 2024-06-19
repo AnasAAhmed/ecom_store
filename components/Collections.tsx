@@ -6,7 +6,7 @@ const Collections = async () => {
   const collections = await getCollections();
 
   return (
-    <div className="flex flex-col items-center gap-10 py-8 px-5">
+    <div className="flex flex-col items-center gap-10 py-8 px-5 my-[4rem]">
       <p className="text-heading1-bold">Collections</p>
       {!collections || collections.length === 0 ? (
         <p className="text-body-bold">No collections found</p>
@@ -22,6 +22,7 @@ const Collections = async () => {
                 height={200}
                 className="rounded-lg cursor-pointer"
               />
+              <h1 className="text-heading3-bold text-white relative bottom-14 left-5">{collection.title}</h1>
             </Link>
           ))}
         </div>

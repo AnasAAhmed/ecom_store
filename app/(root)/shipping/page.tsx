@@ -37,12 +37,17 @@ const Shipping = () => {
     } = useForm({
         resolver: zodResolver(shippingSchema),
     });
-
+    
     const total = cart.cartItems.reduce(
         (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity, 0
     );
     const taxAmount = total * 12 / 100;
     const totalAmount = parseFloat((total + taxAmount + shippingRateNumber).toFixed(2));
+    const customerInfo = {
+        clerkId: user?.id,
+        email: user?.emailAddresses[0].emailAddress,
+        name: user?.fullName,
+    };
 
     const submitHandler = async (data: any) => {
         // Ensure the data structure matches the expected format
@@ -69,19 +74,18 @@ const Shipping = () => {
             customerEmail: user.emailAddresses[0].emailAddress,
             status: "COD & Processing",
         };
-
         try {
             const response = await fetch('/api/order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(orderData),
+                body: JSON.stringify({orderData, customerInfo}),
             });
 
             if (!response.ok) {
                 const errorResponse = await response.json();
-                throw new Error(errorResponse.message || 'Failed to place order');
+                toast.error(errorResponse.message || 'Failed to place order');
 
             } else {
                 cart.clearCart();
@@ -140,7 +144,6 @@ const Shipping = () => {
                             {...register('country')}
                             className="border border-gray-300 rounded-lg py-3 px-4 w-full focus:outline-none text-lg"
                         >
-                            <option value="">Choose Country</option>
                             <option value="pakistan">Pakistan</option>
                         </select>
                         {errors.country && <span className="text-red-1 ml-3">{(errors.country.message as string)}</span>}
@@ -175,7 +178,7 @@ const Shipping = () => {
                             {...register('shippingRate')}
                             type="radio"
                             id="fast-delivery"
-                            value="Fast delivery 3-5 Days"
+                            value="Fast delivery 3-5 Days COD"
                             onChange={() => setShippingRateNumber(20)}
                         />
                         <label htmlFor="fast-delivery" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
@@ -187,7 +190,7 @@ const Shipping = () => {
                             {...register('shippingRate')}
                             type="radio"
                             id="standard-delivery"
-                            value="Standard delivery 5-8 Days"
+                            value="Standard delivery 5-8 Days COD"
                             onChange={() => setShippingRateNumber(5)}
                         />
                         <label htmlFor="standard-delivery" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
@@ -233,4 +236,3 @@ const Shipping = () => {
     );
 };
 export default Shipping;
-

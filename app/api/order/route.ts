@@ -1,4 +1,5 @@
-import {stockReduce } from "@/lib/actions/actions";
+import { stockReduce } from "@/lib/actions/actions";
+import Customer from "@/lib/models/Customer";
 import Order from "@/lib/models/Order";
 import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
@@ -8,6 +9,10 @@ export const POST = async (req: NextRequest) => {
     await connectToDB();
     const body = await req.json();
     const {
+      orderData, customerInfo
+    } = body;
+    
+    const {
       shippingAddress,
       products,
       totalAmount,
@@ -15,10 +20,13 @@ export const POST = async (req: NextRequest) => {
       customerClerkId,
       customerEmail,
       status,
-    } = body;
+    } = orderData;
 
     if (!shippingAddress || !products || !customerClerkId || !shippingRate || !status || !totalAmount) {
       return NextResponse.json({ message: 'Please enter All Details' }, { status: 400 });
+    }
+    if (!customerInfo.clerkId || !customerInfo.email || !customerInfo.name) {
+      return NextResponse.json({ message: 'User Details Missing/Login first' }, { status: 400 });
     }
 
     try {
@@ -41,6 +49,20 @@ export const POST = async (req: NextRequest) => {
       status,
     });
     await newOrder.save();
+
+    let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
+
+    if (customer) {
+      customer.orders.push(newOrder._id)
+    } else {
+      customer = new Customer({
+        ...customerInfo,
+        orders: [newOrder._id],
+      })
+    }
+
+    await customer.save();
+
     return NextResponse.json({ orderId: newOrder._id }, { status: 200 });
 
   } catch (error) {

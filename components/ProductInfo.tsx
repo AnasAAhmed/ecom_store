@@ -44,14 +44,16 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             </div>
 
             <p className="text-heading3-bold">$ {productInfo.price}</p>
-            <div>
-                <StarRatings rating={productInfo.ratings} />
-                {productInfo.ratings}
+            <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                    <StarRatings rating={productInfo.ratings} />
+                    <span className="text-blue-500"> ({productInfo.ratings}/5)</span>
+                </div>
+                sold({productInfo.sold})
             </div>
             <div className="flex flex-col gap-2">
                 <p className="text-base-medium text-grey-2">Description:</p>
                 <p className="text-small-medium">{productInfo.description}</p>
-                <p className="text-small-medium">{productInfo.stock}</p>
             </div>
 
             {productInfo.colors.length > 0 && (

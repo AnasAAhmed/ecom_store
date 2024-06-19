@@ -44,7 +44,7 @@ export async function getProducts() {
     const products = await Product.find()
       .sort({ createdAt: "desc" })
       .populate({ path: "collections", model: Collection })
-      .select("-reviews -category")
+      .select("-reviews -category -description")
       .limit(8);
 
     return JSON.parse(JSON.stringify(products))
@@ -59,9 +59,9 @@ export async function getBestSellingProducts() {
     await connectToDB();
 
     const products = await Product.find()
-      .sort({ ratings: -1, sold: -1, createdAt: "desc" })
+      .sort({ sold: -1, ratings: -1, createdAt: "desc" })
       .populate({ path: "collections", model: Collection })
-      .select("-reviews -category")
+      .select("-reviews -category -description")
       .limit(4);
 
     return JSON.parse(JSON.stringify(products));
@@ -93,14 +93,15 @@ export async function getProductDetails(productId: string) {
 export async function getSearchedProducts(query: string) {
   try {
     await connectToDB()
-
+    
     const searchedProducts = await Product.find({
       $or: [
         { title: { $regex: query, $options: "i" } },
         { category: { $regex: query, $options: "i" } },
         { tags: { $in: [new RegExp(query, "i")] } } // $in is used to match an array of values
       ]
-    }).select("-reviews");
+
+    }).select("-reviews -description");
     // select only the required fields
 
     return JSON.parse(JSON.stringify(searchedProducts))

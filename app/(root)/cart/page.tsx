@@ -174,7 +174,7 @@ const Cart = () => {
                 onChange={(e) => { setIsCOD("COD"); setMessage(false) }}
               />
               <label htmlFor="COD" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
-                C.O.D (Pakistan Only) (Rs 250)
+                C.O.D (Pakistan Only) (free)
               </label>
             </div>
             <div className="flex border rounded-lg px-3  hover:bg-gray-300 border-gray-300 items-center gap-2">
