@@ -48,7 +48,7 @@ const GroupComponent7: NextPage<GroupComponent7Type> = ({
 
   return (
     <section
-      className={`self-stretch my-10 flex flex-col sm:flex-row items-center justify-center py-[6rem] px-3 md:px-8 sm:px-[6.25rem] box-border gap-[2.875rem] max-w-full text-center text-[2rem] text-black font-poppins mq450:pl-[1.25rem] mq450:pr-[1.25rem] mq450:box-border mq800:gap-[1.438rem] mq800:pl-[3.125rem] mq800:pr-[3.125rem] mq800:box-border mq1350:flex-wrap mq1350:justify-center ${className}`}
+      className={`self-stretch flex flex-col sm:flex-row items-center justify-center py-[6rem] px-3 md:px-8 sm:px-[6.25rem] box-border gap-[2.875rem] max-w-full text-center text-[2rem] text-black font-poppins mq450:pl-[1.25rem] mq450:pr-[1.25rem] mq450:box-border mq800:gap-[1.438rem] mq800:pl-[3.125rem] mq800:pr-[3.125rem] mq800:box-border mq1350:flex-wrap mq1350:justify-center ${className}`}
     >
       <div className="hidden h-[18.75rem] w-full max-w-full relative bg-blue-50" />
       <div className="w-full sm:w-[23.5rem] flex flex-col items-center justify-center max-w-full text-center">

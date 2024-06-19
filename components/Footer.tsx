@@ -5,12 +5,13 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer
-      className={`self-stretch flex flex-col items-start justify-start pt-[6.125rem] px-3 md:px-[6.25rem] pb-[2.375rem] box-border gap-[1rem] max-w-full text-left text-[1rem] text-darkgray font-poppins mq450:pl-[1.25rem] mq450:pr-[1.25rem] mq450:box-border mq800:gap-[1.5rem] mq800:pt-[4rem] mq800:px-[3.125rem] mq800:pb-[1.563rem] mq800:box-border `}
+      className={`self-stretch flex flex-col items-start justify-start mt-[3.125rem] px-3 md:px-[6.25rem] pb-[2.375rem] box-border gap-[1rem] max-w-full text-left text-[1rem] text-darkgray font-poppins mq450:pl-[1.25rem] mq450:pr-[1.25rem] mq450:box-border mq800:gap-[1.5rem] mq800:pt-[4rem] mq800:px-[3.125rem] mq800:pb-[1.563rem] mq800:box-border `}
     >
-      <div className="w-[90rem] h-[34.688rem] relative bg-white hidden max-w-full" />
+      <div className="self-stretch h-[0.063rem] relative box-border z-[1] border-t-[1px] border-solid border-gainsboro-200" />
+
       <div className="w-[70.938rem] flex flex-row items-start justify-start py-[0rem] px-[0.125rem] box-border max-w-full">
         <div className="flex-1 flex flex-col sm:flex-row items-start justify-between max-w-full gap-[0.25rem] mq1150:flex-wrap">
-          <div className="flex flex-col items-start justify-start pst-[6.75rem] px-[0rem] pb-[0rem]">
+          <div className="flex flex-col items-start justify-start pb-[6.75rem] px-[0rem]s">
             <Link href="/" className="mb-8">
               <Image src="/logo.png" alt="logo" width={130} height={100} />
             </Link>
@@ -63,7 +64,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="self-stretch flex flex-col items-start justify-start gap-[2.125rem] text-black mq800:gap-[1.063rem]">
+      <div className="self-stretch flex flex-col items-start justify-start gap-[2.125rem] text-black">
         <div className="self-stretch h-[0.063rem] relative box-border z-[1] border-t-[1px] border-solid border-gainsboro-200" />
         <div className="flex flex-row items-start justify-start py-[0rem] px-[0.125rem]">
           <div className="relative z-[1]">
