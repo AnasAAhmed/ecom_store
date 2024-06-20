@@ -9,10 +9,10 @@ const Blog: NextPage = () => {
             <div className="relative w-full h-[300px]  sm:h-[400px] md:h-[600px] bg-cover bg-center" style={{ backgroundImage: 'url("/banner.jpg")' }}>
                 <div className="absolute inset-0 bg-gradient-to-b from-blue-300 to-transparent opacity-60"></div>
                 <div className="relative z-5 flex flex-col items-center justify-center h-full text-center text-white px-6 md:px-12 lg:px-24">
-                    <h1 className="text-heading1-bold font-bold mb-6 leading-tight">
+                    <h1 className="text-heading2-bold sm:text-heading1-bold font-bold mb-6 leading-tight">
                         Blog
                     </h1>
-                    <p className="text-heading3-bold mb-10 ">
+                    <p className="text-heading4-bold sm:text-heading3-bold mb-10 ">
                         Discover and Explore our latest blogs.
                     </p>
                     <Link href="#post" className="bg-white text-black font-medium py-3 px-8 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">

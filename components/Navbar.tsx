@@ -102,25 +102,25 @@ const Navbar = () => {
         <Modal isOpen={isOpen} onClose={closeModal}>
 
           <div className=" absolute top-12 right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden ">
-            <Link href="/" className="hover:text-blue-500" onClick={closeModal}>
+            <Link href="/" className="hover:text-blue-500 outline-none" onClick={closeModal}>
               Home
             </Link>
             <Link
               href={user ? "/wishlist" : "/sign-in"}
-              className="hover:text-blue-500"
+              className="hover:text-blue-500 outline-none"
               onClick={closeModal}
             >
               Wishlist
             </Link>
             <Link
               href={user ? "/orders" : "/sign-in"}
-              className="hover:text-blue-500"
+              className="hover:text-blue-500 outline-none"
               onClick={closeModal}
             >
               Orders
             </Link> <Link
               href={"/blog"}
-              className="hover:text-blue-500"
+              className="hover:text-blue-500 outline-none"
               onClick={closeModal}
             >
               Blog
