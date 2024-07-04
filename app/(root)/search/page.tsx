@@ -5,12 +5,7 @@ import ProductCard from '@/components/ProductCard';
 import PaginationControls from '@/components/PaginationControls';
 import Loader from '@/components/Loader';
 
-interface ProductType {
-  _id: string;
-  title: string;
-  category: string;
-  tags: string[];
-}
+
 
 const SearchPage = () => {
   const searchParams = useSearchParams();
