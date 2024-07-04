@@ -90,24 +90,47 @@ export async function getProductDetails(productId: string) {
   }
 }
 
-export async function getSearchedProducts(query: string) {
+// export async function getSearchedProducts(query: string,num?:number) {
+//   try {
+//     await connectToDB()
+
+//     const searchedProducts = await Product.find({
+//       $or: [
+//         { title: { $regex: query, $options: "i" } },
+//         { category: { $regex: query, $options: "i" } },
+//         { tags: { $in: [new RegExp(query, "i")] } } // $in is used to match an array of values
+//       ]
+
+//     }).select("-reviews -description").limit(num!);
+//     // select only the required fields
+
+//     return JSON.parse(JSON.stringify(searchedProducts))
+//   } catch (err) {
+//     console.log("[search_GET]", err)
+//     throw new Error('Internal Server Error')
+//   }
+// }
+export async function getSearchedProducts(query: string, page: number = 1, limit: number = 10) {
   try {
-    await connectToDB()
-    
+    await connectToDB();
+
+    const skip = (page - 1) * limit;
+
     const searchedProducts = await Product.find({
       $or: [
-        { title: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
-        { tags: { $in: [new RegExp(query, "i")] } } // $in is used to match an array of values
-      ]
+        { title: { $regex: query, $options: 'i' } },
+        { category: { $regex: query, $options: 'i' } },
+        { tags: { $in: [new RegExp(query, 'i')] } },
+      ],
+    })
+      .select('-reviews -description')
+      .skip(skip)
+      .limit(limit);
 
-    }).select("-reviews -description");
-    // select only the required fields
-
-    return JSON.parse(JSON.stringify(searchedProducts))
+    return JSON.parse(JSON.stringify(searchedProducts));
   } catch (err) {
-    console.log("[search_GET]", err)
-    throw new Error('Internal Server Error')
+    console.log('[search_GET]', err);
+    throw new Error('Internal Server Error');
   }
 }
 
@@ -163,6 +186,7 @@ type OrderProducts = {
   item: { _id: string; },//it is productId
   color: string,
   size: string,
+  variantId?: string,
   quantity: number
 
 }
@@ -171,113 +195,71 @@ type OrderProducts = {
 export const reduceStock = async (cartItems: OrderProducts[]) => {
   await connectToDB();
   for (const order of cartItems) {
-    try {
-      const product = await Product.findById(order.item._id);
+    //  const order = cartItems;
+    const product: ProductType | null = await Product.findById(order.item._id);
+    if (!product) throw new Error("Product Not Found");
 
-      if (!product) {
-        console.error(`Product not found: ${order.item._id}`);
-        throw new Error(`Product Not Found: ${order.item._id}`);
-      }
-
-      // Reduce the general stock
-      if (product.stock >= order.quantity) {
-        product.stock -= order.quantity;
-        product.sold += order.quantity;
-      } else {
-        console.error(`Not enough stock for product: ${order.item._id}`);
-        throw new Error("Not enough stock for this Product");
-      }
-
-      // Reduce the size stock if specified
-      if (order.size) {
-        const sizeItem = product.sizes.find((size: any) => size.size === order.size);
-        if (sizeItem) {
-          if (sizeItem.quantity >= order.quantity) {
-            sizeItem.quantity -= order.quantity;
-          } else {
-            throw new Error("Not enough stock for the specified size");
-          }
-        } else {
-          // console.error(`Size ${order.size} not found for product: ${order.item._id}`);
-          throw new Error(`Size ${order.size} not found for product ${order.item._id}`);
-        }
-      }
-
-      // Reduce the color stock if specified
-      if (order.color) {
-        const colorItem = product.colors.find((color: any) => color.color === order.color);
-        if (colorItem) {
-          if (colorItem.quantity >= order.quantity) {
-            colorItem.quantity -= order.quantity;
-          } else {
-            throw new Error("Not enough stock for the specified color");
-          }
-        } else {
-          throw new Error(`Color ${order.color} not found for product ${order.item._id}`);
-        }
-      }
-
-      await product.save();
-      console.log(`Stock reduced successfully for product: ${order.item._id}`);
-    } catch (error) {
-      console.error(`Failed to reduce stock for product: ${order.item._id}`, error);
-      throw error;
+    // Reduce the general product stock
+    if (product.stock >= order.quantity) {
+      product.stock -= order.quantity;
+      product.sold += order.quantity;
+    } else {
+      console.error(`Not enough stock for product: ${order.item._id}`);
+      throw new Error("Not enough stock for this Product");
     }
-  }
-};
-type OrderProductEmbeded = {
+
+    // Find the matching variant
+    if (order.size || order.color||order.variantId) {
+      const variant = product.vatiants.find(v => v._id!.toString() === order.variantId);
+      if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.item._id}, size: ${order.size}, color: ${order.color}`);
+
+      // Reduce the variant stock
+      if (variant.quantity! >= order.quantity) {
+        variant.quantity! -= order.quantity;
+      } else {
+        console.error(`Not enough stock for variant: ${order.item._id}, size: ${order.size}, color: ${order.color}`);
+        throw new Error("Not enough stock for this variant");
+      }
+    }
+  };
+}
+type OrderProductCOD = {
 
   product: string,//it is product._id
   color: string,
   size: string,
+  variantId?: string,
   quantity: number
 
 }
-//for custom embede stript form
-export const stockReduce = async (products: OrderProductEmbeded[]) => {
+//for COD form
+export const stockReduce = async (products: OrderProductCOD[]) => {
   for (let i = 0; i < products.length; i++) {
-    const order = products[i];
-    const product = await Product.findById(order.product);
+     const order = products[i];
+    const product: ProductType | null = await Product.findById(order.product);
     if (!product) throw new Error("Product Not Found");
 
-    // Reduce the general stock
-
-    if (product.stock > 0) {
+    // Reduce the general product stock
+    if (product.stock >= order.quantity) {
       product.stock -= order.quantity;
       product.sold += order.quantity;
     } else {
-      throw new Error("Not enough stock for the this Product");
+      console.error(`Not enough stock for product: ${order.product}`);
+      throw new Error("Not enough stock for this Product");
     }
 
-    // Reduce the size stock if specified
-    if (order.size) {
-      const sizeItem = product.sizes.find((size: any) => size.size === order.size);
-      if (sizeItem) {
-        if (sizeItem.quantity > 0) {
-          sizeItem.quantity -= 1;
-        } else {
-          throw new Error("Not enough stock for the specified size");
-        }
-      } else {
-        throw new Error(`Size ${order.size} not found for product ${order.product}`);
-      }
-    }
-    // Reduce the color stock if specified
-    if (order.color) {
-      const colorItem = product.colors.find((color: any) => color.color === order.color);
-      if (colorItem) {
-        if (colorItem.quantity > 0) {
-          colorItem.quantity -= 1;
-        } else {
-          throw new Error("Not enough stock for the specified color");
-        }
-      } else {
-        throw new Error(`Size ${order.size} not found for product ${order.product}`);
-      }
-    }
-    await product.save();
-    console.log("succsee");
+    // Find the matching variant
+    if (order.size || order.color||order.variantId) {
+      const variant = product.vatiants.find(v => v._id!.toString() === order.variantId);
+      if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
 
-  };
-};
+      // Reduce the variant stock
+      if (variant.quantity! >= order.quantity) {
+        variant.quantity! -= order.quantity;
+      } else {
+        console.error(`Not enough stock for variant: ${order.product}, size: ${order.size}, color: ${order.color}`);
+        throw new Error("Not enough stock for this variant");
+      }
+    }
+};}
 

@@ -26,13 +26,13 @@ const Navbar = () => {
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
 
     if (e.key === "Enter") {
-      router.push(`/search/${query}`);
+      router.push(`/search?query=${query}`);
     }
 
   };
 
   return (
-    <div className="sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
+    <div className="fixed max-md:w-full md:sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
       <Link href="/">
         <Image src="/logo.png" alt="logo" width={130} height={100} />
       </Link>
@@ -46,8 +46,8 @@ const Navbar = () => {
           onChange={(e) => setQuery(e.target.value)}
         />
         <button
-          // disabled={query === ""}
-          onClick={() => router.push(`/search/${query}`)}
+          disabled={query === ""}
+          onClick={() => router.push(`/search?query=${query}`)}
         >
           <Search className="cursor-pointer h-4 w-4 hover:text-blue-500" />
         </button>
@@ -59,6 +59,20 @@ const Navbar = () => {
             }`}
         >
           Home
+        </Link>
+        <Link
+          href={"/blog"}
+          className={`hover:text-blue-500 ${pathname === "/blog" && "text-blue-500"
+            }`}
+        >
+          Blog
+        </Link>
+        <Link
+          href={"/contact"}
+          className={`hover:text-blue-500 ${pathname === "/contact" && "text-blue-500"
+            }`}
+        >
+          Contact
         </Link>
         <Link
           href={user ? "/wishlist" : "/sign-in"}
@@ -73,13 +87,6 @@ const Navbar = () => {
             }`}
         >
           Orders
-        </Link>
-        <Link
-          href={"/blog"}
-          className={`hover:text-blue-500 ${pathname === "/blog" && "text-blue-500"
-            }`}
-        >
-          Blog
         </Link>
       </div>
 
@@ -96,12 +103,12 @@ const Navbar = () => {
           <Menu
             className="cursor-pointer "
           />
-          <span className="absolute -top-1 -right-2 bg-red-500 text-gray-100 rounded-full px-1 text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
+          <span className="absolute -top-1 -right-2 bg-red-500 text-center text-gray-100 rounded-full px-[6px] text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
         </div>
 
         <Modal isOpen={isOpen} onClose={closeModal}>
 
-          <div className=" absolute top-12 right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden ">
+          <div className="absolute top-12 animate-modal right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden ">
             <Link href="/" className="hover:text-blue-500 outline-none" onClick={closeModal}>
               Home
             </Link>
@@ -124,6 +131,13 @@ const Navbar = () => {
               onClick={closeModal}
             >
               Blog
+            </Link>
+            <Link
+              href={"/contact"}
+              className="hover:text-blue-500 outline-none"
+              onClick={closeModal}
+            >
+              Contact
             </Link>
             <Link
               href="/cart"

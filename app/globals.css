@@ -50,3 +50,28 @@ body,
   max-width: 500px;
   width: 100%;
 }
+@keyframes upScale {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-modal {
+  animation: upScale 0.2s ease-out forwards;
+}
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding-top: 1px;
+  padding-left: 1px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: mandatory;
+  scroll-snap-destination: 0 100%;
+  scroll-snap-points-x: repeat(100%);
+}

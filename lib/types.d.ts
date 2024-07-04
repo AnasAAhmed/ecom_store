@@ -5,32 +5,29 @@ type CollectionType = {
   image: string;
 };
 
- type ProductType = {
+type ProductType = {
   _id: string;
   title: string;
   description: string;
   media: [string];
   category: string;
-  collections: [string];
+  collections: [CollectionType];
   tags: [string];
+  variants: [{
+    _id:string;
+    size:string;
+    color:string;
+    quantity:number
+  }];
+  stock:number;
+  numOfReviews:number;
+  sold:number;
+  ratings:number;
   price: number;
   expense: number;
-  reviews?:[];
-  numOfReviews:number;
-  ratings:number;
-  stock: number;
-  sold?: number;
-  sizes: [{
-    size: string,
-    quantity: number
-  }],
-  colors: [{
-    color: string,
-    quantity: number
-  }],
-  createdAt: string;
-  updatedAt: string;
-};
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 type UserType = {
   clerkId: string;

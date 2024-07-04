@@ -8,7 +8,7 @@ interface CartItem {
   color?: string;
   size?: string;
   stock: number;
-  randomParameter?: string;
+  variantId?:string;
 }
 
 interface CartStore {
@@ -26,7 +26,7 @@ const useCart = create(
     (set, get) => ({
       cartItems: [],
       addItem: (data: CartItem) => {
-        const { item, quantity, color, size, stock } = data;
+        const { item, quantity, color, size, stock,variantId } = data;
         const currentItems = get().cartItems;
         const isExisting = currentItems.find(
           (cartItem) => cartItem.item._id === item._id
@@ -36,7 +36,7 @@ const useCart = create(
           return toast("Item already in cart", { icon: "🛒" });
         }
 
-        set({ cartItems: [...currentItems, { item, quantity, color, size, stock }] });
+        set({ cartItems: [...currentItems, { item, quantity, color, size, stock,variantId }] });
         toast.success("Item added to cart");
       },
       removeItem: (idToRemove: string) => {

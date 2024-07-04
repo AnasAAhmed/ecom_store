@@ -10,29 +10,71 @@ import StarRatings from "./StarRatings";
 const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
     const [selectedColor, setSelectedColor] = useState<string>('');
     const [selectedSize, setSelectedSize] = useState<string>('');
-    const [colorQuantity, setColorQuantity] = useState<number>(0);
-    const [sizeQuantity, setSizeQuantity] = useState<number>(0);
     const [quantity, setQuantity] = useState<number>(1);
+    const [availableColors, setAvailableColors] = useState<string[]>([]);
+    const [variantstock, setVariantStock] = useState<number>(0);
+    const [selectedVariantId, setSelectedVariantId] = useState<string>("");
 
     useEffect(() => {
-        const availableColor = productInfo.colors.find(color => color.quantity > 0);
-        if (availableColor) {
-            setSelectedColor(availableColor.color);
-            setColorQuantity(availableColor.quantity);
+        if (productInfo.variants && productInfo.variants.length > 0) {
+            const availableVariant = productInfo.variants.find(variant => variant.quantity > 0);
+            if (availableVariant) {
+                setSelectedSize(availableVariant.size);
+                handleSizeChange(availableVariant.size);
+            }
+        } else {
+            setSelectedSize("");
+            setSelectedColor("");
+            setAvailableColors([]);
+            setVariantStock(0);
+            setSelectedVariantId("");
         }
+    }, []);
 
-        // Find the first size with quantity > 0
-        const availableSize = productInfo.sizes.find(size => size.quantity > 0);
-        if (availableSize) {
-            setSelectedSize(availableSize.size);
-            setSizeQuantity(availableSize.quantity);
+    const handleSizeChange = (size: string) => {
+        setSelectedSize(size);
+
+        const colors = productInfo.variants
+            ?.filter(variant => variant.size === size && variant.quantity > 0)
+            .map(variant => variant.color) || [];
+        setAvailableColors(colors);
+
+        if (colors.length > 0) {
+            setSelectedColor(colors[0]);
+            handleVariantChange(size, colors[0]);
+        } else {
+            setSelectedColor("");
+            setVariantStock(0);
+            setSelectedVariantId("");
         }
-    }, [])
+    };
+
+    const handleColorChange = (color: string) => {
+        setSelectedColor(color);
+        handleVariantChange(selectedSize, color);
+    };
+
+    const handleVariantChange = (size: string, color: string) => {
+        const variant = productInfo.variants?.find(v => v.size === size && v.color === color);
+
+        if (variant) {
+            setVariantStock(variant.quantity);
+            setSelectedVariantId(variant._id);
+        } else {
+            setVariantStock(0);
+            setSelectedVariantId("");
+        }
+    };
+
 
     const cart = useCart();
 
+    const uniqueSizes = Array.from(new Set(productInfo.variants?.map(variant => variant.size) || []));
+
+
+
     return (
-        <div className="max-w-[400px] flex flex-col gap-4">
+        <div className="max-w-[400px] sm:w-[500px] flex flex-col gap-4">
             <div className="flex justify-between items-center">
                 <p className="text-heading3-bold">{productInfo.title}</p>
                 <HeartFavorite productId={productInfo._id} />
@@ -56,44 +98,55 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                 <p className="text-small-medium">{productInfo.description}</p>
             </div>
 
-            {productInfo.colors.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    <p className="text-base-medium text-grey-2">Colors:</p>
-                    <div className="flex gap-2">
-                        {productInfo.colors.map((item, index) => (
-                            <p
-                                key={index}
-                                className={`border border-${item.color}-500 ${item.quantity <= 0 && "line-through"} px-2 py-1 rounded-lg cursor-pointer ${selectedColor === item.color && "bg-black text-white"
-                                    }`}
-                                onClick={() => { setSelectedColor(item.color); setColorQuantity(item.quantity) }}
-                            >
-                                {item.color}
-                            </p>
-                        ))}
-                    </div>
+            {productInfo.variants?.length > 0 && (
+                <div>
+                    Combination Stock:{" "}
+                    {variantstock > 0 ? (
+                        variantstock < 6 ? (
+                            <span className="text-red-500">Only {variantstock} items left</span>
+                        ) : (
+                            <span className="text-green-500">Available</span>
+                        )
+                    ) : (
+                        <span className="text-red-500">Not Available</span>
+                    )}
                 </div>
             )}
-
-            {productInfo.sizes.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    <p className="text-base-medium text-grey-2">Sizes:</p>
-                    <div className="flex gap-2">
-                        {productInfo.sizes.map((item, index) => (
-                            <p
+            <div>
+                Overall Stock:{" "}
+                {productInfo.stock > 0 ? (
+                    productInfo.stock <= 4 ? (
+                        <span className="text-red-500">Only {productInfo.stock} items left</span>
+                    ) : (
+                        <span className="text-green-500">Available</span>
+                    )
+                ) : (
+                    <span className="text-red-500">Not Available</span>
+                )}
+            </div>
+            <br />
+            {productInfo.variants?.length > 0 && (
+                <>
+                    <div className="flex mb-4">
+                        {uniqueSizes.length > 0 && uniqueSizes.map((size, index) => (
+                            <button
                                 key={index}
-                                className={`border ${item.quantity <= 0 && "line-through"} border-black px-2 py-1 rounded-lg cursor-pointer ${selectedSize === item.size && "bg-black text-white"
-                                    }`}
-                                onClick={() => {
-                                    setSelectedSize(item.size); setSizeQuantity(item.quantity)
-                                }}
-                            >
-                                {item.size}
-                            </p>
+                                className={`${selectedSize === size ? "bg-black text-white" : "bg-white text-gray-800"} border border-black text-gray-800 px-2 py-1 mr-2 rounded-md`}
+                                onClick={() => handleSizeChange(size)}
+                            >{size}</button>
                         ))}
                     </div>
-                </div>
+                    <div className="flex mb-4">
+                        {availableColors.length > 0 && availableColors.map((color, index) => (
+                            <button
+                                key={index}
+                                className={`${selectedColor === color ? "bg-black text-white" : "bg-white text-gray-800"} border border-black text-gray-800 px-2 py-1 mr-2 rounded-md`}
+                                onClick={() => handleColorChange(color)}
+                            >{color}</button>
+                        ))}
+                    </div>
+                </>
             )}
-
             <div className="flex flex-col gap-2">
                 <p className="text-base-medium text-grey-2">Quantity:</p>
                 <div className="flex gap-4 items-center">
@@ -111,7 +164,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
             <button
                 className='outline text-base-bold py-3 rounded-lg hover:bg-black hover:text-white'
-                disabled={productInfo.stock < 1 || productInfo.sizes.length > 0 && sizeQuantity < 1 || productInfo.colors.length > 0 && colorQuantity < 1}
+                disabled={(variantstock < 1 && productInfo.variants?.length > 0) || productInfo.stock < 1}
                 onClick={() => {
                     cart.addItem({
                         item: productInfo,
@@ -119,10 +172,12 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                         stock: productInfo.stock,
                         color: selectedColor,
                         size: selectedSize,
+                        variantId: selectedVariantId
                     });
                 }}
             >
-                {productInfo.stock < 1 || productInfo.sizes.length > 0 && sizeQuantity < 1 || productInfo.colors.length > 0 && colorQuantity < 1 ? "Not Avialable" : "Add To Cart"}
+                {(variantstock < 1 && productInfo.variants?.length > 0) || productInfo.stock < 1 ? "Not Available" : "Add to Cart"}
+
             </button>
         </div>
     );

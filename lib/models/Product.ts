@@ -7,13 +7,10 @@ const ProductSchema = new mongoose.Schema({
   category: String,
   collections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" }],
   tags: [String],
-  sizes: [{
-    size: String,
-    quantity: Number
-  }],
-  colors: [{
-    color: String,
-    quantity: Number
+  vatiants: [{
+    size: { type: String },
+    color: { type: String },
+    quantity: { type: Number },
   }],
   reviews: [
     {
@@ -58,7 +55,7 @@ const ProductSchema = new mongoose.Schema({
     default: 0,
   },
   stock: { type: Number },
-  sold: { type: Number ,default:0},
+  sold: { type: Number,default:0 },
   price: { type: mongoose.Schema.Types.Decimal128, get: (v: mongoose.Schema.Types.Decimal128) => { return parseFloat(v.toString()) } },
   expense: { type: mongoose.Schema.Types.Decimal128, get: (v: mongoose.Schema.Types.Decimal128) => { return parseFloat(v.toString()) } },
   createdAt: { type: Date, default: Date.now },
@@ -68,8 +65,3 @@ const ProductSchema = new mongoose.Schema({
 const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
 
 export default Product;
-// styles: [{
-//   style: String,
-//   quantity: Number,
-//   price: Number
-//   }],

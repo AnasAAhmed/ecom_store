@@ -28,7 +28,7 @@ interface ImageZoomProps {
     return (
       <>
         <div
-          className={`relative ${isZoomed?"w-100 h-100":"w-96 h-96"}  w-96 h-96 max-md:hidden`}
+          className={`relative ${isZoomed?"w-100 h-100":"w-96 h-96"} w-96 lg:w-[500px] h-96 max-md:hidden`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}

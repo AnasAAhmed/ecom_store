@@ -1,160 +1,50 @@
-import React from 'react'
-import type { NextPage } from "next";
-import { useMemo, type CSSProperties } from "react";
-import Link from 'next/link';
-const BlogSection = () => {
-  return (
-    <section
-    className={`max-sm:hidden self-stretch flex flex-col items-center justify-start pt-[3.437rem] px-[1.25rem] pb-[3.25rem] box-border gap-[4.062rem] max-w-full z-[6] text-left text-[2.25rem] text-black font-poppins mq750:gap-[2rem] mq750:pt-[1.438rem] mq750:pb-[1.375rem] mq750:box-border mq450:gap-[1rem] mq1050:pt-[2.25rem] mq1050:pb-[2.125rem] mq1050:box-border `}
-  >
-    <div className="w-[90rem] h-[59rem] relative bg-white hidden max-w-full" />
-    <div className="w-[77.5rem] flex flex-row items-start justify-center py-[0rem] pr-[1.312rem] pl-[1.25rem] box-border max-w-full">
-      <div className="w-[29.938rem] flex flex-col items-start justify-start gap-[0.812rem] max-w-full">
-        <div className="self-stretch flex flex-row items-start justify-center py-[0rem] pr-[1.25rem] pl-[1.312rem]">
-          <h1 className="m-0 h-[3.375rem] relative text-inherit font-medium font-inherit inline-block z-[1] mq750:text-[1.813rem] mq450:text-[1.375rem]">
-            Our Blogs
-          </h1>
-        </div>
-        <div className="relative text-[1rem] font-medium text-darkgray z-[1]">
-          Find a bright ideal to suit your taste with our great selection
-        </div>
-      </div>
-    </div>
-    <div className="w-[77.5rem] flex flex-col items-start justify-start gap-[4.687rem] max-w-full text-[1.25rem] mq750:gap-[2.313rem] mq450:gap-[1.188rem]">
-      <div className="self-stretch flex flex-wrap items-start justify-center gap-[1.937rem] max-w-full z-[1] mq750:gap-[0.938rem] mq1050:flex-wrap">
-        <GroupComponent3 blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-13@2x.png" />
-          <GroupComponent3
-            blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-14@2x.png"
-            // propWidth="unset"
-            // propMinWidth="15.938rem"
-            // propFlex="1"
-            // propPadding="0rem 1.687rem"
-            // propGap="1rem"
-          />
-          <GroupComponent3
-            blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-15@2x.png"
-            // propWidth="unset"
-            // propMinWidth="15.938rem"
-            // propFlex="1"
-            // propPadding="0rem 1.625rem 0rem 1.75rem"
-            // propGap="0.937rem"
-          />
-        {/* </div> */}
-      </div>
-      <div className="self-stretch flex flex-row items-start justify-center py-[0rem] px-[1.25rem]">
-        <div className="w-[7.875rem] flex flex-col items-start justify-start gap-[1.187rem]">
-          <Link href="/blog" className="h-[1.875rem] relative font-medium inline-block z-[1] mq450:text-[1rem]">
-            View All Post
-          </Link>
-          <div className="self-stretch flex flex-row items-start justify-start py-[0rem] pr-[0.187rem] pl-[0.375rem]">
-            <div className="h-[0.125rem] flex-1 relative box-border z-[1] border-t-[2px] border-solid border-black" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  )
-}
+'use client'
+import Link from "next/link";
 
-export type GroupComponent3Type = {
-    className?: string;
+const BlogSection = () => {
+    return (
+      <section className="flex flex-col items-center justify-center pt-14 px-5 pb-13 gap-16 max-w-full text-left text-2xl text-black font-poppins">
+        <div className="w-full flex flex-col items-center justify-center text-center gap-3">
+          <h1 className="text-3xl font-medium">Our Blogs</h1>
+          <p className="text-gray-500">Find a bright idea to suit your taste with our great selection</p>
+        </div>
+        <div className="w-full flex flex-wrap items-start justify-center gap-8">
+          <GroupComponent3 blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-13@2x.png" />
+          <GroupComponent3 blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-14@2x.png" />
+          <GroupComponent3 blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-15@2x.png" />
+        </div>
+        <div className="flex flex-col items-center">
+          <Link href="/blog" className="text-lg font-medium" onClick={()=>window.scroll(0,0)}>View All Posts</Link>
+          <div className="border-t-2 border-black w-16 mt-2"></div>
+        </div>
+      </section>
+    );
+  };
+
+  export type GroupComponent3Type = {
     blogCardImage?: string;
-  
-    /** Style props */
-    propWidth?: CSSProperties["width"];
-    propMinWidth?: CSSProperties["minWidth"];
-    propFlex?: CSSProperties["flex"];
-    propPadding?: CSSProperties["padding"];
-    propGap?: CSSProperties["gap"];
   };
   
-  const GroupComponent3: NextPage<GroupComponent3Type> = ({
-    className = "",
-    blogCardImage,
-    propWidth,
-    propMinWidth,
-    propFlex,
-    propPadding,
-    propGap,
-  }) => {
-    const groupDivStyle: CSSProperties = useMemo(() => {
-      return {
-        width: propWidth,
-        minWidth: propMinWidth,
-        flex: propFlex,
-      };
-    }, [propWidth, propMinWidth, propFlex]);
-  
-    const blogCardContentStyle: CSSProperties = useMemo(() => {
-      return {
-        padding: propPadding,
-      };
-    }, [propPadding]);
-  
-    const frameDivStyle: CSSProperties = useMemo(() => {
-      return {
-        gap: propGap,
-      };
-    }, [propGap]);
-  
+  const GroupComponent3 = ({ blogCardImage }: GroupComponent3Type) => {
     return (
-      <div
-        className={`w-[24.563rem] flex flex-col items-start justify-start gap-[2.062rem] min-w-[24.563rem] max-w-full text-left text-[1.25rem] text-black font-poppins mq750:min-w-full mq450:gap-[1rem] mq1050:flex-1 ${className}`}
-        style={groupDivStyle}
-      >
+      <div className="flex flex-col items-start justify-start gap-8  max-w-full text-left text-lg text-black font-poppins">
         <img
-          className="self-stretch h-[24.563rem] relative rounded-3xs max-w-full overflow-hidden shrink-0 object-cover"
+          className="self-stretch h-96 relative rounded-md max-w-full object-cover"
           loading="lazy"
-          alt=""
+          alt="Blog"
           src={blogCardImage}
         />
-        <div
-          className="self-stretch flex flex-row items-start justify-start py-[0rem] px-[1.687rem] box-border max-w-full"
-          style={blogCardContentStyle}
-        >
-          <div className="flex-1 flex flex-col items-start justify-start gap-[0.625rem] max-w-full">
-            <div className="relative mq450:text-[1rem]">
-              Going all-in with millennial design
+        <div className="self-stretch flex flex-col items-start justify-start p-4 box-border max-w-full">
+          <div className="text-xl">Going all-in with millennial design</div>
+          <Link href='/blog' className="text-2xl font-medium" onClick={()=>window.scroll(0,0)}>Read More</Link>
+          <div className="flex items-center justify-between w-full mt-4">
+            <div className="flex items-center gap-2">
+              <img className="w-4 h-4" alt="icon" src="https://figma-to-code-ecom-design.vercel.app/group.svg" />
+              <span className="font-light">5 min</span>
             </div>
-            <div className="self-stretch flex flex-row items-start justify-center py-[0rem] pr-[1.312rem] pl-[1.25rem] text-[1.5rem]">
-              <Link href={'/blog'} className="m-0 h-[2.25rem] relative text-inherit font-medium font-inherit inline-block mq450:text-[1.188rem]">
-                Read More
-              </Link>
-            </div>
-            <div className="self-stretch flex flex-row items-start justify-start py-[0rem] px-[3.625rem] text-[1rem] mq450:pl-[1.25rem] mq450:pr-[1.25rem] mq450:box-border">
-              <div
-                className="flex-1 flex flex-col items-end justify-start gap-[1.062rem]"
-                style={frameDivStyle}
-              >
-                <div className="self-stretch flex flex-row items-start justify-end py-[0rem] pr-[3.187rem] pl-[3.437rem]">
-                  <div className="h-[0.125rem] flex-1 relative box-border border-t-[2px] border-solid border-black" />
-                </div>
-                <div className="self-stretch flex flex-row items-start justify-start gap-[1.187rem]">
-                  <div className="flex flex-row items-start justify-start gap-[0.625rem]">
-                    <div className="flex flex-col items-start justify-start pt-[0.187rem] px-[0rem] pb-[0rem]">
-                      <img
-                        className="w-[1.125rem] h-[1.113rem] relative"
-                        alt=""
-                        src="https://figma-to-code-ecom-design.vercel.app/group.svg"
-                      />
-                    </div>
-                    <div className="h-[1.5rem] relative font-light inline-block">
-                      5 min
-                    </div>
-                  </div>
-                  <div className="flex flex-row items-start justify-start gap-[0.625rem]">
-                    <img
-                      className="h-[1.375rem] w-[1.375rem] relative overflow-hidden shrink-0"
-                      alt=""
-                      src="https://figma-to-code-ecom-design.vercel.app/uilcalender.svg"
-                    />
-                    <div className="h-[1.5rem] relative font-light inline-block">
-                      12
-                      <sup>th</sup> Oct 2022
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-2">
+              <img className="w-4 h-4" alt="calendar" src="https://figma-to-code-ecom-design.vercel.app/uilcalender.svg" />
+              <span className="font-light">12<sup>th</sup> Oct 2022</span>
             </div>
           </div>
         </div>

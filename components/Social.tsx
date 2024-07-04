@@ -3,7 +3,7 @@ import React from 'react'
 const Social = () => {
   return (
     <div
-    className={`self-stretch flex flex-col items-center justify-start py-[7.75rem] px-[1.25rem] box-border relative gap-[1.125rem] max-w-full z-[7] text-left text-[3.75rem] text-black font-poppins mq450:pt-[5.063rem] mq450:pb-[5.063rem] mq450:box-border `}
+    className={`self-stretch mt-8 flex flex-col items-center justify-start py-[7.75rem] px-[1.25rem] box-border relative gap-[1.125rem] max-w-full z-[7] text-left text-[3.75rem] text-black font-poppins mq450:pt-[5.063rem] mq450:pb-[5.063rem] mq450:box-border `}
   >
     <img
       className="w-full h-full absolute !m-[0] top-[0rem] right-[0rem] bottom-[0rem] left-[0rem] max-w-full overflow-hidden max-h-full object-cover"
