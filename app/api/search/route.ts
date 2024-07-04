@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         { tags: { $in: [new RegExp(query, 'i')] } },
       ],
     })
-      .select('-reviews -description')
+      .select('-reviews -description -variants')
       .skip(skip)
       .limit(limit);
 

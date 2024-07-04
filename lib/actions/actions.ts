@@ -44,7 +44,7 @@ export async function getProducts() {
     const products = await Product.find()
       .sort({ createdAt: "desc" })
       .populate({ path: "collections", model: Collection })
-      .select("-reviews -category -description")
+      .select("-reviews -category -description -variants")
       .limit(8);
 
     return JSON.parse(JSON.stringify(products))
@@ -61,7 +61,7 @@ export async function getBestSellingProducts() {
     const products = await Product.find()
       .sort({ sold: -1, ratings: -1, createdAt: "desc" })
       .populate({ path: "collections", model: Collection })
-      .select("-reviews -category -description")
+      .select("-reviews -category -description -variants")
       .limit(4);
 
     return JSON.parse(JSON.stringify(products));
@@ -90,26 +90,6 @@ export async function getProductDetails(productId: string) {
   }
 }
 
-// export async function getSearchedProducts(query: string,num?:number) {
-//   try {
-//     await connectToDB()
-
-//     const searchedProducts = await Product.find({
-//       $or: [
-//         { title: { $regex: query, $options: "i" } },
-//         { category: { $regex: query, $options: "i" } },
-//         { tags: { $in: [new RegExp(query, "i")] } } // $in is used to match an array of values
-//       ]
-
-//     }).select("-reviews -description").limit(num!);
-//     // select only the required fields
-
-//     return JSON.parse(JSON.stringify(searchedProducts))
-//   } catch (err) {
-//     console.log("[search_GET]", err)
-//     throw new Error('Internal Server Error')
-//   }
-// }
 export async function getSearchedProducts(query: string, page: number = 1, limit: number = 10) {
   try {
     await connectToDB();
@@ -123,7 +103,7 @@ export async function getSearchedProducts(query: string, page: number = 1, limit
         { tags: { $in: [new RegExp(query, 'i')] } },
       ],
     })
-      .select('-reviews -description')
+      .select('-reviews -description -variants')
       .skip(skip)
       .limit(limit);
 
@@ -167,7 +147,7 @@ export async function getRelatedProducts(productId: string) {
         { collections: { $in: product.collections } }
       ],
       _id: { $ne: product._id } // Exclude the current product
-    }).select("-reviews");
+    }).select("-reviews -description -variants");
 
     if (!relatedProducts) {
       throw new Error('No related products found')
@@ -210,7 +190,7 @@ export const reduceStock = async (cartItems: OrderProducts[]) => {
 
     // Find the matching variant
     if (order.size || order.color||order.variantId) {
-      const variant = product.vatiants.find(v => v._id!.toString() === order.variantId);
+      const variant = product.variants.find(v => v._id!.toString() === order.variantId);
       if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.item._id}, size: ${order.size}, color: ${order.color}`);
 
       // Reduce the variant stock
@@ -250,7 +230,7 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
 
     // Find the matching variant
     if (order.size || order.color||order.variantId) {
-      const variant = product.vatiants.find(v => v._id!.toString() === order.variantId);
+      const variant = product.variants.find(v => v._id!.toString() === order.variantId);
       if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
 
       // Reduce the variant stock
