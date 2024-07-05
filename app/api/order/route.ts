@@ -2,6 +2,7 @@ import { stockReduce } from "@/lib/actions/actions";
 import Customer from "@/lib/models/Customer";
 import Order from "@/lib/models/Order";
 import { connectToDB } from "@/lib/mongoDB";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
@@ -9,9 +10,9 @@ export const POST = async (req: NextRequest) => {
     await connectToDB();
     const body = await req.json();
     const {
-      orderData, customerInfo
+      orderData, customerInfo,currency
     } = body;
-    
+
     const {
       shippingAddress,
       products,
@@ -21,9 +22,9 @@ export const POST = async (req: NextRequest) => {
       customerEmail,
       status,
     } = orderData;
-
-    if (!shippingAddress || !products || !customerClerkId || !shippingRate || !status || !totalAmount) {
-      return NextResponse.json({ message: 'Please enter All Details' }, { status: 400 });
+    
+    if (!shippingAddress || !products || !customerClerkId || !shippingRate || !status || !totalAmount||!currency) {
+      return NextResponse.json({ message: `Please enter All Details` }, { status: 400 });
     }
     if (!customerInfo.clerkId || !customerInfo.email || !customerInfo.name) {
       return NextResponse.json({ message: 'User Details Missing/Login first' }, { status: 400 });
@@ -46,9 +47,11 @@ export const POST = async (req: NextRequest) => {
       shippingRate,
       customerClerkId,
       customerEmail,
+      currency,
       status,
     });
     await newOrder.save();
+    // console.log(newOrder);
 
     let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
 
@@ -64,7 +67,6 @@ export const POST = async (req: NextRequest) => {
     await customer.save();
 
     return NextResponse.json({ orderId: newOrder._id }, { status: 200 });
-
   } catch (error) {
     console.log("NEW_ORDER.Post", error);
     return NextResponse.json({ message: `Internal server error` }, { status: 500 });

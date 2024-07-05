@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache"
 import Collection from "../models/Collection"
 import Order from "../models/Order"
 import Product from "../models/Product"
@@ -161,22 +162,14 @@ export async function getRelatedProducts(productId: string) {
 
 
 // export const reduceStock = async () => {
-type OrderProducts = {
-  // product: string,//it is productId
-  item: { _id: string; },//it is productId
-  color: string,
-  size: string,
-  variantId?: string,
-  quantity: number
 
-}
 
 //for webhook strip checkout form
 export const reduceStock = async (cartItems: OrderProducts[]) => {
   await connectToDB();
   for (const order of cartItems) {
     //  const order = cartItems;
-    const product: ProductType | null = await Product.findById(order.item._id);
+    const product = await Product.findById(order.item._id);
     if (!product) throw new Error("Product Not Found");
 
     // Reduce the general product stock
@@ -189,8 +182,8 @@ export const reduceStock = async (cartItems: OrderProducts[]) => {
     }
 
     // Find the matching variant
-    if (order.size || order.color||order.variantId) {
-      const variant = product.variants.find(v => v._id!.toString() === order.variantId);
+    if (order.size || order.color || order.variantId) {
+      const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
       if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.item._id}, size: ${order.size}, color: ${order.color}`);
 
       // Reduce the variant stock
@@ -201,22 +194,17 @@ export const reduceStock = async (cartItems: OrderProducts[]) => {
         throw new Error("Not enough stock for this variant");
       }
     }
+    await product.save();
+
+    revalidatePath(`/products/${order.item._id}`);
   };
 }
-type OrderProductCOD = {
 
-  product: string,//it is product._id
-  color: string,
-  size: string,
-  variantId?: string,
-  quantity: number
-
-}
 //for COD form
 export const stockReduce = async (products: OrderProductCOD[]) => {
   for (let i = 0; i < products.length; i++) {
-     const order = products[i];
-    const product: ProductType | null = await Product.findById(order.product);
+    const order = products[i];
+    const product = await Product.findById(order.product);
     if (!product) throw new Error("Product Not Found");
 
     // Reduce the general product stock
@@ -229,8 +217,8 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
     }
 
     // Find the matching variant
-    if (order.size || order.color||order.variantId) {
-      const variant = product.variants.find(v => v._id!.toString() === order.variantId);
+    if (order.size || order.color || order.variantId) {
+      const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
       if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
 
       // Reduce the variant stock
@@ -241,5 +229,8 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
         throw new Error("Not enough stock for this variant");
       }
     }
-};}
+    await product.save();
+    revalidatePath(`/products/${order.product}`);
+  };
+}
 

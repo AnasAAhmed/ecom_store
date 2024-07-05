@@ -29,6 +29,42 @@ type ProductType = {
   updatedAt: Date;
 }
 
+type OrderProductCOD = {
+
+  product: string,//it is product._id
+  color: string,
+  size: string,
+  variantId?: string,
+  quantity: number
+
+}
+
+type OrderProducts = {
+  // product: string,//it is productId
+  item: { _id: string; },//it is productId
+  color: string,
+  size: string,
+  variantId?: string,
+  quantity: number
+}
+type Variant = {
+  color: string,
+  size: string,
+  _id: string,
+  quantity: number
+}
+
+type Review ={
+  _id: string;
+  userId: string;
+  name: string;
+  photo: string;
+  rating: number;
+  comment: string;
+  date: number;
+}
+
+
 type UserType = {
   clerkId: string;
   wishlist: [string];
@@ -43,6 +79,7 @@ type OrderType = {
   products: [OrderItemType]
   shippingRate: string;
   status: string;
+  currency: string;
   totalAmount: number
   createdAt: string;
 }

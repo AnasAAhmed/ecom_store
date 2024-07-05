@@ -9,6 +9,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
+import Region from "./Region";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -92,6 +93,7 @@ const Navbar = () => {
 
 
       <div className="relative flex gap-3 items-center">
+        <Region isHome={false} />
         <Link
           href="/cart"
           className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white max-md:hidden"
@@ -139,6 +141,7 @@ const Navbar = () => {
             >
               Contact
             </Link>
+            {/* <Region isHome={false} /> */}
             <Link
               href="/cart"
               className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white"

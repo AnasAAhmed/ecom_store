@@ -46,6 +46,8 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
       location.reload();
     } catch (error) {
       toast.error('Error deleting review');
+      console.log(error);
+      
     } finally {
       setIsDeletingReview(false);
     }
@@ -55,7 +57,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
   return (
     <div className="container mx-auto p-4">
       <div className="flex flex-col items-center">
-        <h2 className="text-heading3-bold font-semibold mb-4">Product Reviews ({numOfReviews})</h2>
+        <h2 className="text-heading3-bold font-semibold mb-4">Reviews ({numOfReviews})</h2>
         <p className="text-sm font-medium text-gray-500">
           This button will be removed for submit reviews here in Production Environment but can edit here this is for demo
         </p>

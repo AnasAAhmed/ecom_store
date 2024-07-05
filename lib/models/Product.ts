@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema({
   category: String,
   collections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" }],
   tags: [String],
-  vatiants: [{
+  variants: [{
     size: { type: String },
     color: { type: String },
     quantity: { type: Number },

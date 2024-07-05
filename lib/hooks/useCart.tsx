@@ -49,8 +49,6 @@ const useCart = create(
       increaseQuantity: async (idToIncrease: string) => {
         const newCartItems = get().cartItems.map((cartItem) => {
           if (cartItem.item._id === idToIncrease) {
-            console.log("Quantity:", cartItem.quantity);
-            console.log("Stock:", cartItem.stock);
             if (cartItem.quantity < cartItem.stock) {
               return { ...cartItem, quantity: cartItem.quantity + 1 };
             } else {
@@ -73,6 +71,29 @@ const useCart = create(
     }),
     {
       name: "cart-storage",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
+
+
+interface RegionStore {
+  country: string;
+  currency: string;
+  setCountry: (country: string) => void;
+  setCurrency: (currency: string) => void;
+}
+
+export const useRegion = create<RegionStore>()(
+  persist(
+    (set) => ({
+      country: '',
+      currency: '',
+      setCountry: (country) => set({ country }),
+      setCurrency: (currency) => set({ currency }),
+    }),
+    {
+      name: "region-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )

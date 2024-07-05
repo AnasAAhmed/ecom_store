@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FormEvent, useState } from 'react';
-import useCart from "@/lib/hooks/useCart";
+import useCart, { useRegion } from "@/lib/hooks/useCart";
 import { useUser } from "@clerk/nextjs";
 import { LoaderIcon, MinusCircle, PlusCircle, Trash, XCircleIcon } from "lucide-react";
 import Image from "next/image";
@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 const Cart = () => {
   const router = useRouter();
   const { user } = useUser();
+  const { currency } = useRegion();
   const [loading, setLoading] = useState(false);
   const [expand, setExpand] = useState(false);
   const [message, setMessage] = useState(false);
@@ -21,8 +22,9 @@ const Cart = () => {
     (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
     0
   );
-  const totalRounded = parseFloat(total.toFixed(2));
 
+  const totalAfterTax = parseFloat((total).toFixed(2));
+  const totalRounded = currency === 'pkr' ? totalAfterTax * 250 : totalAfterTax;
   const customer = {
     clerkId: user?.id,
     email: user?.emailAddresses[0].emailAddress,
@@ -70,7 +72,7 @@ const Cart = () => {
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ cartItems: cart.cartItems, customer }),
+            body: JSON.stringify({ cartItems: cart.cartItems, customer,currency}),
           });
 
           if (res.ok) {
@@ -78,7 +80,7 @@ const Cart = () => {
             window.location.href = data.url;
             console.log(data);
           } else {
-            toast.error(`HTTP error! Status: ${res.status}`)
+            toast.error(`HTTP error! Status: ${res.statusText}`)
             console.error(`HTTP error! Status: ${res.status}`);
           }
           setLoading(false)
@@ -118,7 +120,7 @@ const Cart = () => {
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">${cartItem.item.price}</p>
+                    <p className="text-small-medium">{currency.toUpperCase()} {currency==='pkr'?cartItem.item.price*250:cartItem.item.price}</p>
                     <p className="text-small-medium">{cartItem.item.stock < 5 ? `only ${cartItem.item.stock} left` : cartItem.item.stock}</p>
                   </div>
                 </div>
@@ -156,7 +158,7 @@ const Cart = () => {
         </p>
         <div className="flex justify-between text-body-semibold">
           <span>Total Amount</span>
-          <span>$ {totalRounded}</span>
+          <span>{currency.toUpperCase()||'$'} {totalRounded}</span>
         </div>
         {expand &&
           <div className="flex flex-col gap-4 ">
@@ -204,7 +206,7 @@ const Cart = () => {
         {!expand && <button
           className={`border rounded-lg flex justify-center ${cart.cartItems.length === 0 && "cursor-not-allowed"} text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white`}
           onClick={() => setExpand(true)}
-          disabled={cart.cartItems.length === 0}
+          disabled={cart.cartItems.length === 0||totalRounded <1}
         >
           Proceed
         </button>}

@@ -42,7 +42,7 @@ const Wishlist = () => {
     try {
       const wishlistProducts = await Promise.all(
         signedInUser.wishlist.map(async (productId) => {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productId}`);
+          const res = await fetch(`/api/products/${productId}`);
           return res.json();
         })
       );

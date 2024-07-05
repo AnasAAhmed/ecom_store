@@ -56,6 +56,7 @@ export const POST = async (req: NextRequest) => {
         customerClerkId: customerInfo.clerkId,
         products: orderItems,
         shippingAddress,
+        currency:session?.currency,
         shippingRate: session?.shipping_cost?.shipping_rate,
         totalAmount: session.amount_total ? session.amount_total / 100 : 0,
         status: "Payment-Successfull & Processing",

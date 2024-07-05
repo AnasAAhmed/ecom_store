@@ -24,7 +24,8 @@ const orderSchema = new mongoose.Schema({
   },
   shippingRate: String,
   totalAmount: Number,
-  status: String,
+  currency: String,
+    status: String,
   createdAt: {
     type: Date,
     default: Date.now,

@@ -15,10 +15,10 @@ export async function OPTIONS(data: any,) {
 export async function POST(req: NextRequest) {
   const idempotencyKey = uuidv4();
   try {
-    const { cartItems, customer } = await req.json();
+    const { cartItems, customer ,currency} = await req.json();
 
-    if (!cartItems || !customer) {
-      return new NextResponse("Not enough data to checkout", { status: 400 });
+    if (!cartItems || !customer||!currency) {
+      return new NextResponse("Not enough data to checkout", { statusText:"Not enough data to checkout" });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -27,13 +27,13 @@ export async function POST(req: NextRequest) {
       shipping_address_collection: {
         allowed_countries: ["US", "PK"],
       },
-      shipping_options: [
-        { shipping_rate: "shr_1PBurSBxsJkAdKVPHis4y2cO" },
-        { shipping_rate: "shr_1PBuy1BxsJkAdKVPWZgtJcuW" },
-      ],
+      // shipping_options: [
+      //   { shipping_rate: "shr_1PBurSBxsJkAdKVPHis4y2cO" },
+      //   { shipping_rate: "shr_1PBuy1BxsJkAdKVPWZgtJcuW" },
+      // ],
       line_items: cartItems.map((cartItem: any) => ({
         price_data: {
-          currency: "usd",
+          currency: currency,
           product_data: {
             name: cartItem.item.title,
             images: [cartItem.item.media[0]],
