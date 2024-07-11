@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
-import Region from "./Region";
+import Currency from "./Currency";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -93,7 +93,7 @@ const Navbar = () => {
 
 
       <div className="relative flex gap-3 items-center">
-        <Region isHome={false} />
+        <Currency isHome={false} />
         <Link
           href="/cart"
           className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white max-md:hidden"
@@ -105,7 +105,7 @@ const Navbar = () => {
           <Menu
             className="cursor-pointer "
           />
-          <span className="absolute -top-1 -right-2 bg-red-500 text-center text-gray-100 rounded-full px-[6px] text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
+          <span className="absolute -top-1 -right-2 bg-black text-center text-gray-100 rounded-full px-[6px] text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
         </div>
 
         <Modal isOpen={isOpen} onClose={closeModal}>

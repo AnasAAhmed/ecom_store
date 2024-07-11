@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, { params }: { params: { productId: S
 
         const products = await Product.findById(params.productId)
             .populate({ path: "collections", model: Collection })
-            .select("-reviews -category -description -variants")
+            
 
         return  NextResponse.json(products, { status: 200 })
     } catch (err) {

@@ -9,7 +9,7 @@ const ProductDetails = async ({ params }: { params: { productId: string }}) => {
   const relatedProducts = await getRelatedProducts(params.productId)
   
   return (
-    <>
+   <>
     <div className="flex justify-center mt-8 md:mt-0 items-start gap-16 py-10 px-5 max-md:flex-col max-md:items-center">
       <Gallery productMedia={productDetails.media} />
       <ProductInfo   productInfo={productDetails} />

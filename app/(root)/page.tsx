@@ -5,12 +5,10 @@ import ProductList from "@/components/ProductList";
 import GroupComponent7 from "@/components/Services";
 import Banner from "@/components/Banner";
 import Social from "@/components/Social";
-import Region from "@/components/Region";
 
 export default function Home() {
   return (
     <>
-    <Region/>
       <Banner
         heading="Elevate Your Style"
         text=" Discover the latest trends in fashion with our new collection."

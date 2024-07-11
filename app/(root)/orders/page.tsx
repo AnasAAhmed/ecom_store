@@ -8,13 +8,9 @@ import Link from "next/link";
 const Orders = async () => {
   const { userId } = auth();
 
-  let loading = true;
   const orders = await getOrders(userId!);
-  loading = false;
 
-  return loading ? (
-    <Loader />
-  ) : (
+  return(
     <div className="sm:px-10 py-5 max-sm:px-3  min-h-[90vh]">
       <p className="text-heading3-bold my-10">Your Orders</p>
       {!orders || (orders.length === 0 && (

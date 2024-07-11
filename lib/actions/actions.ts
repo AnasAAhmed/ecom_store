@@ -4,6 +4,8 @@ import Order from "../models/Order"
 import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
 
+
+
 export async function getCollections() {
   try {
     await connectToDB()
@@ -91,30 +93,6 @@ export async function getProductDetails(productId: string) {
   }
 }
 
-export async function getSearchedProducts(query: string, page: number = 1, limit: number = 10) {
-  try {
-    await connectToDB();
-
-    const skip = (page - 1) * limit;
-
-    const searchedProducts = await Product.find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { category: { $regex: query, $options: 'i' } },
-        { tags: { $in: [new RegExp(query, 'i')] } },
-      ],
-    })
-      .select('-reviews -description -variants')
-      .skip(skip)
-      .limit(limit);
-
-    return JSON.parse(JSON.stringify(searchedProducts));
-  } catch (err) {
-    console.log('[search_GET]', err);
-    throw new Error('Internal Server Error');
-  }
-}
-
 export async function getOrders(customerId: string) {
   try {
     await connectToDB();
@@ -159,9 +137,6 @@ export async function getRelatedProducts(productId: string) {
     throw new Error('Internal Server Error')
   }
 }
-
-
-// export const reduceStock = async () => {
 
 
 //for webhook strip checkout form

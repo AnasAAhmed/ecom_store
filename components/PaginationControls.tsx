@@ -7,6 +7,7 @@ interface PaginationControlsProps {
 }
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, totalPages }) => {
+  if (totalPages < 2) return;
   const router = useRouter();
 
   const handlePageChange = (newPage: number) => {
@@ -17,27 +18,25 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, to
 
   return (
     <div className="pagination">
-          {totalPages > 0 && (
-            <article className="flex justify-center items-center mt-4">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => handlePageChange(currentPage - 1)}
-                className={`px-4 py-2 text-white rounded mr-2 disabled:bg-gray-400 disabled:cursor-not-allowed`}
-              >
-                Prev
-              </button>
-              <span className="text-base">
-              {currentPage}/{totalPages}
-              </span>
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => handlePageChange(currentPage + 1)}
-                className={`px-4 py-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded ml-2`}
-              >
-                Next
-              </button>
-            </article>
-          )}
+      <article className="flex justify-center items-center mt-4">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
+          className={`px-4 py-2 text-white rounded mr-2 disabled:bg-gray-400 disabled:cursor-not-allowed`}
+        >
+          Prev
+        </button>
+        <span className="text-base">
+          {currentPage}/{totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
+          className={`px-4 py-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded ml-2`}
+        >
+          Next
+        </button>
+      </article>
     </div>
   );
 };

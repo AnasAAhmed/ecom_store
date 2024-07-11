@@ -82,6 +82,8 @@ interface RegionStore {
   currency: string;
   setCountry: (country: string) => void;
   setCurrency: (currency: string) => void;
+  clearcur: () => void;
+  clearcor: () => void;
 }
 
 export const useRegion = create<RegionStore>()(
@@ -91,6 +93,8 @@ export const useRegion = create<RegionStore>()(
       currency: '',
       setCountry: (country) => set({ country }),
       setCurrency: (currency) => set({ currency }),
+      clearcur: () => set({ currency: '' }),
+      clearcor: () => set({ country: '' }),
     }),
     {
       name: "region-storage",
