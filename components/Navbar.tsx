@@ -62,11 +62,11 @@ const Navbar = () => {
           Home
         </Link>
         <Link
-          href={"/blog"}
-          className={`hover:text-blue-500 ${pathname === "/blog" && "text-blue-500"
+          href={"/search"}
+          className={`hover:text-blue-500 ${pathname === "/search" && "text-blue-500"
             }`}
         >
-          Blog
+          Shop
         </Link>
         <Link
           href={"/contact"}
@@ -75,20 +75,24 @@ const Navbar = () => {
         >
           Contact
         </Link>
-        <Link
-          href={user ? "/wishlist" : "/sign-in"}
-          className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
-            }`}
-        >
-          Wishlist
-        </Link>
-        <Link
-          href={user ? "/orders" : "/sign-in"}
-          className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
-            }`}
-        >
-          Orders
-        </Link>
+        {user &&
+          <>
+            <Link
+              href={user ? "/wishlist" : "/sign-in"}
+              className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
+                }`}
+            >
+              Wishlist
+            </Link>
+            <Link
+              href={user ? "/orders" : "/sign-in"}
+              className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
+                }`}
+            >
+              Orders
+            </Link>
+          </>
+        }
       </div>
 
 
@@ -127,12 +131,13 @@ const Navbar = () => {
               onClick={closeModal}
             >
               Orders
-            </Link> <Link
-              href={"/blog"}
+            </Link>
+            \<Link
+              href={"/search"}
               className="hover:text-blue-500 outline-none"
               onClick={closeModal}
             >
-              Blog
+              Shop
             </Link>
             <Link
               href={"/contact"}

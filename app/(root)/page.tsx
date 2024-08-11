@@ -9,7 +9,7 @@ import Social from "@/components/Social";
 export default function Home() {
   return (
     <>
-      <Banner
+      <Banner 
         heading="Elevate Your Style"
         text=" Discover the latest trends in fashion with our new collection."
         imgUrl={'/banner2.avif'}

@@ -7,11 +7,12 @@ import { LoaderIcon, MinusCircle, PlusCircle, Trash, XCircleIcon } from "lucide-
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 const Cart = () => {
   const router = useRouter();
   const { user } = useUser();
-  const { currency } = useRegion();
+  const { currency, exchangeRate } = useRegion();
   const [loading, setLoading] = useState(false);
   const [expand, setExpand] = useState(false);
   const [message, setMessage] = useState(false);
@@ -23,16 +24,15 @@ const Cart = () => {
     0
   );
 
-  const totalAfterTax = parseFloat((total).toFixed(2));
-  const totalRounded = currency === 'pkr' ? totalAfterTax * 250 : totalAfterTax;
+  const totalRounded = total * exchangeRate;
   const customer = {
     clerkId: user?.id,
     email: user?.emailAddresses[0].emailAddress,
     name: user?.fullName,
   };
   const handleCheckout = async () => {
+    if (currency !== "PKR" && currency !== "USD") return toast.error(" Only USD or PKR are allowed for payment for now becasue this site is Demo.");
     if (isCOD === "NULL") return (setMessage(true), setTimeout(() => { setMessage(false) }, 2000));
-    ;
     if (isCOD === "COD") {
       if (!user) {
         return toast((t) => (
@@ -72,7 +72,7 @@ const Cart = () => {
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ cartItems: cart.cartItems, customer,currency}),
+            body: JSON.stringify({ cartItems: cart.cartItems, customer, currency, exchangeRate }),
           });
 
           if (res.ok) {
@@ -113,14 +113,14 @@ const Cart = () => {
                     alt="product"
                   />
                   <div className="flex flex-col gap-3 ml-4">
-                    <p className="text-body-bold">{cartItem.item.title}</p>
+                    <Link href={`products/${cartItem.item._id}`} className="text-body-bold">{cartItem.item.title}</Link>
                     {cartItem.color && (
                       <p className="text-small-medium">{cartItem.color}</p>
                     )}
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">{currency.toUpperCase()} {currency==='pkr'?cartItem.item.price*250:cartItem.item.price}</p>
+                    <p className="text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()}</p>
                     <p className="text-small-medium">{cartItem.item.stock < 5 ? `only ${cartItem.item.stock} left` : cartItem.item.stock}</p>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ const Cart = () => {
         </p>
         <div className="flex justify-between text-body-semibold">
           <span>Total Amount</span>
-          <span>{currency.toUpperCase()||'$'} {totalRounded}</span>
+          <span>{currency} {totalRounded.toFixed()}</span>
         </div>
         {expand &&
           <div className="flex flex-col gap-4 ">
@@ -206,7 +206,7 @@ const Cart = () => {
         {!expand && <button
           className={`border rounded-lg flex justify-center ${cart.cartItems.length === 0 && "cursor-not-allowed"} text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white`}
           onClick={() => setExpand(true)}
-          disabled={cart.cartItems.length === 0||totalRounded <1}
+          disabled={cart.cartItems.length === 0 || totalRounded < 1}
         >
           Proceed
         </button>}

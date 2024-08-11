@@ -68,7 +68,9 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
 
     const cart = useCart();
-    const { currency } = useRegion();
+    const { currency, exchangeRate } = useRegion();
+    const price = productInfo.price * exchangeRate;
+    const expense = productInfo.expense * exchangeRate;
     const uniqueSizes = Array.from(new Set(productInfo.variants?.map(variant => variant.size) || []));
 
 
@@ -85,8 +87,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                 <p className="text-base-bold">{productInfo.category}</p>
             </div>
 
-            <p className="text-heading3-bold">{currency === 'pkr' ? "Rs" : '$'} {currency === 'pkr' ? productInfo.price * 278 : productInfo.price}</p>
-            {productInfo.expense && <p className="text-small-medium line-through text-red-1">{currency === 'pkr' ? "Rs" : '$'} {currency === 'pkr' ? productInfo.expense * 278 : productInfo.expense}</p>
+            <p className="text-heading3-bold"><span className="text-small-medium">{currency}</span> {price.toFixed()}</p>
+            {productInfo.expense && <p className="text-small-medium line-through text-red-1">{expense.toFixed()}</p>
             } <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                     <StarRatings rating={productInfo.ratings} />

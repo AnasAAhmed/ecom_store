@@ -8,7 +8,7 @@ interface CartItem {
   color?: string;
   size?: string;
   stock: number;
-  variantId?:string;
+  variantId?: string;
 }
 
 interface CartStore {
@@ -26,7 +26,7 @@ const useCart = create(
     (set, get) => ({
       cartItems: [],
       addItem: (data: CartItem) => {
-        const { item, quantity, color, size, stock,variantId } = data;
+        const { item, quantity, color, size, stock, variantId } = data;
         const currentItems = get().cartItems;
         const isExisting = currentItems.find(
           (cartItem) => cartItem.item._id === item._id
@@ -36,7 +36,7 @@ const useCart = create(
           return toast("Item already in cart", { icon: "🛒" });
         }
 
-        set({ cartItems: [...currentItems, { item, quantity, color, size, stock,variantId }] });
+        set({ cartItems: [...currentItems, { item, quantity, color, size, stock, variantId }] });
         toast.success("Item added to cart");
       },
       removeItem: (idToRemove: string) => {
@@ -80,6 +80,8 @@ const useCart = create(
 interface RegionStore {
   country: string;
   currency: string;
+  exchangeRate: number;
+  lastFetched: number | null;
   setCountry: (country: string) => void;
   setCurrency: (currency: string) => void;
   clearcur: () => void;
@@ -88,12 +90,37 @@ interface RegionStore {
 
 export const useRegion = create<RegionStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       country: '',
-      currency: '',
+      currency: 'USD', // default to 'USD'
+      exchangeRate: 1, // default to 1 for USD
+      lastFetched: null,
+
       setCountry: (country) => set({ country }),
-      setCurrency: (currency) => set({ currency }),
-      clearcur: () => set({ currency: '' }),
+
+      setCurrency: async (currency) => {
+        if (currency === 'USD')  set({ exchangeRate: 1 });
+        if (currency === 'PKR')  set({ exchangeRate: 200 });
+        const currentTime = Date.now();
+        const threeDays = 3 * 24 * 3600 * 1000; // 3 days in milliseconds
+        const shouldFetch =
+          currency !== 'USD' &&  currency !== 'PKR' &&// Only fetch if the currency is not USD
+          (currency !== get().currency || !get().lastFetched || currentTime - get().lastFetched! > threeDays);
+        if (shouldFetch) {
+          const response = await fetch(
+            `https://api.currencyapi.com/v3/latest?apikey=${process.env.NEXT_PUBLIC_CURRENCY_API}&base_currency=USD&currencies=${currency}`
+          );
+          const data = await response.json();
+
+          // Access the correct exchange rate from the response
+          const exchangeRate = data.data?.[currency.toUpperCase()]?.value || 1;
+          set({ currency, exchangeRate, lastFetched: currentTime });
+        } else {
+          set({ currency });
+        }
+      },
+
+      clearcur: () => set({ currency: 'USD', exchangeRate: 1 }), // reset to default USD
       clearcor: () => set({ country: '' }),
     }),
     {
@@ -102,7 +129,22 @@ export const useRegion = create<RegionStore>()(
     }
   )
 );
+interface UserState {
+  user: {
+    clerkId: string;
+    wishlist: string[];
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  setUser: (user: any) => void;
+  resetUser: () => void;
+}
 
+export const useWhishListUserStore = create<UserState>((set) => ({
+  user: null,
+  setUser: (user) => set({ user }),
+  resetUser: () => set({ user: null }),
+}));
 export default useCart;
 
 

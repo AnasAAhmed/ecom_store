@@ -10,7 +10,7 @@ const Orders = async () => {
 
   const orders = await getOrders(userId!);
 
-  return(
+  return (
     <div className="sm:px-10 py-5 max-sm:px-3  min-h-[90vh]">
       <p className="text-heading3-bold my-10">Your Orders</p>
       {!orders || (orders.length === 0 && (
@@ -24,7 +24,7 @@ const Orders = async () => {
               {/* <p className="text-base-bold">Order ID: {order._id}</p> */}
               <p className="text-base-bold">
                 {/* Total Amount: $ {order.totalAmount} */}
-                Total Amount: {order.currency==='pkr'?order.currency:'$'} {order.totalAmount}
+                Total Amount: {order.currency} {order.totalAmount}
               </p>
               <p className="text-base-bold">
                 Status: {order.status}
@@ -58,15 +58,13 @@ const Orders = async () => {
                         <p className="text-small-medium">
                           shippingRate:{" "}
                           <span className="text-small-bold">
-                            {order.shippingRate === "shr_1PBuy1BxsJkAdKVPWZgtJcuW" ? "Free Delivery" : order.shippingRate}
+                            {order.shippingRate||'3-9 days free delivery'}
                           </span>
                         </p>
                         <p className="text-small-medium">
                           Unit price:{" "}
-                          <span className="text-small-bold">
-                          {order.currency==='pkr'?order.currency:'$'} 
-                          {order.currency==='pkr'?orderItem.product.price*250:orderItem.product.price}
-                          </span>
+                          {order.currency} {" "}
+                          {order.currency === 'pkr' ? (orderItem.product.price * 200).toFixed() : orderItem.product.price}
                         </p>
                       </div>
                     </>

@@ -14,7 +14,7 @@ type BannerProps = {
 
 const Banner = ({ imgUrl, text, heading, textColor, shade, link, buttonText, scrollDown }: BannerProps) => {
   return (
-    <div className="p-6 mt-10 md:mt-0">
+    <div className="p-6 mt-6 md:mt-0">
 
       <div className="relative w-full h-[400px] rounded-xl  sm:h-[500px] md:h-[600px] bg-cover bg-center" style={{ backgroundImage: `url(${imgUrl})` }}>
         <div className={`absolute inset-0  opacity-60 rounded-xl`}

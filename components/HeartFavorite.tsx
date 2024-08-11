@@ -1,7 +1,9 @@
 "use client"
 
+import { useWhishListUserStore } from "@/lib/hooks/useCart";
 import { useUser } from "@clerk/nextjs";
 import { Heart, Loader } from "lucide-react";
+import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,24 +15,15 @@ interface HeartFavoriteProps {
 
 const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) => {
   const router = useRouter();
-  const { user } = useUser();
+  const { user } = useWhishListUserStore();
 
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-
-  const getUser = async () => {
-    try {
-      const res = await fetch("/api/users");
-      const data = await res.json();
-      setIsLiked(data.wishlist.includes(productId));
-    } catch (err) {
-      console.log("[users_GET]", err);
-    }
-  };
-
   useEffect(() => {
     if (user) {
-      getUser();
+      console.log(user);
+      
+      setIsLiked(user.wishlist.includes(productId));
     }
   }, [user]);
 
@@ -48,8 +41,9 @@ const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) =>
         });
         const updatedUser = await res.json();
         setIsLiked(updatedUser.user.wishlist.includes(productId));
-        toast.success(`${updatedUser.isLiked ? "Removed from" : "Added in"} your wishlists`)
+        toast.success(`${updatedUser.isLiked ? "Removed from" : "Added in"} your wishlists`);
         updateSignedInUser && updateSignedInUser(updatedUser);
+        // revalidatePath('/wishlist')
       }
     } catch (err) {
       toast.error("Error in your wishlists")
