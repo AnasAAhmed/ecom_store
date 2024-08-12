@@ -24,7 +24,7 @@ const shippingSchema = z.object({
 const Shipping = () => {
     const { user } = useUser();
     const cart = useCart();
-    const { currency ,exchangeRate} = useRegion();
+    const { currency, exchangeRate } = useRegion();
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const [shippingRateNumber, setShippingRateNumber] = useState<number>(0);
@@ -39,14 +39,13 @@ const Shipping = () => {
     const total = cart.cartItems.reduce(
         (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity, 0
     );
-    const taxAmount = total * 12 / 100;
 
-    const totalAfterTax = parseFloat((total + taxAmount + shippingRateNumber).toFixed(2));
-    const totalAmount = totalAfterTax * exchangeRate ;
+    const totalshippingRate = total + shippingRateNumber;
+    const totalAmount = (totalshippingRate * exchangeRate).toFixed();
 
-    const convertToPKR = (amount: number) => {
-        return (amount * exchangeRate).toFixed(2);
-    };
+    // const convertToPKR = (amount: number) => {
+    //     return (amount * exchangeRate);
+    // };
 
     const customerInfo = {
         clerkId: user?.id,
@@ -61,6 +60,7 @@ const Shipping = () => {
 
         if (!user) return toast.error("Not Enough Details");
         if (!cart.cartItems.length) return toast.error("Your Cart is Empty");
+        if (currency !== "PKR") return toast.error("Please select PKR Currency");
 
         setIsProcessing(true);
 
@@ -74,7 +74,9 @@ const Shipping = () => {
                 variantId: item.variantId,
             })),
             totalAmount,
-            shippingRate,
+            shippingRate: `${shippingRate} (${shippingRateNumber})`,
+            exchangeRate,
+            currency: currency || 'usd',
             customerClerkId: user.id,
             customerEmail: user.emailAddresses[0].emailAddress,
             status: "COD & Processing",
@@ -85,7 +87,7 @@ const Shipping = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ orderData, customerInfo, currency: currency || 'usd' }),
+                body: JSON.stringify({ orderData, customerInfo }),
             });
 
             if (!response.ok) {
@@ -177,10 +179,10 @@ const Shipping = () => {
                             type="radio"
                             id="fast-delivery"
                             value="Fast delivery 3-5 Days COD"
-                            onChange={() => setShippingRateNumber(20 * exchangeRate)}
+                            onChange={() => setShippingRateNumber(4)}
                         />
                         <label htmlFor="fast-delivery" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
-                            Fast delivery 3-5 Days (Cash On Delivery) (${convertToPKR(20)})
+                            Fast delivery 2-5 Days (Cash On Delivery) ({currency} {4 * exchangeRate})
                         </label>
                     </div>
                     <div className="relative flex border rounded-lg px-3 hover:bg-gray-300 border-gray-300 items-center gap-2">
@@ -189,10 +191,10 @@ const Shipping = () => {
                             type="radio"
                             id="standard-delivery"
                             value="Standard delivery 5-8 Days COD"
-                            onChange={() => setShippingRateNumber(5 * exchangeRate)}
+                            onChange={() => setShippingRateNumber(1)}
                         />
                         <label htmlFor="standard-delivery" className="cursor-pointer flex items-center gap-2 rounded-lg py-3 px-4 w-full ">
-                            Standard delivery 5-8 Days (Cash On Delivery) (${convertToPKR(5)})
+                            Standard delivery 3-8 Days (Cash On Delivery) ({currency} {1 * exchangeRate})
                         </label>
                     </div>
                     {errors.shippingRate && <span className="ml-3 text-red-1">{(errors.shippingRate.message as string)}</span>}
@@ -209,25 +211,21 @@ const Shipping = () => {
                                 </span>
                                 <span>{item.item.title}</span>
                                 <span> (x{item.quantity})</span>
-                                <span>= {currency+ (item.item.price * item.quantity * exchangeRate).toFixed(2)}</span>
+                                <span>= {currency + ' ' + (item.item.price * item.quantity * exchangeRate)}</span>
                             </li>
                         ))}
                     </ul>
                     <div className="flex justify-between items-center mb-2">
                         <span>Shipping Rate (C.O.D):</span>
-                        <span>{currency+ totalAmount.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center font-bold">
-                        <span>Tax:</span>
-                        <span>{currency+ totalAmount.toFixed(2)}</span>
+                        <span>{currency + ' ' + (shippingRateNumber * exchangeRate).toFixed()}</span>
                     </div>
                     <div className="flex justify-between items-center font-bold">
                         <span>Total Amount:</span>
-                        <span>{currency+ totalAmount.toFixed(2)}</span>
+                        <span>{currency + ' ' + totalAmount}</span>
                     </div>
                 </div>
                 <button type="submit" className="flex items-center justify-center rounded-lg transition-all duration-200 text-lg mt-8 text-white bg-black py-3 w-full hover:bg-gray-200 hover:text-black">
-                    {isProcessing ? <LoaderIcon className="animate-spin" /> : `Place Order For ${currency+ totalAmount.toFixed(2)}`}
+                    {isProcessing ? <LoaderIcon className="animate-spin" /> : `Place Order For ${currency + ' ' + totalAmount}`}
                 </button>
             </form>
         </div>

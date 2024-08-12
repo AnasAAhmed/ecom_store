@@ -79,6 +79,7 @@ type OrderType = {
   products: [OrderItemType]
   shippingRate: string;
   status: string;
+  exchangeRate: number;
   currency: string;
   totalAmount: number
   createdAt: string;

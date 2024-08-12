@@ -5,11 +5,12 @@ import ProductList from "@/components/ProductList";
 import GroupComponent7 from "@/components/Services";
 import Banner from "@/components/Banner";
 import Social from "@/components/Social";
+import UserFetcher from "@/components/UserFetch";
 
 export default function Home() {
   return (
     <>
-      <Banner 
+      <Banner
         heading="Elevate Your Style"
         text=" Discover the latest trends in fashion with our new collection."
         imgUrl={'/banner2.avif'}
@@ -18,6 +19,7 @@ export default function Home() {
         link="/search"
         buttonText="Shop"
       />
+      <UserFetcher />
       <Collections />
       <ProductList />
       <Banner

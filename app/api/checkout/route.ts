@@ -28,8 +28,9 @@ export async function POST(req: NextRequest) {
   const idempotencyKey = uuidv4();
   try {
     const { cartItems, customer, currency, exchangeRate } = await req.json();
+    console.log(exchangeRate);
 
-    if (!cartItems || !customer || !currency) {
+    if (!cartItems || !customer || !currency || !exchangeRate) {
       return new NextResponse("Not enough data to checkout", { statusText: "Not enough data to checkout" });
     }
     const shippingOptions = currency === 'USD'
@@ -60,13 +61,17 @@ export async function POST(req: NextRequest) {
               ...(cartItem.color && { color: cartItem.color }),
             },
           },
-          unit_amount: (cartItem.item.price * 100 * exchangeRate).toFixed()|| 1,
+          unit_amount: (cartItem.item.price * 100 * exchangeRate).toFixed() || 1,
         },
         quantity: cartItem.quantity,
       })),
+      metadata: {
+        exchange_rate: exchangeRate.toString(),
+      },
       client_reference_id: customer.clerkId,
       success_url: `${process.env.ECOM_STORE_URL}/payment_success`,
       cancel_url: `${process.env.ECOM_STORE_URL}/cart`,
+
     }, {
       idempotencyKey
     });

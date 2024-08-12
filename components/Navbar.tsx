@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <div className="fixed max-md:w-full md:sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
       <Link href="/">
-        <Image src="/logo.png" alt="logo" width={130} height={100} />
+        <Image src="/logo.png" priority alt="logo" width={130} height={100} />
       </Link>
 
       <div className="flex gap-3 border border-grey-2 px-3 py-1 items-center rounded-lg">

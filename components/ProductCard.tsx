@@ -18,7 +18,7 @@ const ProductCard = ({ product, updateSignedInUser }: ProductCardProps) => {
   const productExpense = (product.expense * exchangeRate).toFixed();
 
   return (
-    <div className={`w-[220px] flex flex-col gap-2 ${isSoldOut ? "opacity-80" : ""}`}>
+    <div className={`w-[220px] flex flex-col gap-2 ${isSoldOut ? "opacity-70" : ""}`}>
       <Link href={`/products/${product._id}`}>
         <div className="relative">
           <Image

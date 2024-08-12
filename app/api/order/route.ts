@@ -9,16 +9,18 @@ export const POST = async (req: NextRequest) => {
     await connectToDB();
     const body = await req.json();
     const {
-      orderData, customerInfo,currency
+      orderData, customerInfo
     } = body;
 
     const {
       shippingAddress,
       products,
       totalAmount,
+      exchangeRate,
       shippingRate,
       customerClerkId,
       customerEmail,
+      currency,
       status,
     } = orderData;
     
@@ -42,12 +44,13 @@ export const POST = async (req: NextRequest) => {
     const newOrder = new Order({
       shippingAddress,
       products,
-      totalAmount,
+      totalAmount:totalAmount/exchangeRate,
       shippingRate,
       customerClerkId,
       customerEmail,
       currency,
       status,
+      exchangeRate
     });
     await newOrder.save();
     // console.log(newOrder);

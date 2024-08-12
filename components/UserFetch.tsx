@@ -7,8 +7,7 @@ const UserFetcher = () => {
 
     const { isSignedIn } = useUser()
     if (!isSignedIn) return;
-    const user = useWhishListUserStore((state) => state.user);
-    const setUser = useWhishListUserStore((state) => state.setUser);
+    const {user,setUser} = useWhishListUserStore();
 
     useEffect(() => {
         const fetchUserData = async () => {

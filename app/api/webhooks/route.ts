@@ -1,4 +1,3 @@
-
 import Order from "@/lib/models/Order";
 import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
@@ -44,11 +43,16 @@ export const POST = async (req: NextRequest) => {
       const orderItems = lineItems!.map((item: any) => {
         return {
           product: item.price.product.metadata.productId,
-          color: item.price.product.metadata.color|| undefined,
+          color: item.price.product.metadata.color || undefined,
           size: item.price.product.metadata.size || undefined,
           quantity: item.quantity,
         }
-      })
+      });
+
+      const exchangeRate = retrieveSession.metadata?.exchange_rate ? parseFloat(retrieveSession.metadata!.exchange_rate) : 1;
+      const totalAmountInUSD = session.amount_total
+        ? (session.amount_total / 100) / exchangeRate
+        : 0;
 
       await connectToDB()
 
@@ -56,10 +60,11 @@ export const POST = async (req: NextRequest) => {
         customerClerkId: customerInfo.clerkId,
         products: orderItems,
         shippingAddress,
-        currency:session?.currency,
-        shippingRate: session?.shipping_cost?.shipping_rate||"none",
-        totalAmount: session.amount_total ? session.amount_total / 100 : 0,
+        currency: session?.currency,
+        shippingRate: (session?.shipping_cost?.amount_total.toString()),
+        totalAmount: totalAmountInUSD,
         status: "Payment-Successfull & Processing",
+        exchangeRate: exchangeRate,
       })
 
       // await reduceStock(orderItems);

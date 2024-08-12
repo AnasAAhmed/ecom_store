@@ -99,24 +99,33 @@ export const useRegion = create<RegionStore>()(
       setCountry: (country) => set({ country }),
 
       setCurrency: async (currency) => {
-        if (currency === 'USD')  set({ exchangeRate: 1 });
-        if (currency === 'PKR')  set({ exchangeRate: 200 });
+        if (currency === 'USD') set({ exchangeRate: 1 });
+        if (currency === 'PKR') set({ exchangeRate: 200 });
         const currentTime = Date.now();
         const threeDays = 3 * 24 * 3600 * 1000; // 3 days in milliseconds
         const shouldFetch =
-          currency !== 'USD' &&  currency !== 'PKR' &&// Only fetch if the currency is not USD
+          currency !== 'USD' && currency !== 'PKR' &&// Only fetch if the currency is not USD
           (currency !== get().currency || !get().lastFetched || currentTime - get().lastFetched! > threeDays);
         if (shouldFetch) {
-          const response = await fetch(
-            `https://api.currencyapi.com/v3/latest?apikey=${process.env.NEXT_PUBLIC_CURRENCY_API}&base_currency=USD&currencies=${currency}`
-          );
-          const data = await response.json();
+          let exchangeRate;
+          try {
+            const response = await fetch(
+              `https://api.currencyapi.com/v3/latest?apikey=${process.env.NEXT_PUBLIC_CURRENCY_API}&base_currency=USD&currencies=${currency}`
+            );
+            const data = await response.json();
+            console.log('currency-api:success');
+            exchangeRate = data.data?.[currency.toUpperCase()]?.value || 1;
+
+          } catch (error) {
+            const typeError = error as Error;
+            console.log('currency-api:Failed:'+typeError.message);
+          }
 
           // Access the correct exchange rate from the response
-          const exchangeRate = data.data?.[currency.toUpperCase()]?.value || 1;
           set({ currency, exchangeRate, lastFetched: currentTime });
         } else {
           set({ currency });
+          console.log('currency-api:set');
         }
       },
 

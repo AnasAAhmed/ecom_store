@@ -24,7 +24,8 @@ const Orders = async () => {
               {/* <p className="text-base-bold">Order ID: {order._id}</p> */}
               <p className="text-base-bold">
                 {/* Total Amount: $ {order.totalAmount} */}
-                Total Amount: {order.currency} {order.totalAmount}
+                {/* Total Amount: {order.currency} {order.totalAmount} */}
+                Total Amount: {order.currency} {(order.totalAmount*order.exchangeRate).toFixed()}
               </p>
               <p className="text-base-bold">
                 Status: {order.status}
@@ -63,8 +64,8 @@ const Orders = async () => {
                         </p>
                         <p className="text-small-medium">
                           Unit price:{" "}
-                          {order.currency} {" "}
-                          {order.currency === 'pkr' ? (orderItem.product.price * 200).toFixed() : orderItem.product.price}
+                          {order.currency+order.exchangeRate} {" "}
+                          {(orderItem.product.price * order.exchangeRate).toFixed() }
                         </p>
                       </div>
                     </>
