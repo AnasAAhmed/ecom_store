@@ -2,17 +2,19 @@
 
 import useCart from "@/lib/hooks/useCart";
 
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton, useUser} from "@clerk/nextjs";
 import { CircleUserRound, Menu, Search, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Modal from "./Modal";
 import Currency from "./Currency";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
   const router = useRouter();
   const { user } = useUser();
   const cart = useCart();
@@ -26,8 +28,25 @@ const Navbar = () => {
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
 
-    if (e.key === "Enter") {
+    if (query) {
+      if (e.key === "Enter") {
+        const page = params.get('page')
+        if (page) { params.delete('page') }
+        router.push(`/search?query=${query}`);
+
+      }
+    } else {
+      router.push(`/search`);
+    }
+
+  };
+  const handleClick = () => {
+    if (query) {
+      const page = params.get('page')
+      if (page) { params.delete('page') }
       router.push(`/search?query=${query}`);
+    } else {
+      router.push(`/search`);
     }
 
   };
@@ -47,8 +66,7 @@ const Navbar = () => {
           onChange={(e) => setQuery(e.target.value)}
         />
         <button
-          disabled={query === ""}
-          onClick={() => router.push(`/search?query=${query}`)}
+          onClick={handleClick}
         >
           <Search className="cursor-pointer h-4 w-4 hover:text-blue-500" />
         </button>
@@ -75,24 +93,20 @@ const Navbar = () => {
         >
           Contact
         </Link>
-        {user &&
-          <>
-            <Link
-              href={user ? "/wishlist" : "/sign-in"}
-              className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
-                }`}
-            >
-              Wishlist
-            </Link>
-            <Link
-              href={user ? "/orders" : "/sign-in"}
-              className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
-                }`}
-            >
-              Orders
-            </Link>
-          </>
-        }
+        <Link
+          href={user ? "/wishlist" : "/sign-in"}
+          className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
+            }`}
+        >
+          Wishlist
+        </Link>
+        <Link
+          href={user ? "/orders" : "/sign-in"}
+          className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
+            }`}
+        >
+          Orders
+        </Link>
       </div>
 
 
@@ -132,7 +146,7 @@ const Navbar = () => {
             >
               Orders
             </Link>
-            \<Link
+            <Link
               href={"/search"}
               className="hover:text-blue-500 outline-none"
               onClick={closeModal}
@@ -162,7 +176,7 @@ const Navbar = () => {
         {user ? (
           <UserButton afterSignOutUrl="/sign-in" />
         ) : (
-          <Link href="/sign-in">
+          <Link href="/sign-in" className="mx-1">
             <CircleUserRound />
           </Link>
         )}

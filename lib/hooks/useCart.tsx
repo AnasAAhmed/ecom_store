@@ -141,7 +141,7 @@ export const useRegion = create<RegionStore>()(
 interface UserState {
   user: {
     clerkId: string;
-    wishlist: string[];
+    wishlist: [string];
     createdAt: string;
     updatedAt: string;
   } | null;

@@ -74,7 +74,7 @@ const Shipping = () => {
                 variantId: item.variantId,
             })),
             totalAmount,
-            shippingRate: `${shippingRate} (${shippingRateNumber})`,
+            shippingRate: `${shippingRate} (${(shippingRateNumber*exchangeRate).toFixed()})`,
             exchangeRate,
             currency: currency || 'usd',
             customerClerkId: user.id,

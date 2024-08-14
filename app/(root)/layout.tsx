@@ -8,6 +8,7 @@ import ToasterProvider from "@/lib/providers/ToasterProvider";
 import Footer from "@/components/Footer";
 import { Suspense } from "react";
 import Loader from "@/components/Loader";
+import UserFetcher from "@/components/UserFetch";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ClerkProvider>
           <ToasterProvider />
+          <UserFetcher />
           <Navbar />
           <Suspense fallback={<Loader/>}>
           {children}

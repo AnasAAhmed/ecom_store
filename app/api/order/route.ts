@@ -2,6 +2,7 @@ import { stockReduce } from "@/lib/actions/actions";
 import Customer from "@/lib/models/Customer";
 import Order from "@/lib/models/Order";
 import { connectToDB } from "@/lib/mongoDB";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest) => {
@@ -23,8 +24,8 @@ export const POST = async (req: NextRequest) => {
       currency,
       status,
     } = orderData;
-    
-    if (!shippingAddress || !products || !customerClerkId || !shippingRate || !status || !totalAmount||!currency) {
+
+    if (!shippingAddress || !products || !customerClerkId || !shippingRate || !status || !totalAmount || !currency) {
       return NextResponse.json({ message: `Please enter All Details` }, { status: 400 });
     }
     if (!customerInfo.clerkId || !customerInfo.email || !customerInfo.name) {
@@ -44,7 +45,7 @@ export const POST = async (req: NextRequest) => {
     const newOrder = new Order({
       shippingAddress,
       products,
-      totalAmount:totalAmount/exchangeRate,
+      totalAmount: totalAmount / exchangeRate,
       shippingRate,
       customerClerkId,
       customerEmail,
@@ -67,7 +68,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     await customer.save();
-
+    revalidatePath('/orders')
     return NextResponse.json({ orderId: newOrder._id }, { status: 200 });
   } catch (error) {
     console.log("NEW_ORDER.Post", error);

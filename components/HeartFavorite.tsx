@@ -1,9 +1,8 @@
-"use client"
+'use client';
 
 import { useWhishListUserStore } from "@/lib/hooks/useCart";
 import { useUser } from "@clerk/nextjs";
 import { Heart, Loader } from "lucide-react";
-import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -15,17 +14,16 @@ interface HeartFavoriteProps {
 
 const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) => {
   const router = useRouter();
-  const { user } = useWhishListUserStore();
+  const { user,resetUser } = useWhishListUserStore();
 
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+
   useEffect(() => {
     if (user) {
-      console.log(user);
-      
       setIsLiked(user.wishlist.includes(productId));
     }
-  }, [user]);
+  }, [user, productId]);
 
   const handleLike = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -34,29 +32,29 @@ const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) =>
         router.push("/sign-in");
         return;
       } else {
-        setLoading(true)
+        setLoading(true);
         const res = await fetch("/api/users/wishlist", {
           method: "POST",
           body: JSON.stringify({ productId }),
         });
         const updatedUser = await res.json();
-        setIsLiked(updatedUser.user.wishlist.includes(productId));
-        toast.success(`${updatedUser.isLiked ? "Removed from" : "Added in"} your wishlists`);
-        updateSignedInUser && updateSignedInUser(updatedUser);
-        // revalidatePath('/wishlist')
+        setIsLiked(updatedUser.isLiked);  // Use the returned isLiked status
+        
+        toast.success(`${updatedUser.isLiked ? "Added to" : "Removed from"} your wishlist`);
+        updateSignedInUser && updateSignedInUser(updatedUser.user);
+        resetUser();
       }
     } catch (err) {
-      toast.error("Error in your wishlists")
+      toast.error("Error updating your wishlist");
       console.log("[wishlist_POST]", err);
     } finally {
       setLoading(false);
-
     }
   };
 
   return (
-    <button onClick={handleLike}>
-      {loading ? <Loader className="animate-spin" /> : <Heart fill={`${isLiked ? "red" : "white"}`} />}
+    <button onClick={handleLike} disabled={loading}>
+      {loading ? <Loader className="animate-spin" /> : <Heart fill={isLiked ? "red" : "white"} />}
     </button>
   );
 };

@@ -73,7 +73,14 @@ type UserType = {
 };
 
 type OrderType = {
-  shippingAddress: Object;
+  shippingAddress: {
+    street:string;
+    postalCode:string;
+    state:string;
+    city:string;
+    phone: string,
+    country: string
+  };
   _id: string;
   customerClerkId: string;
   products: [OrderItemType]

@@ -61,7 +61,7 @@ export const POST = async (req: NextRequest) => {
         products: orderItems,
         shippingAddress,
         currency: session?.currency,
-        shippingRate: (session?.shipping_cost?.amount_total.toString()),
+        shippingRate: (session?.shipping_cost?.amount_total!/100).toString(),
         totalAmount: totalAmountInUSD,
         status: "Payment-Successfull & Processing",
         exchangeRate: exchangeRate,

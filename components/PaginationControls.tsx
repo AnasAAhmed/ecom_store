@@ -13,7 +13,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, to
   const handlePageChange = (newPage: number) => {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set('page', newPage.toString());
-    router.push(`/search?${searchParams.toString()}`);
+    const newUrl = `?${searchParams.toString()}`;
+    router.push(newUrl, { scroll: true });
   };
 
   return (
@@ -22,7 +23,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, to
         <button
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
-          className={`px-4 py-2 text-white rounded mr-2 disabled:bg-gray-400 disabled:cursor-not-allowed`}
+          className={`px-4 py-2 text-white rounded mr-2 bg-indigo-400 disabled:bg-gray-400 disabled:cursor-not-allowed`}
         >
           Prev
         </button>
@@ -32,7 +33,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, to
         <button
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
-          className={`px-4 py-2 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded ml-2`}
+          className={`px-4 py-2 bg-indigo-400 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded ml-2`}
         >
           Next
         </button>

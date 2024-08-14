@@ -3,6 +3,7 @@ import Collection from "../models/Collection"
 import Order from "../models/Order"
 import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
+import User from "../models/User"
 
 
 
@@ -39,6 +40,49 @@ export async function getCollectionDetails(collectionId: string) {
   }
 }
 
+export async function getSearchProducts(query: string, page: number) {
+  const limit = 6;
+
+  try {
+    await connectToDB();
+
+    const skip = (page - 1) * limit;
+
+    const totalProducts = await Product.countDocuments({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { category: { $regex: query, $options: 'i' } },
+        { tags: { $in: [new RegExp(query, 'i')] } },
+      ],
+    });
+    if (!totalProducts) {
+      return JSON.parse(JSON.stringify({
+        totalProducts
+      }))
+    }
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const searchedProducts = await Product.find({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { category: { $regex: query, $options: 'i' } },
+        { tags: { $in: [new RegExp(query, 'i')] } },
+      ],
+    })
+      .select('-reviews -description -variants')
+      .skip(skip)
+      .limit(limit);
+
+    return JSON.parse(JSON.stringify({
+      products: searchedProducts,
+      totalPages,
+      totalProducts,
+    }));
+  } catch (err) {
+    console.error('[search_GET]', err);
+    throw new Error('Internal Server Error 500');
+  }
+}
 
 export async function getProducts() {
   try {
@@ -93,15 +137,46 @@ export async function getProductDetails(productId: string) {
   }
 }
 
-export async function getOrders(customerId: string) {
+export async function getWishList(userId: string) {
   try {
     await connectToDB();
 
+    // Fetch the user with populated wishlist
+    const wishlist = await User.findOne({ clerkId: userId }) // Replace with the actual user ID or handle authentication
+      .populate({
+        path: "wishlist",
+        model: Product,
+      })
+      .select("wishlist");
+    return JSON.parse(JSON.stringify(wishlist));
+  } catch (error) {
+    const typeError = error as Error;
+    console.log('somathing wrong' + typeError.message);
+    throw new Error('somathing wrong' + typeError.message);
+  }
+}
+
+export async function getOrders(customerId: string, page: number) {
+  try {
+    await connectToDB();
+    const limit = 6
+    const skip = (page - 1) * limit;
+    const totalOrders = await Order.countDocuments({ customerClerkId: customerId });
+    if (!totalOrders) {
+      return JSON.parse(JSON.stringify({
+        totalOrders
+      }))
+    }
+    const totalPages = Math.ceil(totalOrders / limit);
     const orders = await Order.find({
       customerClerkId: customerId,
-    }).populate({ path: "products.product", model: Product }).sort({ createdAt: 'desc' });
+    }).populate({ path: "products.product", model: Product }).sort({ createdAt: 'desc' }).limit(limit).skip(skip);
 
-    return JSON.parse(JSON.stringify(orders))
+    return JSON.parse(JSON.stringify({
+      orders,
+      totalPages,
+      totalOrders
+    }))
 
   } catch (err) {
     console.log("[customerId_GET", err);

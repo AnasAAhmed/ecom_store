@@ -109,17 +109,17 @@ const Currency = ({ isHome = true }: { isHome?: boolean }) => {
             <option value="AUD">AUD</option>
           </select>
           <div className="flex justify-between gap-4 items-center">
-            <button className="p-2 border border-gray-300 rounded text-2xl" onClick={onClose}>
-              Confirm
-            </button>
             <button
               className="p-2 border border-gray-300 rounded text-2xl"
               onClick={() => {
-                clearcor();
+                onClose();
                 clearcur();
               }}
             >
               Reset
+            </button>
+            <button className="p-2 border border-gray-300 rounded text-2xl" onClick={onClose}>
+              Close
             </button>
           </div>
         </div>
