@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import useCart, { useRegion } from "@/lib/hooks/useCart";
 import { useUser } from "@clerk/nextjs";
 import { LoaderIcon, MinusCircle, PlusCircle, Trash, XCircleIcon } from "lucide-react";
@@ -31,7 +31,6 @@ const Cart = () => {
     name: user?.fullName,
   };
   const handleCheckout = async () => {
-    if (currency !== "PKR" && currency !== "USD") return toast.error(" Only USD or PKR are allowed for payment for now becasue this site is Demo.");
     if (isCOD === "NULL") return (setMessage(true), setTimeout(() => { setMessage(false) }, 2000));
     if (isCOD === "COD") {
       if (!user) {
@@ -67,6 +66,7 @@ const Cart = () => {
           ));
         }
         else {
+          if (currency !== "PKR" && currency !== "USD") return toast.error(" Only USD or PKR are allowed for Online payment for now becasue this site is Demo.");
           setLoading(true)
           const res = await fetch(`/api/checkout`, {
             method: "POST",

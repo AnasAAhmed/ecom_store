@@ -13,23 +13,11 @@ export async function OPTIONS(data: any,) {
   return NextResponse.json(data, { headers: corsHeaders });
 }
 
-interface JsonBody {
-  cartItems: [];
-  customer: {
-    clerkId: string,
-    email: string,
-    name: string,
-  };
-  currency: string;
-  exchangeRate: number
-}
 
 export async function POST(req: NextRequest) {
   const idempotencyKey = uuidv4();
   try {
     const { cartItems, customer, currency, exchangeRate } = await req.json();
-    console.log(exchangeRate);
-
     if (!cartItems || !customer || !currency || !exchangeRate) {
       return new NextResponse("Not enough data to checkout", { statusText: "Not enough data to checkout" });
     }
@@ -59,6 +47,7 @@ export async function POST(req: NextRequest) {
               productId: cartItem.item._id,
               ...(cartItem.size && { size: cartItem.size }),
               ...(cartItem.color && { color: cartItem.color }),
+              variantId: cartItem.variantId
             },
           },
           unit_amount: (cartItem.item.price * 100 * exchangeRate).toFixed() || 1,
@@ -75,12 +64,12 @@ export async function POST(req: NextRequest) {
     }, {
       idempotencyKey
     });
-    try {
-      await reduceStock(cartItems);
-    } catch (reduceStockError) {
-      console.error("Error during stock reduction:", reduceStockError);
-      return new NextResponse("Failed to reduce stock", { status: 500 });
-    }
+    // try {
+    //   await reduceStock(cartItems);
+    // } catch (reduceStockError) {
+    //   console.error("Error during stock reduction:", reduceStockError);
+    //   return new NextResponse("Failed to reduce stock", { status: 500 });
+    // }
     return OPTIONS(session);
   } catch (err) {
     console.log("[checkout_POST]", err);

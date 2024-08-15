@@ -3,6 +3,7 @@ import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import Customer from "@/lib/models/Customer";
+import { reduceStock } from "@/lib/actions/actions";
 // import { reduceStock } from "@/lib/actions/actions";
 
 export const POST = async (req: NextRequest) => {
@@ -46,6 +47,7 @@ export const POST = async (req: NextRequest) => {
           color: item.price.product.metadata.color || undefined,
           size: item.price.product.metadata.size || undefined,
           quantity: item.quantity,
+          variantId: item.variantId,
         }
       });
 
@@ -53,7 +55,7 @@ export const POST = async (req: NextRequest) => {
       const totalAmountInUSD = session.amount_total
         ? (session.amount_total / 100) / exchangeRate
         : 0;
-
+      
       await connectToDB()
 
       const newOrder = new Order({
@@ -61,15 +63,19 @@ export const POST = async (req: NextRequest) => {
         products: orderItems,
         shippingAddress,
         currency: session?.currency,
-        shippingRate: (session?.shipping_cost?.amount_total!/100).toString(),
+        shippingRate: (session?.shipping_cost?.amount_total! / 100).toString(),
         totalAmount: totalAmountInUSD,
         status: "Payment-Successfull & Processing",
         exchangeRate: exchangeRate,
       })
 
-      // await reduceStock(orderItems);
       await newOrder.save();
-
+      try {
+        await reduceStock(orderItems);
+      } catch (reduceStockError) {
+        console.error("Error during stock reduction:", reduceStockError);
+        return new NextResponse("Failed to reduce stock", { status: 500 });
+      }
       let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
 
       if (customer) {

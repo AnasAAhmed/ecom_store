@@ -40,8 +40,8 @@ type OrderProductCOD = {
 }
 
 type OrderProducts = {
-  // product: string,//it is productId
-  item: { _id: string; },//it is productId
+  product: string,//it is productId
+  // item: { _id: string; },//it is productId
   color: string,
   size: string,
   variantId?: string,
