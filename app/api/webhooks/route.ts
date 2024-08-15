@@ -3,8 +3,6 @@ import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import Customer from "@/lib/models/Customer";
-import { reduceStock } from "@/lib/actions/actions";
-// import { reduceStock } from "@/lib/actions/actions";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -70,12 +68,8 @@ export const POST = async (req: NextRequest) => {
       })
 
       await newOrder.save();
-      try {
-        await reduceStock(orderItems);
-      } catch (reduceStockError) {
-        console.error("Error during stock reduction:", reduceStockError);
-        return new NextResponse("Failed to reduce stock", { status: 500 });
-      }
+      
+  
       let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
 
       if (customer) {

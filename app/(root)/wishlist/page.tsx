@@ -104,8 +104,13 @@ import ProductCard from "@/components/ProductCard";
 import { FC } from "react";
 import { auth } from "@clerk/nextjs";
 import { getWishList } from "@/lib/actions/actions";
+import type { Metadata } from 'next';
 
-// Since this is a Server Component, we can directly fetch data here
+export const metadata: Metadata= {
+  title: "Borcelle | Wishlist",
+  description: "This is wishlist products",
+};
+
 const WishlistPage: FC = async () => {
   const { userId } = auth()
   if (!userId) return;

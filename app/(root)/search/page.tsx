@@ -1,8 +1,12 @@
 import ProductCard from '@/components/ProductCard';
 import PaginationControls from '@/components/PaginationControls';
 import { getSearchProducts } from '@/lib/actions/actions';
+import type { Metadata } from 'next';
 
-
+export const metadata: Metadata= {
+  title: "Borcelle | Shop",
+  description: "Borcelle Shop where you can search all products",
+};
 
 const SearchPage = async ({ searchParams }: { searchParams: any }) => {
   const query = (searchParams?.query as string) || '';

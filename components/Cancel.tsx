@@ -88,7 +88,7 @@ const CancelOrder = ({ order }: OrderManageProps) => {
                 Total Paid: <span className="text-base-medium">${order.totalAmount}</span>
               </p>
               <p className="text-base-bold">
-                Shipping rate ID: <span className="text-base-medium">{order.shippingRate}</span>
+                Shipping rate ID: <span className="text-base-medium">({order.currency}) {order.shippingRate}</span>
               </p>
               <p className="text-base-bold">
                 Status: <span className="text-base-medium ">{order.status}</span>

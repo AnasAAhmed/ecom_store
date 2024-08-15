@@ -64,12 +64,12 @@ export async function POST(req: NextRequest) {
     }, {
       idempotencyKey
     });
-    // try {
-    //   await reduceStock(cartItems);
-    // } catch (reduceStockError) {
-    //   console.error("Error during stock reduction:", reduceStockError);
-    //   return new NextResponse("Failed to reduce stock", { status: 500 });
-    // }
+    try {
+      await reduceStock(cartItems);
+    } catch (reduceStockError) {
+      console.error("Error during stock reduction:", reduceStockError);
+      return new NextResponse("Failed to reduce stock", { status: 500 });
+    }
     return OPTIONS(session);
   } catch (err) {
     console.log("[checkout_POST]", err);

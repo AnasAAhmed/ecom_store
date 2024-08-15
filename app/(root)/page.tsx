@@ -5,6 +5,7 @@ import ProductList from "@/components/ProductList";
 import GroupComponent7 from "@/components/Services";
 import Banner from "@/components/Banner";
 import Social from "@/components/Social";
+import UserFetcher from "@/components/UserFetch";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
         link="/search"
         buttonText="Shop"
       />
+      <UserFetcher />
       <Collections />
       <ProductList />
       <Banner

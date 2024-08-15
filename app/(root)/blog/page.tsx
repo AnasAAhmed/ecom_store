@@ -2,7 +2,12 @@ import type { NextPage } from "next";
 import BlogPostList from "@/components/BlogPostList";
 import GroupComponent7 from "@/components/Services";
 import Banner from "@/components/Banner";
+import type { Metadata } from 'next';
 
+export const metadata: Metadata= {
+  title: "Borcelle | Blog",
+  description: "Explore our BLog",
+};
 const Blog: NextPage = () => {
     return (
         <div>

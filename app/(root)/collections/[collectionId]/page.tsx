@@ -2,7 +2,12 @@ import ProductCard from "@/components/ProductCard";
 import { getCollectionDetails } from "@/lib/actions/actions";
 import Image from "next/image";
 import React from "react";
+import type { Metadata } from 'next';
 
+export const metadata: Metadata= {
+  title: "Borcelle | Collection",
+  description: "This is product collection",
+};
 const CollectionDetails = async ({
   params,
 }: {

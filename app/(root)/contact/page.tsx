@@ -1,8 +1,12 @@
-'use client'
 import Banner from "@/components/Banner";
 import GroupComponent7 from "@/components/Services";
 import { MdEmail } from "react-icons/md";
+import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+    title: "Borcelle | Contact",
+    description: "Contact Us 24/7",
+};
 const Contact = () => {
     return (
         <>
@@ -31,6 +35,7 @@ const Contact = () => {
                                 <label className="block text-lg font-medium">Your name</label>
                                 <input
                                     type="text"
+                                    required
                                     className="w-full mt-2 p-3 border border-gray-300 rounded"
                                     placeholder="Enter your name"
                                 />
@@ -39,6 +44,7 @@ const Contact = () => {
                                 <label className="block text-lg font-medium">Email address</label>
                                 <input
                                     type="email"
+                                    required
                                     className="w-full mt-2 p-3 border border-gray-300 rounded"
                                     placeholder="Abc@def.com"
                                 />
@@ -47,6 +53,7 @@ const Contact = () => {
                                 <label className="block text-lg font-medium">Subject</label>
                                 <input
                                     type="text"
+                                    required
                                     className="w-full mt-2 p-3 border border-gray-300 rounded"
                                     placeholder="This is optional"
                                 />
@@ -54,6 +61,7 @@ const Contact = () => {
                             <div>
                                 <label className="block text-lg font-medium">Message</label>
                                 <textarea
+                                    required
                                     className="w-full mt-2 p-3 border border-gray-300 rounded h-32"
                                     placeholder="Hi! I’d like to ask about..."
                                 ></textarea>

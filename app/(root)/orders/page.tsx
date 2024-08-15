@@ -2,8 +2,14 @@ import CancelOrder from "@/components/Cancel";
 import PaginationControls from "@/components/PaginationControls";
 import { getOrders } from "@/lib/actions/actions";
 import { auth } from "@clerk/nextjs";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Borcelle | Orders",
+  description: "Track your orders here",
+};
 
 const Orders = async ({ searchParams }: { searchParams: any }) => {
   const { userId } = auth();
