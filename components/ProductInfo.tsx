@@ -79,6 +79,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
         <div className="max-w-[400px] sm:w-[500px] flex flex-col gap-4">
             <div className="flex justify-between items-center">
                 <p className="text-heading3-bold">{productInfo.title}</p>
+
                 <HeartFavorite productId={productInfo._id} />
             </div>
 
@@ -87,8 +88,16 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                 <p className="text-base-bold">{productInfo.category}</p>
             </div>
 
-            <p className="text-heading3-bold"><span className="text-small-medium">{currency}</span> {price.toFixed()}</p>
-            {productInfo.expense && <p className="text-small-medium line-through text-red-1">{expense.toFixed()}</p>
+            <p className="text-heading4-bold">
+                <span className="text-small-medium mr-1">
+                    {currency}
+                </span> 
+                {price.toFixed()}
+                <span className="bg-red-600 ml-3 text-white text-[17px] px-2 py-1 rounded-md">
+                    {((productInfo.expense - productInfo.price) / productInfo.expense * 100).toFixed(0)}% Off
+                </span>
+            </p>
+            {productInfo.expense && <p className="text-small-medium line-through text-red-1">{currency} {expense.toFixed()}</p>
             } <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                     <StarRatings rating={productInfo.ratings} />

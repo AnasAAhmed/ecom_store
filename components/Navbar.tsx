@@ -2,7 +2,7 @@
 
 import useCart from "@/lib/hooks/useCart";
 
-import { UserButton, useUser} from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { CircleUserRound, Menu, Search, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,136 +52,187 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed max-md:w-full md:sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
-      <Link href="/">
-        <Image src="/logo.png" priority alt="logo" width={130} height={100} />
-      </Link>
+    <>
+      <div className=" sm:flex hidden justify-between items-center w-full bg-black h-10 py-2 px-4 text-white ">
+        <h1 className="max-md:text-heading2-bold text-heading2-bold font-serif">50% Off</h1>
+        <div className="flex justify-between gap-4">
+          <div className="flex gap-2 sm:gap-4 items-center text-base-bold max-sm:hidden">
+            <Link
+              href="/search?query=watch"
+              className={`hover:border-white  border-black border-b-2 `}
 
-      <div className="flex gap-3 border border-grey-2 px-3 py-1 items-center rounded-lg">
-        <input
-          className="outline-none max-sm:max-w-[120px]"
-          placeholder="Search..."
-          value={query}
-          onKeyDown={onKeyDown}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button
-          onClick={handleClick}
-        >
-          <Search className="cursor-pointer h-4 w-4 hover:text-blue-500" />
-        </button>
-      </div>
-      <div className="flex gap-4 text-base-bold max-lg:hidden">
-        <Link
-          href="/"
-          className={`hover:text-blue-500 ${pathname === "/" && "text-blue-500"
-            }`}
-        >
-          Home
-        </Link>
-        <Link
-          href={"/search"}
-          className={`hover:text-blue-500 ${pathname === "/search" && "text-blue-500"
-            }`}
-        >
-          Shop
-        </Link>
-        <Link
-          href={"/contact"}
-          className={`hover:text-blue-500 ${pathname === "/contact" && "text-blue-500"
-            }`}
-        >
-          Contact
-        </Link>
-        <Link
-          href={user ? "/wishlist" : "/sign-in"}
-          className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
-            }`}
-        >
-          Wishlist
-        </Link>
-        <Link
-          href={user ? "/orders" : "/sign-in"}
-          className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
-            }`}
-        >
-          Orders
-        </Link>
-      </div>
-
-
-      <div className="relative flex gap-3 items-center">
-        <Currency isHome={false} />
-        <Link
-          href="/cart"
-          className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white max-md:hidden"
-        >
-          <ShoppingCart />
-          <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
-        </Link>
-        <div onClick={openModal} className="mr-2 lg:hidden hover:text-gray-800 text-gray-800 relative">
-          <Menu
-            className="cursor-pointer "
-          />
-          <span className="absolute -top-1 -right-2 bg-black text-center text-gray-100 rounded-full px-[6px] text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
-        </div>
-
-        <Modal isOpen={isOpen} onClose={closeModal}>
-
-          <div className="absolute top-12 animate-modal right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden ">
-            <Link href="/" className="hover:text-blue-500 outline-none" onClick={closeModal}>
-              Home
+            >
+              Watch
             </Link>
             <Link
-              href={user ? "/wishlist" : "/sign-in"}
-              className="hover:text-blue-500 outline-none"
-              onClick={closeModal}
+              href={"/search?query=hat"}
+              className={`hover:border-white  border-black border-b-2 `}
             >
-              Wishlist
+              Hat
             </Link>
             <Link
-              href={user ? "/orders" : "/sign-in"}
-              className="hover:text-blue-500 outline-none"
-              onClick={closeModal}
+              href={"/search?query=shoes"}
+              className={`hover:border-white border-black border-b-2 `}
+
             >
-              Orders
+              Shoes
             </Link>
             <Link
-              href={"/search"}
-              className="hover:text-blue-500 outline-none"
-              onClick={closeModal}
+              href={"/search?query=kids"}
+              className={`hover:border-white  border-black border-b-2 `}
+
             >
-              Shop
+              Kids
             </Link>
             <Link
-              href={"/contact"}
-              className="hover:text-blue-500 outline-none"
-              onClick={closeModal}
+              href={'/search?query=women'}
+              className={`hover:border-white  border-black border-b-2 `}
+
             >
-              Contact
+              Women
             </Link>
-            {/* <Region isHome={false} /> */}
             <Link
-              href="/cart"
-              className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white"
-              onClick={closeModal}
+              href={'/search?query=men'}
+              className={`hover:border-white  border-black border-b-2 `}
+
             >
-              <ShoppingCart />
-              <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
+              Men
             </Link>
           </div>
-        </Modal>
+        </div>
+        <h1>Help: (555) 555-1234</h1>
+      </div >
+      <div className="fixed max-md:w-full sm:sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
+        <Link href="/">
+          <Image src="/logo.png" priority alt="logo" width={130} height={100} />
+        </Link>
 
-
-        {user ? (
-          <UserButton afterSignOutUrl="/sign-in" />
-        ) : (
-          <Link href="/sign-in" className="mx-1">
-            <CircleUserRound />
+        <div className="flex gap-3 border border-grey-2 px-3 py-1 items-center rounded-lg">
+          <input
+            className="outline-none max-sm:max-w-[120px]"
+            placeholder="Search..."
+            value={query}
+            onKeyDown={onKeyDown}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button
+            onClick={handleClick}
+          >
+            <Search className="cursor-pointer h-4 w-4 hover:text-blue-500" />
+          </button>
+        </div>
+        <div className="flex gap-4 text-base-bold max-lg:hidden">
+          <Link
+            href="/"
+            className={`hover:text-blue-500 ${pathname === "/" && "text-blue-500"
+              }`}
+          >
+            Home
           </Link>
-        )}
+          <Link
+            href={"/search"}
+            className={`hover:text-blue-500 ${pathname === "/search" && "text-blue-500"
+              }`}
+          >
+            Shop
+          </Link>
+          <Link
+            href={"/contact"}
+            className={`hover:text-blue-500 ${pathname === "/contact" && "text-blue-500"
+              }`}
+          >
+            Contact
+          </Link>
+          <Link
+            href={user ? "/wishlist" : "/sign-in"}
+            className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
+              }`}
+          >
+            Wishlist
+          </Link>
+          <Link
+            href={user ? "/orders" : "/sign-in"}
+            className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
+              }`}
+          >
+            Orders
+          </Link>
+        </div>
+
+
+        <div className="relative flex gap-3 items-center">
+          <Currency isHome={false} />
+          <Link
+            href="/cart"
+            className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white max-md:hidden"
+          >
+            <ShoppingCart />
+            <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
+          </Link>
+          <div onClick={openModal} className="mr-2 lg:hidden hover:text-gray-800 text-gray-800 relative">
+            <Menu
+              className="cursor-pointer "
+            />
+            <span className="absolute -top-1 -right-2 bg-black text-center text-gray-100 rounded-full px-[6px] text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
+          </div>
+
+          <Modal isOpen={isOpen} onClose={closeModal}>
+
+            <div className="absolute top-12 animate-modal right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden ">
+              <Link href="/" className="hover:text-blue-500 outline-none" onClick={closeModal}>
+                Home
+              </Link>
+              <Link
+                href={user ? "/wishlist" : "/sign-in"}
+                className="hover:text-blue-500 outline-none"
+                onClick={closeModal}
+              >
+                Wishlist
+              </Link>
+              <Link
+                href={user ? "/orders" : "/sign-in"}
+                className="hover:text-blue-500 outline-none"
+                onClick={closeModal}
+              >
+                Orders
+              </Link>
+              <Link
+                href={"/search"}
+                className="hover:text-blue-500 outline-none"
+                onClick={closeModal}
+              >
+                Shop
+              </Link>
+              <Link
+                href={"/contact"}
+                className="hover:text-blue-500 outline-none"
+                onClick={closeModal}
+              >
+                Contact
+              </Link>
+              {/* <Region isHome={false} /> */}
+              <Link
+                href="/cart"
+                className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white"
+                onClick={closeModal}
+              >
+                <ShoppingCart />
+                <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
+              </Link>
+            </div>
+          </Modal>
+
+
+          {user ? (
+            <UserButton afterSignOutUrl="/sign-in" />
+          ) : (
+            <Link href="/sign-in" className="mx-1">
+              <CircleUserRound />
+            </Link>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

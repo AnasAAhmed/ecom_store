@@ -33,9 +33,15 @@ const ProductCard = ({ product, updateSignedInUser }: ProductCardProps) => {
               Sold Out
             </span>
           )}
+           {product.expense &&!isSoldOut && (
+            <span className="absolute top-2 right-2 bg-red-600 text-white text-small-medium px-2 py-1 rounded-md">
+              {((product.expense - product.price) / product.expense * 100).toFixed(0)}% Off
+            </span>
+          )}
         </div>
         <div className="mt-3">
-          <p className="text-base-bold">{product.title}</p>
+          <p className="text-base-bold">{product.title} </p>
+        
         </div>
         <div className="flex flex-row justify-between items-center mt-2">
           <div className="flex items-center gap-1">

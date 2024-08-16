@@ -14,7 +14,7 @@ interface HeartFavoriteProps {
 
 const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) => {
   const router = useRouter();
-  const { user,resetUser } = useWhishListUserStore();
+  const { user, resetUser } = useWhishListUserStore();
 
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -29,8 +29,7 @@ const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) =>
     e.preventDefault();
     try {
       if (!user) {
-        router.push("/sign-in");
-        return;
+        return router.push("/sign-in");
       } else {
         setLoading(true);
         const res = await fetch("/api/users/wishlist", {
@@ -39,7 +38,7 @@ const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) =>
         });
         const updatedUser = await res.json();
         setIsLiked(updatedUser.isLiked);  // Use the returned isLiked status
-        
+
         toast.success(`${updatedUser.isLiked ? "Added to" : "Removed from"} your wishlist`);
         updateSignedInUser && updateSignedInUser(updatedUser.user);
         resetUser();

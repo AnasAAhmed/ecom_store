@@ -9,7 +9,6 @@ import User from "../models/User"
 
 export async function getCollections() {
   try {
-    await connectToDB()
 
     const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title")
 
