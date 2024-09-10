@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { slugify } from '@/lib/utils/features';
 
 const Cart = () => {
   const router = useRouter();
@@ -114,7 +115,7 @@ const Cart = () => {
                     alt="product"
                   />
                   <div className="flex flex-col gap-3 ml-4">
-                    <Link href={`products/${cartItem.item._id}`} className="text-body-bold">{cartItem.item.title}</Link>
+                    <Link href={`products/${slugify(cartItem.item.title)}?id=${cartItem.item._id}`} className="text-body-bold">{cartItem.item.title}</Link>
                     {cartItem.color && (
                       <p className="text-small-medium">{cartItem.color}</p>
                     )}

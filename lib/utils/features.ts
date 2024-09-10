@@ -12,6 +12,20 @@ export const responseToast = (res: any, router: NextRouter, path: string) => {
   }
 };
 
+export const slugify = (title: string) => {
+  return title
+    .toLowerCase() // Convert to lowercase
+    .replace(/ /g, "-") // Replace spaces with hyphens
+    .replace(/[^\w-]+/g, ""); // Remove any non-alphanumeric characters except hyphens
+};
+
+export const unSlugify = (slug: string) => {
+  return slug
+  .replace(/-/g, " ")    // Replace hyphens with spaces
+    .replace(/\b\w/g, (char) => char); // Capitalize the first letter of each word
+};
+
+
 export type UrlQueryParams = {
   params: string;
   key: string;

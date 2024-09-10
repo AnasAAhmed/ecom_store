@@ -1,4 +1,5 @@
 import { getCollections } from "@/lib/actions/actions";
+import { slugify } from "@/lib/utils/features";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,7 +14,7 @@ const Collections = async () => {
       ) : (
         <div className="flex flex-wrap items-center justify-center gap-8">
           {collections.map((collection: CollectionType) => (
-            <Link href={`/collections/${collection._id}`} key={collection._id} className="group">
+            <Link href={`/collections/${slugify(collection.title)}?id=${collection._id}`} key={collection._id} className="group">
               <Image
                 key={collection._id}
                 src={collection.image}

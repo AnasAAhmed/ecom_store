@@ -91,14 +91,15 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             <p className="text-heading4-bold">
                 <span className="text-small-medium mr-1">
                     {currency}
-                </span> 
+                </span>
                 {price.toFixed()}
-                <span className="bg-red-600 ml-3 text-white text-[17px] px-2 py-1 rounded-md">
+                {productInfo.expense > 0 && <><span className="bg-red-600 ml-3 text-white text-[17px] px-2 py-1 rounded-md">
                     {((productInfo.expense - productInfo.price) / productInfo.expense * 100).toFixed(0)}% Off
                 </span>
+                    <p className="text-small-medium line-through mt-3 text-red-1">{currency} {expense.toFixed()}</p>
+                </>}
             </p>
-            {productInfo.expense && <p className="text-small-medium line-through text-red-1">{currency} {expense.toFixed()}</p>
-            } <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                     <StarRatings rating={productInfo.ratings} />
                     <span className="text-blue-500"> ({productInfo.ratings}/5)</span>

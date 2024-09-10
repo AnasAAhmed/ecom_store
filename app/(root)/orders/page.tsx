@@ -1,6 +1,7 @@
 import CancelOrder from "@/components/Cancel";
 import PaginationControls from "@/components/PaginationControls";
 import { getOrders } from "@/lib/actions/actions";
+import { slugify } from "@/lib/utils/features";
 import { auth } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -55,7 +56,7 @@ const Orders = async ({ searchParams }: { searchParams: any }) => {
                           <p className="text-small-medium">
                             Title:{" "}
                             <span className="text-small-bold">
-                              <Link href={`/products/${orderItem.product._id}`}>
+                              <Link href={`/products/${slugify(orderItem.product.title)}?id=${orderItem.product._id}`}>
                                 {orderItem.product.title}
                               </Link>
                             </span>
