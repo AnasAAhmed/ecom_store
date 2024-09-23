@@ -1,7 +1,6 @@
 "use client";
 
 import useCart from "@/lib/hooks/useCart";
-
 import { UserButton, useUser } from "@clerk/nextjs";
 import { CircleUserRound, Menu, Search, ShoppingCart } from "lucide-react";
 import Image from "next/image";
@@ -20,217 +19,107 @@ const Navbar = () => {
   const cart = useCart();
 
   const [query, setQuery] = useState("");
-
   const [isOpen, setIsOpen] = useState(false);
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-
-    if (query) {
-      if (e.key === "Enter") {
-        const page = params.get('page')
-        if (page) { params.delete('page') }
-        router.push(`/search?query=${query}`);
-
-      }
-    } else {
-      router.push(`/search`);
-    }
-
+  const handleSearch = () => {
+    const page = params.get("page");
+    if (page) params.delete("page");
+    router.push(`/search?query=${query}`);
   };
-  const handleClick = () => {
-    if (query) {
-      const page = params.get('page')
-      if (page) { params.delete('page') }
-      router.push(`/search?query=${query}`);
-    } else {
-      router.push(`/search`);
-    }
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && query) handleSearch();
   };
+
+  const toggleModal = () => setIsOpen(!isOpen);
 
   return (
     <>
-      <div className=" sm:flex hidden justify-between items-center w-full bg-black h-10 py-2 px-4 text-white ">
-        <h1 className="max-md:text-heading2-bold text-heading2-bold font-serif">50% Off</h1>
-        <div className="flex justify-between gap-4">
-          <div className="flex gap-2 sm:gap-4 items-center text-base-bold max-sm:hidden">
+      <div className="hidden sm:flex justify-between items-center w-full bg-black text-white h-10 py-2 px-4">
+        <h1 className="font-mono text-heading2-bold">50% Off</h1>
+        <div className="flex gap-4 text-base-bold">
+          {["watch", "hat", "shoes", "kids", "women", "men"].map((item) => (
             <Link
-              href="/search?query=watch"
-              className={`hover:border-white  border-black border-b-2 `}
-
+              key={item}
+              href={`/collections/${item}`}
+              className="hover:border-white border-b-2 border-black"
             >
-              Watch
+              {item.charAt(0).toUpperCase() + item.slice(1)}
             </Link>
-            <Link
-              href={"/search?query=hat"}
-              className={`hover:border-white  border-black border-b-2 `}
-            >
-              Hat
-            </Link>
-            <Link
-              href={"/search?query=shoes"}
-              className={`hover:border-white border-black border-b-2 `}
-
-            >
-              Shoes
-            </Link>
-            <Link
-              href={"/search?query=kids"}
-              className={`hover:border-white  border-black border-b-2 `}
-
-            >
-              Kids
-            </Link>
-            <Link
-              href={'/search?query=women'}
-              className={`hover:border-white  border-black border-b-2 `}
-
-            >
-              Women
-            </Link>
-            <Link
-              href={'/search?query=men'}
-              className={`hover:border-white  border-black border-b-2 `}
-
-            >
-              Men
-            </Link>
-          </div>
+          ))}
         </div>
-        <h1>Help: (555) 555-1234</h1>
-      </div >
-      <div className="fixed max-md:w-full sm:sticky top-0 z-10 py-2 px-10 flex gap-2 justify-between items-center bg-white max-sm:px-2">
-        <Link href="/">
-          <Image src="/logo.png" priority alt="logo" width={130} height={100} />
-        </Link>
+        <h1>Help: +(84) 546-6789</h1>
+      </div>
 
-        <div className="flex gap-3 border border-grey-2 px-3 py-1 items-center rounded-lg">
+      <div className="sticky max-sm:fixed top-0 z-10 w-full bg-white shadow-md">
+        <div className="flex justify-between items-center p-2">
+          <Link href="/">
+            <Image src="/logo.png" priority alt="logo" width={130} height={100} />
+          </Link>
+
+          {/* Desktop search bar */}
+          <div className="hidden sm:flex items-center gap-3 border rounded-lg px-3 py-1">
+            <input
+              className="outline-none w-full"
+              placeholder="Search..."
+              value={query}
+              onKeyDown={onKeyDown}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Search onClick={handleSearch} className="cursor-pointer h-4 w-4 hover:text-blue-500" />
+          </div>
+
+          <div className="hidden lg:flex gap-4">
+            {["/", "/search", "/contact", user ? "/wishlist" : "/sign-in", user ? "/orders" : "/sign-in"].map(
+              (path, idx) => (
+                <Link
+                  key={idx}
+                  href={path}
+                  className={`hover:text-blue-500 ${pathname === path && "text-blue-500"}`}
+                >
+                  {["Home", "Shop", "Contact", "Wishlist", "Orders"][idx]}
+                </Link>
+              )
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Currency className="hidden sm:inline" />
+            <Link href="/cart" className="hidden md:flex items-center gap-2 border px-2 py-1 rounded-lg hover:bg-black hover:text-white">
+              <ShoppingCart />
+              <span>Cart ({cart.cartItems.length})</span>
+            </Link>
+            <Menu onClick={toggleModal} className="lg:hidden cursor-pointer" />
+            {user ? <UserButton afterSignOutUrl="/sign-in" /> : <Link href="/sign-in"><CircleUserRound /></Link>}
+          </div>
+
+          {/* Mobile search bar */}
+        </div>
+        <div className="flex sm:hidden w-[80%] mt-2 items-center border rounded-lg px-4 py-1">
           <input
-            className="outline-none max-sm:max-w-[120px]"
+            className="outline-none w-full"
             placeholder="Search..."
             value={query}
             onKeyDown={onKeyDown}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button
-            onClick={handleClick}
-          >
-            <Search className="cursor-pointer h-4 w-4 hover:text-blue-500" />
-          </button>
+          <Search onClick={handleSearch} className="cursor-pointer h-4 w-4 hover:text-blue-500" />
         </div>
-        <div className="flex gap-4 text-base-bold max-lg:hidden">
-          <Link
-            href="/"
-            className={`hover:text-blue-500 ${pathname === "/" && "text-blue-500"
-              }`}
-          >
-            Home
-          </Link>
-          <Link
-            href={"/search"}
-            className={`hover:text-blue-500 ${pathname === "/search" && "text-blue-500"
-              }`}
-          >
-            Shop
-          </Link>
-          <Link
-            href={"/contact"}
-            className={`hover:text-blue-500 ${pathname === "/contact" && "text-blue-500"
-              }`}
-          >
-            Contact
-          </Link>
-          <Link
-            href={user ? "/wishlist" : "/sign-in"}
-            className={`hover:text-blue-500 ${pathname === "/wishlist" && "text-blue-500"
-              }`}
-          >
-            Wishlist
-          </Link>
-          <Link
-            href={user ? "/orders" : "/sign-in"}
-            className={`hover:text-blue-500 ${pathname === "/orders" && "text-blue-500"
-              }`}
-          >
-            Orders
-          </Link>
-        </div>
-
-
-        <div className="relative flex gap-3 items-center">
-          <Currency isHome={false} />
-          <Link
-            href="/cart"
-            className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white max-md:hidden"
-          >
-            <ShoppingCart />
-            <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
-          </Link>
-          <div onClick={openModal} className="mr-2 lg:hidden hover:text-gray-800 text-gray-800 relative">
-            <Menu
-              className="cursor-pointer "
-            />
-            <span className="absolute -top-1 -right-2 bg-black text-center text-gray-100 rounded-full px-[6px] text-[12px]">{cart.cartItems.length > 0 ? cart.cartItems.length : ""}</span>
-          </div>
-
-          <Modal isOpen={isOpen} onClose={closeModal}>
-
-            <div className="absolute top-12 animate-modal right-5 flex flex-col gap-4 p-3 rounded-lg border bg-white text-base-bold lg:hidden ">
-              <Link href="/" className="hover:text-blue-500 outline-none" onClick={closeModal}>
-                Home
+        {/* Mobile Modal */}
+        <Modal isOpen={isOpen} onClose={toggleModal} overLay={true}>
+          <div className="flex flex-col p-3 gap-3 bg-white rounded-lg border">
+            {["Home", "Shop", "Contact", "Wishlist", "Orders"].map((name, idx) => (
+              <Link key={idx} href={user ? `/${name.toLowerCase()}` : "/sign-in"} onClick={toggleModal}>
+                {name}
               </Link>
-              <Link
-                href={user ? "/wishlist" : "/sign-in"}
-                className="hover:text-blue-500 outline-none"
-                onClick={closeModal}
-              >
-                Wishlist
-              </Link>
-              <Link
-                href={user ? "/orders" : "/sign-in"}
-                className="hover:text-blue-500 outline-none"
-                onClick={closeModal}
-              >
-                Orders
-              </Link>
-              <Link
-                href={"/search"}
-                className="hover:text-blue-500 outline-none"
-                onClick={closeModal}
-              >
-                Shop
-              </Link>
-              <Link
-                href={"/contact"}
-                className="hover:text-blue-500 outline-none"
-                onClick={closeModal}
-              >
-                Contact
-              </Link>
-              {/* <Region isHome={false} /> */}
-              <Link
-                href="/cart"
-                className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white"
-                onClick={closeModal}
-              >
-                <ShoppingCart />
-                <p className="text-base-bold">Cart ({cart.cartItems.length})</p>
-              </Link>
-            </div>
-          </Modal>
-
-
-          {user ? (
-            <UserButton afterSignOutUrl="/sign-in" />
-          ) : (
-            <Link href="/sign-in" className="mx-1">
-              <CircleUserRound />
+            ))}
+            <Link href="/cart" className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white" onClick={toggleModal}>
+              <ShoppingCart />
+              <span>Cart ({cart.cartItems.length})</span>
             </Link>
-          )}
-        </div>
+            <Currency className="sm:hidden" />
+          </div>
+        </Modal>
       </div>
     </>
   );

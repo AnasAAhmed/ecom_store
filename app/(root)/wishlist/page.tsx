@@ -117,7 +117,6 @@ const WishlistPage: FC = async () => {
   const wishlist = await getWishList(userId!);
 
 
-  // Handle case where the user or wishlist is empty
   if (!wishlist || wishlist.wishlist.length === 0) {
     return (
       <div className="px-10 py-5 min-h-[90vh]">

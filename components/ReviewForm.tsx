@@ -79,7 +79,7 @@ const ReviewForm = ({ isEditing, productId, user, oldRating, oldComment }: Revie
             </div>
             {/* {modalOpen && ( */}
             <Modal isOpen={modalOpen} onClose={closeModal} overLay={true}>
-                <div className="bg-white w-full animate-modal p-8 rounded-md max-w-md">
+                <div className="bg-white w-full animate-modal p-8 rounded-md">
 
                     <div className="flex flex-row justify-between mb-6 items-center">
                         <h2 className="text-xl font-semibold">Submit Review</h2>

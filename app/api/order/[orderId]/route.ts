@@ -42,7 +42,7 @@ export const PUT = async (req: NextRequest, { params }: { params: { orderId: Str
     } 
     await order.save();
 
-    return NextResponse.json("Order Status Updated Successfully", { status: 200 })
+    return NextResponse.json("Order Canceled Successfully", { status: 200 })
   } catch (error) {
     if (error instanceof Error) {
       return new NextResponse(`Internal Server Error: ${error.message}`, { status: 500 });

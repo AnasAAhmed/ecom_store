@@ -16,7 +16,7 @@ export const CopyText = ({ text, heading }: { text: any, heading?: string }) => 
             <button className="copy-text-btn" onClick={copyToClipboard}>
                 {text}
                 <span>
-                 Copy 
+                    Copy
                 </span>
             </button>
         </div>
@@ -29,29 +29,23 @@ export const calculateTimeDifference = (reviewDate: number) => {
     const reviewDateTime = new Date(reviewDate).getTime();
     const difference = currentDate - reviewDateTime;
 
-    // Calculate time difference in minutes
     const minutesDifference = Math.floor(difference / (1000 * 60));
-    // If difference is less than 0 minutes, show in minutes
-    if (minutesDifference === 0) {
+    if (minutesDifference < 1) {
         return `just now`;
     }
-    // If difference is less than 60 minutes, show in minutes
     if (minutesDifference < 60) {
         return `${minutesDifference} min ago`;
     }
 
-    // If difference is less than 24 hours, show in hours
     const hoursDifference = Math.floor(minutesDifference / 60);
     if (hoursDifference < 24) {
         return `${hoursDifference} hr ago`;
     }
 
-    // Otherwise, show in days
     const daysDifference = Math.floor(hoursDifference / 24);
     if (daysDifference < 7) {
         return `${daysDifference}d ago`;
     }
-    // Otherwise, show in weeks
 
     const weekDifference = Math.floor(daysDifference / 7);
     if (weekDifference < 4) {

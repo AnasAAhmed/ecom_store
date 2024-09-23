@@ -11,18 +11,19 @@ type ProductType = {
   description: string;
   media: [string];
   category: string;
-  collections: [CollectionType];
+  slug: string;
+  collections: string[];
   tags: [string];
   variants: [{
-    _id:string;
-    size:string;
-    color:string;
-    quantity:number
+    _id: string;
+    size: string;
+    color: string;
+    quantity: number
   }];
-  stock:number;
-  numOfReviews:number;
-  sold:number;
-  ratings:number;
+  stock: number;
+  numOfReviews: number;
+  sold: number;
+  ratings: number;
   price: number;
   expense: number;
   createdAt: Date;
@@ -54,16 +55,24 @@ type Variant = {
   quantity: number
 }
 
-type Review ={
+type ReviewType = {
   _id: string;
   userId: string;
   name: string;
   photo: string;
   rating: number;
   comment: string;
-  date: number;
+  productId: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
+type VariantType = {
+  _id?: string;
+  size?: string ;
+  color?: string;
+  quantity: number
+}
 
 type UserType = {
   clerkId: string;
@@ -74,10 +83,10 @@ type UserType = {
 
 type OrderType = {
   shippingAddress: {
-    street:string;
-    postalCode:string;
-    state:string;
-    city:string;
+    street: string;
+    postalCode: string;
+    state: string;
+    city: string;
     phone: string,
     country: string
   };

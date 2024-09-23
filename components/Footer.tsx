@@ -20,7 +20,7 @@ const Footer = () => {
                 400 University Drive Suite 200 Coral Gables,
               </span>
               <span className="block">FL 33134 USA</span>
-              <span className="block mt-8">111-222-2233-4444</span>
+              <span className="block mt-8">+(84) 546-6789</span>
               <span className="block">example@gmail.com</span>
             </p>
           </div>

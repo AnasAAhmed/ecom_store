@@ -3,21 +3,23 @@ import { getCollectionDetails } from "@/lib/actions/actions";
 import { unSlugify } from "@/lib/utils/features";
 import Head from "next/head";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import React from "react";
 
-export const generateMetadata = async ({ params, searchParams }: { params: { collection: string }, searchParams: { id: string } }) => {
+export const generateMetadata = async ({ params }: { params: { collection: string } }) => {
   return {
     title: `${unSlugify(params.collection)} | Borcelle`,
-    productId: searchParams.id,
+    productId: 'This is the Collection of ' + params.collection,
   };
 };
 
 const CollectionDetails = async ({
-  searchParams
+  params
 }: {
-  searchParams: { id: string }
+  params: { collection: string }
 }) => {
-  const collectionDetails = await getCollectionDetails(searchParams.id);
+  const collectionDetails = await getCollectionDetails(params.collection);
+  if (!collectionDetails) return notFound();
 
   return (
     <>
@@ -27,13 +29,13 @@ const CollectionDetails = async ({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org/",
-              "@type": "CollectionPage", // Change to CollectionPage for a collection
-              name: collectionDetails.title, // Collection title
-              description: collectionDetails.description, // Collection description
+              "@type": "CollectionPage",
+              name: collectionDetails.title,
+              description: collectionDetails.description,
               mainEntity: collectionDetails.products.map((product: ProductType) => ({
                 "@type": "Product",
-                name: product.title, // Product name
-                description: product.description, // Product description
+                name: product.title,
+                description: product.description,
                 image: product.media[0],
                 offers: {
                   "@type": "Offer",
@@ -46,16 +48,15 @@ const CollectionDetails = async ({
         />
       </Head>
       <div className="px-10 py-5 flex flex-col items-center gap-8">
-        <Image
+        {collectionDetails.image && <Image
           src={collectionDetails.image}
           width={1500}
           height={1000}
           alt="collection"
           className="w-full h-[400px] object-cover rounded-xl"
-        />
+        />}
         <p className="text-heading3-bold text-grey-2">{collectionDetails.title}</p>
-        <p className="text-body-normal text-grey-2 text-center max-w-[900px]">{collectionDetails.description}</p>
-        <div className="flex flex-wrap gap-16 justify-center  min-h-[90vh]">
+        {collectionDetails.image && <p className="text-body-normal text-grey-2 text-center max-w-[900px]">{collectionDetails.description}</p>}        <div className="flex flex-wrap gap-16 justify-center  min-h-[90vh]">
           {collectionDetails.products.map((product: ProductType) => (
             <ProductCard key={product._id} product={product} />
           ))}

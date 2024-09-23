@@ -7,20 +7,11 @@ import { useUser } from '@clerk/nextjs';
 import StarRatings from './StarRatings';
 import { calculateTimeDifference } from '@/lib/utils/functions';
 
-interface Review {
-  _id: string;
-  userId: string;
-  name: string;
-  photo: string;
-  rating: number;
-  comment: string;
-  date: number;
-}
 
 interface ProductReviewsProps {
   productId: string;
   numOfReviews?: number;
-  productReviews: Review[];
+  productReviews: ReviewType[];
 }
 
 const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, productId, numOfReviews }) => {
@@ -28,13 +19,19 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
   const [viewAll, setViewAll] = useState<number>(4);
   const [isDeletingReview, setIsDeletingReview] = useState<boolean>(false);
 
-  let reviews: Review[] = productReviews;
+  let reviews: ReviewType[] = productReviews;
 
   const handleDeleteReview = async (reviewId: string) => {
     setIsDeletingReview(true);
     try {
-      const response = await fetch(`/api/products/reviews?productId=${productId}&userId=${user?.id}`, {
+      const response = await fetch(`/api/products/reviews?reviewId=${reviewId}&userId=${user?.id}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'reviewId': reviewId,
+          'userId': user?.id || '',
+          'productId': productId,
+        }
       });
 
       if (!response.ok) {
@@ -47,7 +44,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
     } catch (error) {
       toast.error('Error deleting review');
       console.log(error);
-      
+
     } finally {
       setIsDeletingReview(false);
     }
@@ -64,7 +61,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
       </div>
       <ReviewForm productId={productId} user={user!} />
       <div className="md:mx-12 mt-12 max-sm:border-1 ">
-        {reviews.length > 0 ? (
+        {reviews && reviews.length > 0 ? (
           <>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {reviews.slice(0, viewAll).map((review, index) => (
@@ -102,7 +99,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
                   <div className="flex mr-2 mt-3 flex-row justify-between">
                     <p>{review.comment}</p>
                     <p className="font-bold flex justify-end text-sm w-36">
-                      {calculateTimeDifference(review.date)}
+                      {calculateTimeDifference(review.createdAt)}
                     </p>
                   </div>
                 </li>

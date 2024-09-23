@@ -34,14 +34,14 @@ const CancelOrder = ({ order }: OrderManageProps) => {
       if (res.ok) {
         setLoadingUp(false);
         window.location.href = `/orders`;
-        toast.success('Order status updated successfully');
+        toast.success('Order Canceled successfully we will Contact you in an hour');
       } else {
         toast.error('Internal server error. Please try again.');
         setLoadingUp(false);
       }
     } catch (err) {
       setLoadingUp(false);
-      console.error('Error updating order status:', err); // Avoid logging sensitive info
+      console.error('Error updating order status:', err); 
       toast.error('Internal server error. Please try again.');
     }
   };
@@ -64,11 +64,11 @@ const CancelOrder = ({ order }: OrderManageProps) => {
     <>
       <button onClick={() => setIsOpen(true)}>Details &rarr;</button>
       <Modal onClose={onClose} isOpen={isOpen} overLay={true}>
-        <div className=" animate-modal flex flex-col justify-center items-center space-y-4 bg-gray-100 p-4 rounded shadow-md">
-          <button className='text-[26px] self-end' onClick={() => setIsOpen(false)}>&times;</button>
+        <div className=" animate-modal flex flex-col justify-center items-center space-y-4 bg-gray-100 pb-4 px-4 rounded shadow-md">
+          <button className='print:hidden text-[26px] self-end mt-3' onClick={() => setIsOpen(false)}>&times;</button>
 
-          <div className="flex flex-wrap gap-3 items-center py-5">
-            <div className="flex flex-col p-10 gap-5">
+          <div className="flex flex-wrap gap-3 items-center pb-3">
+            <div className="flex flex-col pb-10 px-10 gap-5">
               <p className="text-base-bold">
                 Order ID: <span className="text-base-medium">{order._id}</span>
               </p>
@@ -79,16 +79,13 @@ const CancelOrder = ({ order }: OrderManageProps) => {
                 Currency: <span className="text-base-medium">{order.currency}</span>
               </p>
               <p className="text-base-bold">
-                ExchangeRate: <span className="text-base-medium">{order.exchangeRate}</span>
-              </p>
-              <p className="text-base-bold">
                 Shipping address: <span className="text-base-medium leading-8">{order.shippingAddress.street}, {order.shippingAddress.city}, {order.shippingAddress.state}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}, phone:{order.shippingAddress.phone || "null"}</span>
               </p>
               <p className="text-base-bold">
-                Total Paid: <span className="text-base-medium">${order.totalAmount}</span>
+                Total {!order.status.startsWith('COD')&&'Paid'}: <span className="text-base-medium">${order.totalAmount}</span>
               </p>
               <p className="text-base-bold">
-                Shipping rate ID: <span className="text-base-medium">({order.currency}) {order.shippingRate}</span>
+                Shipping rate: <span className="text-base-medium">({order.currency}) {order.shippingRate}</span>
               </p>
               <p className="text-base-bold">
                 Status: <span className="text-base-medium ">{order.status}</span>
@@ -96,10 +93,26 @@ const CancelOrder = ({ order }: OrderManageProps) => {
               <p className="text-base-bold">
                 Products: <span className="text-base-medium">{order.products.length}</span>
               </p>
+              <table>
+                <thead className='border'>
+                  <th className='border'>Product</th>
+                  <th className='border'>size</th>
+                  <th className='border'>color</th>
+                  <th className='border'>quantity</th>
+                </thead>
+                  {order.products.map((i)=>(
+                <tbody className='border'>
+                    <th className='border'>{i.product.title}</th>
+                    <th className='border'>{i.size||'N/A'}</th>
+                    <th className='border'>{i.color||'N/A'}</th>
+                    <th className='border'>{i.quantity}</th>
+                </tbody>
+                  ))}
+              </table>
             </div>
           </div>
-          {timeDifference <= 12 && (
-            <div className='mx-auto items-center flex gap-3'>
+          {!order.status.startsWith('Canceled')&& timeDifference <= 12 && (
+            <div className='mx-auto print:hidden items-center flex gap-3'>
               <label htmlFor='dd'>Cancel Order:</label>
               <select id='dd' className='h-8' value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
                 {cancellationReasons.map((i) => (
@@ -113,6 +126,8 @@ const CancelOrder = ({ order }: OrderManageProps) => {
               )}
             </div>
           )}
+          <button className='text-lg bg-black print:hidden text-white rounded-md p-2 self-start' onClick={() => window.print()}>Get Invoice</button>
+
         </div>
       </Modal>
     </>

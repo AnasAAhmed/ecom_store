@@ -17,10 +17,9 @@ const ProductCard = ({ product, updateSignedInUser }: ProductCardProps) => {
   const isSoldOut = product.stock <= 0;
   const productPrice = (product.price * exchangeRate).toFixed();
   const productExpense = (product.expense * exchangeRate).toFixed();
-  const slug = slugify(product.title);
   return (
     <div className={`w-[220px] flex flex-col gap-2 ${isSoldOut ? "opacity-70" : ""}`}>
-      <Link href={`/products/${slug}?id=${product._id}`}>
+      <Link href={`/products/${product.slug}`}>
         <div className="relative">
           <Image
             src={product.media[0]}

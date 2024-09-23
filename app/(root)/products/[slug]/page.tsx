@@ -5,17 +5,29 @@ import ProductReviews from "@/components/ProductReviews";
 import { getProductDetails, getRelatedProducts } from "@/lib/actions/actions";
 import { unSlugify } from "@/lib/utils/features";
 import Head from "next/head";
+import { notFound } from "next/navigation";
 
-export const generateMetadata = async ({ params ,searchParams}: { params: { slug: string } ,searchParams:{id:string}}) => {
+type ProductData = {
+  productDetails: ProductType;
+  reviews: ReviewType[]
+}
+
+export const generateMetadata = async ({ params }: { params: { slug: string } }) => {
   return {
-    title: `${unSlugify( params.slug)} | Borcelle`,
-    productId: searchParams.id, 
+    title: `${unSlugify(params.slug)} | Borcelle`,
+    description: 'This is a product from Borcelle Store named: ' + params.slug,
   };
 };
 
-const ProductDetails = async ({ params ,searchParams}: { params: { slug: string } ,searchParams:{id:string}}) => {
-  const productDetails = await getProductDetails(searchParams.id);
-  const relatedProducts = await getRelatedProducts(searchParams.id);
+const ProductDetails = async ({ params }: { params: { slug: string } }) => {
+  const data: ProductData = await getProductDetails(params.slug, 1);
+  if (!data) return notFound();
+  const relatedProducts = await getRelatedProducts(
+    data.productDetails._id,
+    data.productDetails.category,
+    data.productDetails.collections
+  );
+
 
   return (
     <>
@@ -27,13 +39,13 @@ const ProductDetails = async ({ params ,searchParams}: { params: { slug: string 
             __html: JSON.stringify({
               "@context": "https://schema.org/",
               "@type": "Product",
-              name: productDetails.title,
-              description: productDetails.description,
-              image: productDetails.media[0], // Primary image URL
+              name: data.productDetails.title,
+              description: data.productDetails.description,
+              image: data.productDetails.media[0],
               offers: {
                 "@type": "Offer",
                 priceCurrency: "USD",
-                price: productDetails.price,
+                price: data.productDetails.price,
               },
             }),
           }}
@@ -41,15 +53,15 @@ const ProductDetails = async ({ params ,searchParams}: { params: { slug: string 
       </Head>
 
       {/* Main Content */}
-      <article className="flex justify-center mt-8 md:mt-0 items-start gap-16 py-10 px-5 max-md:flex-col max-md:items-center">
-        <Gallery productMedia={productDetails.media} />
-        <ProductInfo productInfo={productDetails} />
-      </article>
+      <section className="flex justify-center mt-8 md:mt-0 items-start gap-16 py-10 px-5 max-md:flex-col max-md:items-center">
+        <Gallery productMedia={data.productDetails.media} />
+        <ProductInfo productInfo={data.productDetails} />
+      </section>
       <section className="my-5">
         <ProductReviews
-          productReviews={productDetails.reviews}
-          productId={productDetails._id}
-          numOfReviews={productDetails.numOfReviews}
+          productReviews={data.reviews}
+          productId={data.productDetails._id}
+          numOfReviews={data.productDetails.numOfReviews}
         />
       </section>
 

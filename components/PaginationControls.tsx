@@ -7,17 +7,16 @@ interface PaginationControlsProps {
 }
 
 const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, totalPages }) => {
-  if (totalPages < 2) return;
   const router = useRouter();
-
+  
   const handlePageChange = (newPage: number) => {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set('page', newPage.toString());
     const newUrl = `?${searchParams.toString()}`;
     router.push(newUrl, { scroll: true });
   };
-
-  return (
+  
+  if (totalPages > 1) return (
     <div className="pagination">
       <article className="flex justify-center items-center mt-4">
         <button

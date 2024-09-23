@@ -31,12 +31,14 @@ const useCart = create(
         const isExisting = currentItems.find(
           (cartItem) => cartItem.item._id === item._id
         );
-
+        let newCartItems = currentItems;
         if (isExisting) {
-          return toast("Item already in cart", { icon: "🛒" });
-        }
+          newCartItems = currentItems.filter(
+            (cartItem) => cartItem.item._id !== item._id
+          );
+        };
 
-        set({ cartItems: [...currentItems, { item, quantity, color, size, stock, variantId }] });
+        set({ cartItems: [...newCartItems, { item, quantity, color, size, stock, variantId }] });
         toast.success("Item added to cart");
       },
       removeItem: (idToRemove: string) => {
@@ -60,11 +62,14 @@ const useCart = create(
         set({ cartItems: newCartItems });
       },
       decreaseQuantity: (idToDecrease: string) => {
-        const newCartItems = get().cartItems.map((cartItem) =>
-          cartItem.item._id === idToDecrease
-            ? { ...cartItem, quantity: cartItem.quantity - 1 }
-            : cartItem
-        );
+        const newCartItems = get().cartItems.map((cartItem) => {
+          if (cartItem.item._id === idToDecrease) {
+            if (cartItem.quantity > 1) {
+              return { ...cartItem, quantity: cartItem.quantity - 1 }
+            };
+          };
+          return cartItem;
+        });
         set({ cartItems: newCartItems });
       },
       clearCart: () => set({ cartItems: [] }),
@@ -118,7 +123,7 @@ export const useRegion = create<RegionStore>()(
 
           } catch (error) {
             const typeError = error as Error;
-            console.log('currency-api:Failed:'+typeError.message);
+            console.log('currency-api:Failed:' + typeError.message);
           }
 
           // Access the correct exchange rate from the response

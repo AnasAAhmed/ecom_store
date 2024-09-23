@@ -4,13 +4,14 @@ import Order from "../models/Order"
 import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
 import User from "../models/User"
+import Review from "../models/Review"
 
 
 
 export async function getCollections() {
   try {
 
-    const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title")
+    const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title").limit(6);
 
     return JSON.parse(JSON.stringify(collections))
 
@@ -21,21 +22,19 @@ export async function getCollections() {
 }
 
 
-export async function getCollectionDetails(collectionId: string) {
+export async function getCollectionDetails(title: string) {
   try {
     await connectToDB();
 
-    const collection = await Collection.findById(collectionId).populate({ path: "products", model: Product });
+    const collection = await Collection.findOne({ title }).populate({ path: "products", model: Product });
 
     if (!collection) {
-      throw new Error('Collection not found')
-
+      return null
     }
     return JSON.parse(JSON.stringify(collection))
   } catch (err) {
     console.log("[collectionId_GET]", err);
     throw new Error('Internal Server Error')
-
   }
 }
 
@@ -68,7 +67,7 @@ export async function getSearchProducts(query: string, page: number) {
         { tags: { $in: [new RegExp(query, 'i')] } },
       ],
     })
-      .select('-reviews -description -variants')
+      .select('-category -description -variants -timestamps')
       .skip(skip)
       .limit(limit);
 
@@ -89,8 +88,7 @@ export async function getProducts() {
 
     const products = await Product.find()
       .sort({ createdAt: "desc" })
-      .populate({ path: "collections", model: Collection })
-      .select("-reviews -category -description -variants")
+      .select("-category -description -variants -timestamps")
       .limit(8);
 
     return JSON.parse(JSON.stringify(products))
@@ -106,8 +104,7 @@ export async function getBestSellingProducts() {
 
     const products = await Product.find()
       .sort({ sold: -1, ratings: -1, createdAt: "desc" })
-      .populate({ path: "collections", model: Collection })
-      .select("-reviews -category -description -variants")
+      .select("-category -description -variants -timestamps")
       .limit(4);
 
     return JSON.parse(JSON.stringify(products));
@@ -116,19 +113,18 @@ export async function getBestSellingProducts() {
     throw new Error('Internal Server Error');
   }
 }
-export async function getProductDetails(productId: string) {
+export async function getProductDetails(slug: string, page: number) {
   try {
+    const skip = (page - 1) * 4;
     await connectToDB();
-
-    const product = await Product.findById(productId).populate({
-      path: "collections",
-      model: Collection,
-    });
-
+    const product = await Product.findOne({ slug });
     if (!product) {
-      throw new Error('Product not found')
+      return null;
     }
-    return JSON.parse(JSON.stringify(product))
+    const totalReviews = await Review.countDocuments({ productId: product._id });
+    const reviews = await Review.find({ productId: product._id }).limit(4).skip(skip);
+
+    return JSON.parse(JSON.stringify({ productDetails: product, reviews, totalReviews }))
   } catch (err) {
     console.log("[productId_GET]", err);
     throw new Error('Internal Server Error')
@@ -140,8 +136,7 @@ export async function getWishList(userId: string) {
   try {
     await connectToDB();
 
-    // Fetch the user with populated wishlist
-    const wishlist = await User.findOne({ clerkId: userId }) // Replace with the actual user ID or handle authentication
+    const wishlist = await User.findOne({ clerkId: userId })
       .populate({
         path: "wishlist",
         model: Product,
@@ -184,23 +179,17 @@ export async function getOrders(customerId: string, page: number) {
   }
 }
 
-export async function getRelatedProducts(productId: string) {
+export async function getRelatedProducts(_id: string, category: string, collections: string[]) {
   try {
     await connectToDB()
 
-    const product = await Product.findById(productId)
-
-    if (!product) {
-      throw new Error('Product not found')
-    }
-
     const relatedProducts = await Product.find({
       $or: [
-        { category: product.category },
-        { collections: { $in: product.collections } }
+        { category: category },
+        { collections: { $in: collections } }
       ],
-      _id: { $ne: product._id } // Exclude the current product
-    }).select("-reviews -description -variants");
+      _id: { $ne: _id }
+    }).select("-description -variants -category -timestamps");
 
     if (!relatedProducts) {
       throw new Error('No related products found')

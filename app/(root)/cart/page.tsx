@@ -19,7 +19,7 @@ const Cart = () => {
   const [message, setMessage] = useState(false);
   const [isCOD, setIsCOD] = useState<string>("NULL");
 
-  const cart = useCart();
+  const cart = useCart(); 
   const total = cart.cartItems.reduce(
     (acc, cartItem) => acc + cartItem.item.price * cartItem.quantity,
     0
@@ -95,6 +95,8 @@ const Cart = () => {
     }
   };
 
+ 
+
   return (
     <div className="flex gap-20 py-16 px-10 max-lg:flex-col max-sm:px-3">
       <div className="w-2/3 max-lg:w-full">
@@ -115,15 +117,16 @@ const Cart = () => {
                     alt="product"
                   />
                   <div className="flex flex-col gap-3 ml-4">
-                    <Link href={`products/${slugify(cartItem.item.title)}?id=${cartItem.item._id}`} className="text-body-bold">{cartItem.item.title}</Link>
+                    <Link href={`products/${slugify(cartItem.item.title)}`} className="text-body-bold">{cartItem.item.title}</Link>
                     {cartItem.color && (
                       <p className="text-small-medium">{cartItem.color}</p>
                     )}
                     {cartItem.size && (
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
-                    <p className="text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()}</p>
-                    <p className="text-small-medium">{cartItem.item.stock < 5 ? `only ${cartItem.item.stock} left` : cartItem.item.stock}</p>
+                    <p className="text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()} </p>
+                    <span className="text-small-medium line-through text-red-1">{currency} {cartItem.item.expense}</span>
+                    {cartItem.item.stock < 5 && <p className="text-small-medium">{`only ${cartItem.item.stock} left`}</p>}
                   </div>
                 </div>
 

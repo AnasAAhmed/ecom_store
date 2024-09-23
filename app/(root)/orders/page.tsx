@@ -36,8 +36,11 @@ const Orders = async ({ searchParams }: { searchParams: any }) => {
                 <p className="text-base-bold">
                    <CancelOrder order={order}/>
                 </p>
-                <p className="text-base-bold">Currency: {order.currency}</p>
-                <p className="text-base-bold truncate max-w-60">Status: {order.status}</p>
+                <p className="text-base-bold">Currency: {order.currency.toLowerCase()}</p>
+                <p className="text-base-bold truncate max-w-60" 
+                style={{color:order.status.startsWith('Canceled')?'red':''}}>
+                  Status: {order.status}
+                  </p>
               </div>
 
               <div className="flex flex-col gap-5">
