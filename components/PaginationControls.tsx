@@ -4,18 +4,19 @@ import { useRouter } from 'next/navigation';
 interface PaginationControlsProps {
   currentPage: number;
   totalPages: number;
+  isScrollToTop?: boolean;
 }
 
-const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, totalPages }) => {
+const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, totalPages, isScrollToTop = true }) => {
   const router = useRouter();
-  
+
   const handlePageChange = (newPage: number) => {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set('page', newPage.toString());
     const newUrl = `?${searchParams.toString()}`;
-    router.push(newUrl, { scroll: true });
+    router.push(newUrl, { scroll: isScrollToTop });
   };
-  
+
   if (totalPages > 1) return (
     <div className="pagination">
       <article className="flex justify-center items-center mt-4">
@@ -27,7 +28,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, to
           Prev
         </button>
         <span className="text-base">
-          {currentPage}/{totalPages}
+          {currentPage}
         </span>
         <button
           disabled={currentPage === totalPages}

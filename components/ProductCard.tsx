@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 import HeartFavorite from "./HeartFavorite";
 import { useRegion } from "@/lib/hooks/useCart";
-import { slugify } from "@/lib/utils/features";
 
 interface ProductCardProps {
   product: ProductType;

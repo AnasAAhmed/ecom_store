@@ -1,8 +1,6 @@
 import ProductCard from "@/components/ProductCard";
 import { getCollectionDetails } from "@/lib/actions/actions";
 import { unSlugify } from "@/lib/utils/features";
-import Head from "next/head";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -23,30 +21,28 @@ const CollectionDetails = async ({
 
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "CollectionPage",
-              name: collectionDetails.title,
-              description: collectionDetails.description,
-              mainEntity: collectionDetails.products.map((product: ProductType) => ({
-                "@type": "Product",
-                name: product.title,
-                description: product.description,
-                image: product.media[0],
-                offers: {
-                  "@type": "Offer",
-                  priceCurrency: "USD",
-                  price: product.price,
-                },
-              })),
-            }),
-          }}
-        />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "CollectionPage",
+            name: collectionDetails.title,
+            description: collectionDetails.description,
+            mainEntity: collectionDetails.products.map((product: ProductType) => ({
+              "@type": "Product",
+              name: product.title,
+              description: product.description,
+              image: product.media[0],
+              offers: {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                price: product.price,
+              },
+            })),
+          }),
+        }}
+      />
       <div className="px-10 py-5 flex flex-col items-center gap-8">
         {collectionDetails.image && <Image
           src={collectionDetails.image}

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useUser } from '@clerk/nextjs';
 import StarRatings from './StarRatings';
 import { calculateTimeDifference } from '@/lib/utils/functions';
+import PaginationControls from './PaginationControls';
 
 
 interface ProductReviewsProps {
@@ -64,7 +65,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
         {reviews && reviews.length > 0 ? (
           <>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {reviews.slice(0, viewAll).map((review, index) => (
+              {reviews.map((review, index) => (
                 <li key={index} className="border pb-4 mb-4 py-3 px-2">
                   <div className="flex flex-row justify-between items-center">
                     <div className="flex flex-row items-center gap-3">
@@ -105,26 +106,6 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
                 </li>
               ))}
             </ul>
-            {numOfReviews! > 4 && (
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="flex items-center gap-1 border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-200"
-                  onClick={() => setViewAll((prev) => prev + 4)} // Show 4 more reviews
-                >
-                  <FaChevronDown />
-                  <span>More</span>
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center gap-1 border border-gray-300 px-3 py-1 rounded-md hover:bg-gray-200"
-                  onClick={() => setViewAll(4)} // Show only 4 reviews
-                >
-                  <FaChevronUp />
-                  <span>Hide</span>
-                </button>
-              </div>
-            )}
           </>
         ) : (
           <h1 className="text-3xl font-semibold mb-12 flex items-center justify-center">No reviews Yet</h1>

@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Borcelle - Store Auth",
-  description: "Next.js 14 Borcelle Ecommerce store",
+  description: "Next.js 14 Borcelle Ecommerce store with custom CMS",
 };
 
 export default function RootLayout({

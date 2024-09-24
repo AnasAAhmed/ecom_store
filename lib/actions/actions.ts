@@ -113,24 +113,37 @@ export async function getBestSellingProducts() {
     throw new Error('Internal Server Error');
   }
 }
-export async function getProductDetails(slug: string, page: number) {
+export async function getProductDetails(slug: string) {
   try {
-    const skip = (page - 1) * 4;
     await connectToDB();
     const product = await Product.findOne({ slug });
     if (!product) {
       return null;
-    }
-    const totalReviews = await Review.countDocuments({ productId: product._id });
-    const reviews = await Review.find({ productId: product._id }).limit(4).skip(skip);
+    };
 
-    return JSON.parse(JSON.stringify({ productDetails: product, reviews, totalReviews }))
+    return JSON.parse(JSON.stringify(product))
   } catch (err) {
     console.log("[productId_GET]", err);
     throw new Error('Internal Server Error')
 
   }
 }
+
+export async function getProductReviews(productId: string, page: number) {
+  try {
+    const skip = (page - 1) * 4;
+    await connectToDB();
+    const totalReviews = await Review.countDocuments({ productId });
+    const reviews = await Review.find({ productId }).limit(4).skip(skip);
+
+
+    return JSON.parse(JSON.stringify({ reviews, totalReviews }))
+  } catch (err) {
+    console.log("[productId_GET]", err);
+    throw new Error('Internal Server Error')
+
+  }
+};
 
 export async function getWishList(userId: string) {
   try {

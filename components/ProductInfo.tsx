@@ -62,7 +62,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                     <StarRatings rating={productInfo.ratings} />
-                    <span className="text-blue-500"> ({productInfo.ratings}/5)</span>
+                    <span className="text-blue-500"> ({(productInfo.ratings).toFixed()}/5)</span>
                 </div>
                 sold({productInfo.sold})
             </div>
