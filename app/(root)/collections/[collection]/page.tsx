@@ -3,6 +3,7 @@ import { getCollectionDetails } from "@/lib/actions/actions";
 import { unSlugify } from "@/lib/utils/features";
 import { notFound } from "next/navigation";
 import React from "react";
+import Image from "next/image";
 
 export const generateMetadata = async ({ params }: { params: { collection: string } }) => {
   return {
