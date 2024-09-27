@@ -3,7 +3,7 @@ import PaginationControls from "@/components/PaginationControls";
 import ProductCard from "@/components/ProductCard";
 import ProductInfo from "@/components/ProductInfo";
 import ProductReviews from "@/components/ProductReviews";
-import { getProductDetails, getProductReviews, getRelatedProducts } from "@/lib/actions/actions";
+import { getProductDetails, getProductDetailsForSeo, getProductReviews, getRelatedProducts } from "@/lib/actions/actions";
 import { unSlugify } from "@/lib/utils/features";
 import { notFound } from "next/navigation";
 
@@ -13,7 +13,7 @@ type ReviewData = {
 }
 
 export const generateMetadata = async ({ params }: { params: { slug: string } }) => {
-  const product: ProductType = await getProductDetails(params.slug);
+  const product: ProductType = await getProductDetailsForSeo(params.slug);
 
   return {
     title: unSlugify(product.title) + ' | Borcelle',
@@ -51,8 +51,8 @@ const ProductDetails = async ({
 }: { params: { slug: string }, searchParams: { page: string } }) => {
   const page = Number(searchParams.page) || 1;
   const product: ProductType = await getProductDetails(params.slug);
-  const reviewData: ReviewData = await getProductReviews(product._id, page,);
   if (!product) return notFound();
+  const reviewData: ReviewData = await getProductReviews(product._id, page,);
   const relatedProducts = await getRelatedProducts(
     product._id,
     product.category,
@@ -81,6 +81,11 @@ const ProductDetails = async ({
               highPrice: product.price,
               lowPrice: product.price
             },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: product.ratings,
+              reviewCount: product.numOfReviews
+            }
           }),
         }}
       />

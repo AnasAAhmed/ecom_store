@@ -7,6 +7,7 @@ import { useUser } from '@clerk/nextjs';
 import StarRatings from './StarRatings';
 import { calculateTimeDifference } from '@/lib/utils/functions';
 import PaginationControls from './PaginationControls';
+import { useRouter } from 'next/navigation';
 
 
 interface ProductReviewsProps {
@@ -17,8 +18,8 @@ interface ProductReviewsProps {
 
 const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, productId, numOfReviews }) => {
   const { user } = useUser();
-  const [viewAll, setViewAll] = useState<number>(4);
   const [isDeletingReview, setIsDeletingReview] = useState<boolean>(false);
+  const router = useRouter();
 
   let reviews: ReviewType[] = productReviews;
 
@@ -41,7 +42,8 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
 
       reviews = reviews.filter((review) => review._id !== reviewId);
       toast.success('Review deleted successfully');
-      location.reload();
+      router.refresh();
+
     } catch (error) {
       toast.error('Error deleting review');
       console.log(error);
@@ -56,9 +58,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productReviews, product
     <div className="container mx-auto p-4">
       <div className="flex flex-col items-center">
         <h2 className="text-heading3-bold font-semibold mb-4">Reviews ({numOfReviews})</h2>
-        <p className="text-sm font-medium text-gray-500">
-          This button will be removed for submit reviews here in Production Environment but can edit here this is for demo
-        </p>
+      
       </div>
       <ReviewForm productId={productId} user={user!} />
       <div className="md:mx-12 mt-12 max-sm:border-1 ">

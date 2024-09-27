@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    const isReviewed = await Review.findOne({ userId });
+    const isReviewed = await Review.findOne({ userId, productId: product._id });
 
     if (isReviewed) {
       const oldRating = isReviewed.rating;
@@ -46,7 +46,6 @@ export async function POST(request: NextRequest) {
     }
 
     await product.save({ validateBeforeSave: false });
-    revalidatePath(`/products/${product.slug}`)
 
     return NextResponse.json({ message: "Review submitted successfully" });
   } catch (error) {

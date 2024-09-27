@@ -4,6 +4,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import type { UserResource } from '@clerk/types';
 import toast from "react-hot-toast";
 import Modal from "./Modal";
+import { useRouter } from "next/navigation";
 
 type ReviewFormProps = {
     isEditing?: boolean;
@@ -14,6 +15,7 @@ type ReviewFormProps = {
 };
 
 const ReviewForm = ({ isEditing, productId, user, oldRating, oldComment }: ReviewFormProps) => {
+    const router = useRouter();
     const [rating, setRating] = useState(oldRating || 0);
     const [comment, setComment] = useState(oldComment || "");
     const [modalOpen, setModalOpen] = useState(false);
@@ -47,8 +49,8 @@ const ReviewForm = ({ isEditing, productId, user, oldRating, oldComment }: Revie
             const data = await res.json();
 
             if (res.ok) {
-                location.reload();
                 toast.success('Review submitted successfully');
+                router.refresh();
                 setModalOpen(false);
             } else {
                 toast.error(data.message || 'Error submitting review');

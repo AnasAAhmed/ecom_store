@@ -5,6 +5,7 @@ import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
 import User from "../models/User"
 import Review from "../models/Review"
+import { unSlugify } from "../utils/features"
 
 
 
@@ -117,6 +118,27 @@ export async function getProductDetails(slug: string) {
   try {
     await connectToDB();
     const product = await Product.findOne({ slug });
+    if (!product) {
+      return null;
+    };
+
+    return JSON.parse(JSON.stringify(product))
+  } catch (err) {
+    console.log("[productId_GET]", err);
+    throw new Error('Internal Server Error')
+
+  }
+}
+export async function getProductDetailsForSeo(slug: string) {
+  try {
+    await connectToDB();
+    const regexPattern = slug.replace(/-/g, " ") ; 
+    const product = await Product.findOne({ 
+      $or: [
+        { title: { $regex: regexPattern, $options: 'i' } },  // Search by title with spaces
+        { slug: { $regex: slug, $options: 'i' } }            // Search by exact or similar slug
+      ]
+    });
     if (!product) {
       return null;
     };

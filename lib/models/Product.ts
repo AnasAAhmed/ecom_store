@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
-import { slugify } from "../utils/features";
 
 const ProductSchema = new mongoose.Schema({
-  title: String,
+  title: { type: String, unique: true },
   description: String,
   media: [String],
-  category: String,
-  slug: String,
+  category: { type: String, index: true },
+  slug: { type: String, unique: true },
   collections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" }],
-  tags: [String],
+  tags: [{ type: String, index: true }],
   variants: [{
     size: { type: String },
     color: { type: String },
@@ -28,6 +27,9 @@ const ProductSchema = new mongoose.Schema({
   expense: { type: Number },
 }, { toJSON: { getters: true }, timestamps: true });
 
+ProductSchema.index({ title: 'text', tags: 'text' });
+
+ProductSchema.index({ slug: 1, category: 1 });
 
 const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
 

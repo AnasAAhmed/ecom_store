@@ -4,7 +4,7 @@ import { useUser } from '@clerk/nextjs';
 import { useEffect } from 'react';
 
 const UserFetcher = () => {
-    const { isSignedIn } = useUser();  // Always call useUser, no condition here
+    const { isSignedIn } = useUser();
     const { user, setUser, resetUser } = useWhishListUserStore();
 
     useEffect(() => {
@@ -22,9 +22,9 @@ const UserFetcher = () => {
         if (isSignedIn && !user) {  // Use isSignedIn conditionally within useEffect
             fetchUserData();
         }
-    }, [isSignedIn, user, setUser, resetUser]);  // Add isSignedIn as a dependency
+    }, [isSignedIn, user, setUser, resetUser]);
 
-    return null; // This component doesn't need to render anything
+    return null;
 };
 
 export default UserFetcher;
