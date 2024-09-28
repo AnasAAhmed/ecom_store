@@ -51,7 +51,7 @@ const Navbar = () => {
         <h1>Help: +(84) 546-6789</h1>
       </div>
 
-      <div className="sticky max-sm:fixed top-0 z-10 w-full bg-white shadow-md">
+      <div className="sticky max-sm:fixed top-0 z-30 w-full bg-white shadow-md">
         <div className="flex justify-between items-center p-2">
           <Link href="/">
             <Image src="/logo.png" priority alt="logo" width={130} height={100} />
@@ -70,7 +70,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex gap-4">
-            {["/", "/search", "/contact", user ? "/wishlist" : "/sign-in", user ? "/orders" : "/sign-in"].map(
+            {["/", "/search", "/contact", "/wishlist", "/orders"].map(
               (path, idx) => (
                 <Link
                   key={idx}

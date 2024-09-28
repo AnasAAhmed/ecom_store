@@ -33,7 +33,6 @@ const CancelOrder = ({ order }: OrderManageProps) => {
 
       if (res.ok) {
         setLoadingUp(false);
-        window.location.href = `/orders`;
         toast.success('Order Canceled successfully we will Contact you in an hour');
       } else {
         toast.error('Internal server error. Please try again.');
@@ -115,6 +114,7 @@ const CancelOrder = ({ order }: OrderManageProps) => {
             <div className='mx-auto print:hidden items-center flex gap-3'>
               <label htmlFor='dd'>Cancel Order:</label>
               <select id='dd' className='h-8' value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
+              <option value={''}>Select a reason</option>
                 {cancellationReasons.map((i) => (
                   <option key={i} value={i}>{i}</option>
                 ))}

@@ -5,7 +5,6 @@ import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
 import User from "../models/User"
 import Review from "../models/Review"
-import { unSlugify } from "../utils/features"
 
 
 

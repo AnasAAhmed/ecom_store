@@ -2,7 +2,7 @@ import CancelOrder from "@/components/Cancel";
 import PaginationControls from "@/components/PaginationControls";
 import { getOrders } from "@/lib/actions/actions";
 import { slugify } from "@/lib/utils/features";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,17 +30,23 @@ const Orders = async ({ searchParams }: { searchParams: any }) => {
               className="flex flex-col gap-6 p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100"
             >
               <div className="flex flex-wrap gap-4 sm:gap-6">
-              <p className="text-base-bold">
-                  Total Amount: {(order.totalAmount * order.exchangeRate).toFixed()}
-                </p> 
                 <p className="text-base-bold">
-                   <CancelOrder order={order}/>
+                  Total Amount: {(order.totalAmount * order.exchangeRate).toFixed()}
+                </p>
+                <p className="text-base-bold">
+                  <CancelOrder order={order} />
                 </p>
                 <p className="text-base-bold">Currency: {order.currency.toLowerCase()}</p>
-                <p className="text-base-bold truncate max-w-60" 
-                style={{color:order.status.startsWith('Canceled')?'red':''}}>
+                <p className="text-base-bold truncate max-w-60"
+                  style={{ color: order.status.startsWith('Canceled') ? 'red' : '' }}>
                   Status: {order.status}
-                  </p>
+                </p>
+                {order.status.startsWith('Canceled') &&
+                  <p className="text-base-bold flex flex-col max-w-60 gap-1" >
+                    Contact for refund:
+                    <a href="tel:example@gmail.com" className="hover:underline">Call to: example@gmail.com</a>
+                    <a href="mailto:example@gmail.com" className="hover:underline">Email:example@gmail.com</a>
+                  </p>}
               </div>
 
               <div className="flex flex-col gap-5">

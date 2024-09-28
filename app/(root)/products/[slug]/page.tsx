@@ -31,12 +31,12 @@ export const generateMetadata = async ({ params }: { params: { slug: string } })
       description: product.description || "Shop high-quality products at Borcelle.",
       url: `${process.env.ECOM_STORE_UR}/products/${params.slug}`,
       canonical: `${process.env.ECOM_STORE_UR}/products/${params.slug}`,
-      type: 'website', // Change this if necessary
+      type: 'website', 
       images: [
         {
           url: product.media[0] || 'fallback-image.jpg',
           width: 220,
-          height: 230,
+          height: 250,
           alt: product.title,
         },
       ],

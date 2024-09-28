@@ -2,6 +2,7 @@ import Customer from "@/lib/models/Customer";
 import Order from "@/lib/models/Order";
 import Product from "@/lib/models/Product";
 import { connectToDB } from "@/lib/mongoDB";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 // export const GET = async (req: NextRequest, { params }: { params: { orderId: String } }) => {
@@ -39,9 +40,9 @@ export const PUT = async (req: NextRequest, { params }: { params: { orderId: Str
 
     if (order.status) {
       order.status = status;
-    } 
+    }
     await order.save();
-
+    revalidatePath('/orders')
     return NextResponse.json("Order Canceled Successfully", { status: 200 })
   } catch (error) {
     if (error instanceof Error) {

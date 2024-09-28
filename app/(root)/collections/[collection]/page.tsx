@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export const generateMetadata = async ({ params }: { params: { collection: string } }) => {
   return {
-    title: `${unSlugify(params.collection)} | Borcelle`,
+    title: `Borcelle | ${unSlugify(params.collection)} `,
     productId: 'This is the Collection of ' + params.collection,
   };
 };

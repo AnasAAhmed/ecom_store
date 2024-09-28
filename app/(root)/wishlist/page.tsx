@@ -102,7 +102,7 @@
 
 import ProductCard from "@/components/ProductCard";
 import { FC } from "react";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { getWishList } from "@/lib/actions/actions";
 import type { Metadata } from 'next';
 
