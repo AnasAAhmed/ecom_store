@@ -4,10 +4,10 @@ const ProductSchema = new mongoose.Schema({
   title: { type: String, unique: true },
   description: String,
   media: [String],
-  category: { type: String, index: true },
+  category:String,
   slug: { type: String, unique: true },
   collections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" }],
-  tags: [{ type: String, index: true }],
+  tags: [String],
   variants: [{
     size: { type: String },
     color: { type: String },

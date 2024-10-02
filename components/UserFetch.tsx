@@ -10,7 +10,7 @@ const UserFetcher = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const res = await fetch('/api/users');
+                const res = await fetch('/api/wishlist');
                 const data = await res.json();
                 setUser(data);
             } catch (err) {

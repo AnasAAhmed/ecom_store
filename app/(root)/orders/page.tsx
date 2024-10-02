@@ -34,6 +34,9 @@ const Orders = async ({ searchParams }: { searchParams: any }) => {
                   Total Amount: {(order.totalAmount * order.exchangeRate).toFixed()}
                 </p>
                 <p className="text-base-bold">
+                  Payment method: {order.method}
+                </p>
+                <p className="text-base-bold">
                   <CancelOrder order={order} />
                 </p>
                 <p className="text-base-bold">Currency: {order.currency.toLowerCase()}</p>
@@ -65,7 +68,7 @@ const Orders = async ({ searchParams }: { searchParams: any }) => {
                           <p className="text-small-medium">
                             Title:{" "}
                             <span className="text-small-bold">
-                              <Link href={`/products/${slugify(orderItem.product.title)}?id=${orderItem.product._id}`}>
+                              <Link href={`/products/${slugify(orderItem.product.title)}`}>
                                 {orderItem.product.title}
                               </Link>
                             </span>

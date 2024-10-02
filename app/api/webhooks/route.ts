@@ -57,13 +57,14 @@ export const POST = async (req: NextRequest) => {
       await connectToDB()
 
       const newOrder = new Order({
-        customerClerkId: customerInfo.clerkId,
+        customerEmail: customerInfo.email,
         products: orderItems,
         shippingAddress,
         currency: session?.currency,
         shippingRate: (session?.shipping_cost?.amount_total! / 100).toString(),
         totalAmount: totalAmountInUSD,
         status: "Payment-Successfull & Processing",
+        method:'card',
         exchangeRate: exchangeRate,
       })
 

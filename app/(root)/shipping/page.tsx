@@ -72,8 +72,6 @@ const Shipping = () => {
       shippingRate: `${shippingRate} (${(shippingRateNumber * exchangeRate).toFixed()})`,
       exchangeRate,
       currency,
-      customerClerkId: user.id,
-      customerEmail: user.emailAddresses[0].emailAddress,
       status: 'COD & Processing',
     };
 

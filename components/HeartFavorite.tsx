@@ -1,7 +1,6 @@
 'use client';
 
 import { useWhishListUserStore } from "@/lib/hooks/useCart";
-import { useUser } from "@clerk/nextjs";
 import { Heart, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -32,7 +31,7 @@ const HeartFavorite = ({ productId, updateSignedInUser }: HeartFavoriteProps) =>
         return router.push("/sign-in");
       } else {
         setLoading(true);
-        const res = await fetch("/api/users/wishlist", {
+        const res = await fetch("/api/wishlist/action", {
           method: "POST",
           body: JSON.stringify({ productId }),
         });

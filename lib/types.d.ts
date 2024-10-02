@@ -91,10 +91,11 @@ type OrderType = {
     country: string
   };
   _id: string;
-  customerClerkId: string;
+  customerEmail: string;
   products: [OrderItemType]
   shippingRate: string;
   status: string;
+  method: string;
   exchangeRate: number;
   currency: string;
   totalAmount: number

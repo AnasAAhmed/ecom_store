@@ -1,4 +1,4 @@
-import User from "@/lib/models/User";
+import WishList from "@/lib/models/WishList";
 import { connectToDB } from "@/lib/mongoDB";
 
 import { auth } from "@clerk/nextjs/server";
@@ -14,9 +14,9 @@ export const POST = async (req: NextRequest) => {
 
     await connectToDB();
 
-    const user = await User.findOne({ clerkId: userId });
+    const wishList = await WishList.findOne({ clerkId: userId });
 
-    if (!user) {
+    if (!wishList) {
       return new NextResponse("User not found", { status: 404 });
     }
 
@@ -26,22 +26,22 @@ export const POST = async (req: NextRequest) => {
       return new NextResponse("Product Id required", { status: 400 });
     }
 
-    const productIndex = user.wishlist.indexOf(productId);
+    const productIndex = wishList.wishlist.indexOf(productId);
 
     let isLiked;
     if (productIndex !== -1) {
       // Dislike
-      user.wishlist.splice(productIndex, 1);
+      wishList.wishlist.splice(productIndex, 1);
       isLiked = false;
     } else {
       // Like
-      user.wishlist.push(productId);
+      wishList.wishlist.push(productId);
       isLiked = true;
     }
 
-    await user.save();
+    await wishList.save();
     
-    return NextResponse.json({ user, isLiked }, { status: 200 });
+    return NextResponse.json({ wishList, isLiked }, { status: 200 });
   } catch (err) {
     console.log("[wishlist_POST]", err);
     return new NextResponse("Internal Server Error", { status: 500 });

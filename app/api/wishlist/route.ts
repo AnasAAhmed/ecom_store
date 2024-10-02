@@ -1,4 +1,4 @@
-import User from "@/lib/models/User";
+import WishList from "@/lib/models/WishList";
 import { connectToDB } from "@/lib/mongoDB";
 import { auth } from "@clerk/nextjs/server";
 
@@ -14,15 +14,15 @@ export const GET = async (req: NextRequest) => {
 
     await connectToDB()
 
-    let user = await User.findOne({ clerkId: userId })
+    let wishList = await WishList.findOne({ clerkId: userId })
 
-    // When the user sign-in for the 1st, immediately we will create a new user for them
-    if (!user) {
-      user = await User.create({ clerkId: userId })
-      await user.save()
+    // When the user sign-up for the 1st time, immediately we will create a new user for them
+    if (!wishList) {
+      wishList = await WishList.create({ clerkId: userId })
+      await wishList.save()
     }
 
-    return NextResponse.json(user, { status: 200 })
+    return NextResponse.json(wishList, { status: 200 })
   } catch (err) {
     console.log("[users_GET]", err)
     return new NextResponse("Internal Server Error", { status: 500 })

@@ -67,12 +67,15 @@ const CancelOrder = ({ order }: OrderManageProps) => {
           <button className='print:hidden text-[26px] self-end mt-3' onClick={() => setIsOpen(false)}>&times;</button>
 
           <div className="flex flex-wrap gap-3 items-center pb-3">
-            <div className="flex flex-col pb-10 px-10 gap-5">
+            <div className="flex flex-col pb-10 px-10 gap-3">
               <p className="text-base-bold">
                 Order ID: <span className="text-base-medium">{order._id}</span>
               </p>
               <p className="text-base-bold">
                 Placed order on: {new Date(order.createdAt).toLocaleDateString()}
+              </p>
+              <p className="text-base-bold">
+                Customer's Email: {order.customerEmail}
               </p>
               <p className="text-base-bold">
                 Currency: <span className="text-base-medium">{order.currency}</span>

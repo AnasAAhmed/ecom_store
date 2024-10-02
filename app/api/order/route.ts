@@ -19,13 +19,11 @@ export const POST = async (req: NextRequest) => {
       totalAmount,
       exchangeRate,
       shippingRate,
-      customerClerkId,
-      customerEmail,
       currency,
       status,
     } = orderData;
 
-    if (!shippingAddress || !products || !customerClerkId || !shippingRate || !status || !totalAmount || !currency) {
+    if (!shippingAddress || !products || !shippingRate || !status || !totalAmount || !currency) {
       return NextResponse.json({ message: `Please enter All Details` }, { status: 400 });
     }
     if (!customerInfo.clerkId || !customerInfo.email || !customerInfo.name) {
@@ -47,15 +45,13 @@ export const POST = async (req: NextRequest) => {
       products,
       totalAmount: totalAmount / exchangeRate,
       shippingRate,
-      customerClerkId,
-      customerEmail,
+      customerEmail: customerInfo.email,
       currency,
       status,
+      method: 'COD',
       exchangeRate
     });
     await newOrder.save();
-    // console.log(newOrder);
-
     let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
 
     if (customer) {

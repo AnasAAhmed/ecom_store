@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const customerSchema = new mongoose.Schema({
   clerkId: String,
   name: String,
-  email: String,
+  email: { type: String, index: true },
   orders: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order"}]
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }]
   },
   createdAt: {
     type: Date,

@@ -3,7 +3,7 @@ import Collection from "../models/Collection"
 import Order from "../models/Order"
 import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
-import User from "../models/User"
+import WishList from "../models/WishList"
 import Review from "../models/Review"
 
 
@@ -170,7 +170,7 @@ export async function getWishList(userId: string) {
   try {
     await connectToDB();
 
-    const wishlist = await User.findOne({ clerkId: userId })
+    const wishlist = await WishList.findOne({ clerkId: userId })
       .populate({
         path: "wishlist",
         model: Product,
