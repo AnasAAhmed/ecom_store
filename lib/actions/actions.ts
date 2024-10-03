@@ -236,7 +236,7 @@ export async function getRelatedProducts(_id: string, category: string, collecti
 }
 
 
-//for webhook strip checkout form
+//for strip checkout form
 export const reduceStock = async (cartItems: OrderProducts[]) => {
   await connectToDB();
   for (const order of cartItems) {
@@ -272,8 +272,9 @@ export const reduceStock = async (cartItems: OrderProducts[]) => {
   };
 }
 
-//for COD form
+//for COD form & stripe webhook
 export const stockReduce = async (products: OrderProductCOD[]) => {
+  await connectToDB();
   for (let i = 0; i < products.length; i++) {
     const order = products[i];
     const product = await Product.findById(order.product);
@@ -303,6 +304,7 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
     }
     await product.save();
     revalidatePath(`/products/${order.product}`);
+    revalidatePath('/orders')
   };
 }
 

@@ -3,6 +3,7 @@ import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import Customer from "@/lib/models/Customer";
+import { stockReduce } from "@/lib/actions/actions";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -53,7 +54,7 @@ export const POST = async (req: NextRequest) => {
       const totalAmountInUSD = session.amount_total
         ? (session.amount_total / 100) / exchangeRate
         : 0;
-      
+
       await connectToDB()
 
       const newOrder = new Order({
@@ -64,13 +65,12 @@ export const POST = async (req: NextRequest) => {
         shippingRate: (session?.shipping_cost?.amount_total! / 100).toString(),
         totalAmount: totalAmountInUSD,
         status: "Payment-Successfull & Processing",
-        method:'card',
+        method: 'card',
         exchangeRate: exchangeRate,
       })
 
       await newOrder.save();
-      
-  
+
       let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
 
       if (customer) {
@@ -79,10 +79,20 @@ export const POST = async (req: NextRequest) => {
         customer = new Customer({
           ...customerInfo,
           orders: [newOrder._id],
-        })
-      }
+        });
 
+      };
       await customer.save();
+      //reduce stock
+      try {
+        await stockReduce(orderItems);
+      } catch (reduceStockError) {
+        if (reduceStockError instanceof Error) {
+          return NextResponse.json({ message: reduceStockError.message }, { status: 400 });
+        } else {
+          return NextResponse.json({ message: 'An unknown error occurred during stock reduction' }, { status: 400 });
+        }
+      };
     }
 
     return new NextResponse("Order created", { status: 200 })
