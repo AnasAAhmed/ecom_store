@@ -46,8 +46,8 @@ export const POST = async (req: NextRequest) => {
           product: item.price.product.metadata.productId,
           color: item.price.product.metadata.color || undefined,
           size: item.price.product.metadata.size || undefined,
-          quantity: item.quantity,
-          variantId: item.variantId,
+          quantity: item.price.quantity,
+          variantId: item.price.variantId,
         }
       });
 
@@ -104,7 +104,7 @@ export const POST = async (req: NextRequest) => {
         }
 
         // Find the matching variant
-        if (order.size || order.color || order.variantId) {
+        if (order.size || order.color && order.variantId) {
           const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
           if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
           console.log(3);
@@ -118,7 +118,8 @@ export const POST = async (req: NextRequest) => {
             console.error(`Not enough stock for variant: ${order.product}, size: ${order.size}, color: ${order.color}`);
             throw new Error("Not enough stock for this variant");
           }
-        }
+        }else console.log('varaint less product');
+        
         await product.save();
         console.log(5);
 

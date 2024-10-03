@@ -126,6 +126,7 @@ const Cart = () => {
                     )}
                     <p className="text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()} </p>
                     <span className="text-small-medium line-through text-red-1">{currency} {cartItem.item.expense}</span>
+                    <span className="text-small-medium line-through text-red-1">{cartItem.variantId}</span>
                     {cartItem.item.stock < 5 && <p className="text-small-medium">{`only ${cartItem.item.stock} left`}</p>}
                   </div>
                 </div>
