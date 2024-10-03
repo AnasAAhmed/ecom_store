@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import Customer from "@/lib/models/Customer";
 import { stockReduce } from "@/lib/actions/actions";
+import { revalidatePath } from "next/cache";
+import Product from "@/lib/models/Product";
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -84,17 +86,38 @@ export const POST = async (req: NextRequest) => {
       };
       await customer.save();
       //reduce stock
-      try {
-        await stockReduce(orderItems);
-      } catch (reduceStockError) {
-        if (reduceStockError instanceof Error) {
-          return NextResponse.json({ message: reduceStockError.message }, { status: 400 });
-        } else {
-          return NextResponse.json({ message: 'An unknown error occurred during stock reduction' }, { status: 400 });
-        }
-      };
-    }
+      for (let i = 0; i < orderItems.length; i++) {
+        const order = orderItems[i];
+        const product = await Product.findById(order.product);
+        if (!product) throw new Error("Product Not Found");
 
+        // Reduce the general product stock
+        if (product.stock >= order.quantity) {
+          product.stock -= order.quantity;
+          product.sold += order.quantity;
+        } else {
+          console.error(`Not enough stock for product: ${order.product}`);
+          throw new Error("Not enough stock for this Product");
+        }
+
+        // Find the matching variant
+        if (order.size || order.color || order.variantId) {
+          const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
+          if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
+
+          // Reduce the variant stock
+          if (variant.quantity! >= order.quantity) {
+            variant.quantity! -= order.quantity;
+          } else {
+            console.error(`Not enough stock for variant: ${order.product}, size: ${order.size}, color: ${order.color}`);
+            throw new Error("Not enough stock for this variant");
+          }
+        }
+        await product.save();
+        revalidatePath(`/products/${order.product}`);
+        revalidatePath('/orders')
+      }
+    }
     return new NextResponse("Order created", { status: 200 })
   } catch (err) {
     console.log("[webhooks_POST]", err)
