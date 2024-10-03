@@ -3,7 +3,6 @@ import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import Customer from "@/lib/models/Customer";
-import { stockReduce } from "@/lib/actions/actions";
 import { revalidatePath } from "next/cache";
 import Product from "@/lib/models/Product";
 
@@ -89,12 +88,16 @@ export const POST = async (req: NextRequest) => {
       for (let i = 0; i < orderItems.length; i++) {
         const order = orderItems[i];
         const product = await Product.findById(order.product);
+        console.log(1);
+        
         if (!product) throw new Error("Product Not Found");
 
         // Reduce the general product stock
         if (product.stock >= order.quantity) {
           product.stock -= order.quantity;
           product.sold += order.quantity;
+        console.log(2);
+
         } else {
           console.error(`Not enough stock for product: ${order.product}`);
           throw new Error("Not enough stock for this Product");
@@ -104,16 +107,21 @@ export const POST = async (req: NextRequest) => {
         if (order.size || order.color || order.variantId) {
           const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
           if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
+          console.log(3);
 
           // Reduce the variant stock
           if (variant.quantity! >= order.quantity) {
             variant.quantity! -= order.quantity;
+        console.log(4);
+
           } else {
             console.error(`Not enough stock for variant: ${order.product}, size: ${order.size}, color: ${order.color}`);
             throw new Error("Not enough stock for this variant");
           }
         }
         await product.save();
+        console.log(5);
+
         revalidatePath(`/products/${order.product}`);
         revalidatePath('/orders')
       }
