@@ -47,9 +47,10 @@ export const POST = async (req: NextRequest) => {
           color: item.price.product.metadata.color || undefined,
           size: item.price.product.metadata.size || undefined,
           quantity: item.price.product.metadata.quantity,
-          variantId: item.price.product.metadata.variantId,
+          variantId: item.price.product.metadata.variantId || undefined,
         }
       });
+console.log(orderItems);
 
       const exchangeRate = retrieveSession.metadata?.exchange_rate ? parseFloat(retrieveSession.metadata!.exchange_rate) : 1;
       const totalAmountInUSD = session.amount_total
@@ -89,14 +90,14 @@ export const POST = async (req: NextRequest) => {
         const order = orderItems[i];
         const product = await Product.findById(order.product);
         console.log(1);
-        
+
         if (!product) throw new Error("Product Not Found");
 
         // Reduce the general product stock
         if (product.stock >= order.quantity) {
           product.stock -= order.quantity;
           product.sold += order.quantity;
-        console.log(2);
+          console.log(2);
 
         } else {
           console.error(`Not enough stock for product: ${order.product}`);
@@ -112,14 +113,14 @@ export const POST = async (req: NextRequest) => {
           // Reduce the variant stock
           if (variant.quantity! >= order.quantity) {
             variant.quantity! -= order.quantity;
-        console.log(4);
+            console.log(4);
 
           } else {
             console.error(`Not enough stock for variant: ${order.product}, size: ${order.size}, color: ${order.color}`);
             throw new Error("Not enough stock for this variant");
           }
-        }else console.log('varaint less product');
-        
+        } else console.log('varaint less product');
+
         await product.save();
         console.log(5);
 
