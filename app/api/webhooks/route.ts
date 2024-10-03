@@ -46,8 +46,8 @@ export const POST = async (req: NextRequest) => {
           product: item.price.product.metadata.productId,
           color: item.price.product.metadata.color || undefined,
           size: item.price.product.metadata.size || undefined,
-          quantity: item.price.quantity,
-          variantId: item.price.variantId,
+          quantity: item.price.product.metadata.quantity,
+          variantId: item.price.product.metadata.variantId,
         }
       });
 
