@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-  customerEmail: String,
+  customerEmail: { type: String, index: true },
   products: [
     {
       product: {

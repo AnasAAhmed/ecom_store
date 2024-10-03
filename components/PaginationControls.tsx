@@ -28,7 +28,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ currentPage, to
           Prev
         </button>
         <span className="text-base">
-          {currentPage}
+          {currentPage}/{totalPages}
         </span>
         <button
           disabled={currentPage === totalPages}

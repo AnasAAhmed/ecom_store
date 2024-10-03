@@ -12,6 +12,7 @@ const ReviewSchema = new mongoose.Schema({
     productId: {
         type: String,
         required: true,
+        index:true
     },
     photo: {
         type: String,

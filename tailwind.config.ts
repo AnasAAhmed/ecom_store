@@ -53,8 +53,8 @@ const config: Config = {
       "body-medium": [
         "18px",
         {
-          lineHeight: "100%",
-          fontWeight: "500",
+          lineHeight: "120%",
+          fontWeight: "400",
         },
       ],
       "base-bold": [

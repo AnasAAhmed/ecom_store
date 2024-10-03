@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
         exchange_rate: exchangeRate.toString(),
       },
       client_reference_id: customer.clerkId,
+      customer_email:customer.email,
       success_url: `${process.env.ECOM_STORE_URL}/payment_success`,
       cancel_url: `${process.env.ECOM_STORE_URL}/cart`,
 

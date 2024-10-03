@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const wishListSchema = new mongoose.Schema({
-  clerkId: String,
+  clerkId: { type: String, unique: true, index: true },
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,

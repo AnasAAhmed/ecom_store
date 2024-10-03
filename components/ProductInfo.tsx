@@ -42,7 +42,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             </div>
 
             <div className="flex gap-2">
-                <p className="text-base-medium text-grey-2">Category:</p>
+                <p className="text-body-medium text-grey-2">Category:</p>
                 <p className="text-base-bold">{productInfo.category}</p>
             </div>
 
@@ -101,7 +101,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
 
             {/* Stock Info */}
             {selectedVariant && (
-                <div>
+                <div className="text-body-medium text-grey-2">
                     Variant Stock:{" "}
                     {selectedVariant.quantity > 0 ? (
                         selectedVariant.quantity < 6 ? (
@@ -115,7 +115,7 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                 </div>
             )}
 
-            <div>
+            <div className="text-body-medium text-grey-2">
                 Overall Stock:{" "}
                 {productInfo.stock > 0 ? (
                     productInfo.stock <= 4 ? (
@@ -129,8 +129,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             </div>
 
             <div className="flex flex-col gap-2">
-                <p className="text-base-medium text-grey-2">Description:</p>
-                <p className="text-small-medium">{productInfo.description}</p>
+                <p className="text-body-medium text-grey-2">Description:</p>
+                <p className="text-body-medium">{productInfo.description}</p>
             </div>
 
             <div className="flex flex-col gap-2">

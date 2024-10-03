@@ -19,8 +19,7 @@ export async function getCollections() {
     console.log("[collections_GET]", err)
     throw new Error('Internal Server Error')
   }
-}
-
+};
 
 export async function getCollectionDetails(title: string) {
   try {
@@ -36,7 +35,7 @@ export async function getCollectionDetails(title: string) {
     console.log("[collectionId_GET]", err);
     throw new Error('Internal Server Error')
   }
-}
+};
 
 export async function getSearchProducts(query: string, page: number) {
   const limit = 6;
@@ -80,7 +79,7 @@ export async function getSearchProducts(query: string, page: number) {
     console.error('[search_GET]', err);
     throw new Error('Internal Server Error 500');
   }
-}
+};
 
 export async function getProducts() {
   try {
@@ -97,7 +96,8 @@ export async function getProducts() {
     throw new Error('Internal Server Error')
 
   }
-}
+};
+
 export async function getBestSellingProducts() {
   try {
     await connectToDB();
@@ -112,7 +112,7 @@ export async function getBestSellingProducts() {
     console.log("[products_GET]", err);
     throw new Error('Internal Server Error');
   }
-}
+};
 export async function getProductDetails(slug: string) {
   try {
     await connectToDB();
@@ -127,7 +127,7 @@ export async function getProductDetails(slug: string) {
     throw new Error('Internal Server Error')
 
   }
-}
+};
 export async function getProductDetailsForSeo(slug: string) {
   try {
     await connectToDB();
@@ -148,7 +148,7 @@ export async function getProductDetailsForSeo(slug: string) {
     throw new Error('Internal Server Error')
 
   }
-}
+};
 
 export async function getProductReviews(productId: string, page: number) {
   try {
@@ -182,14 +182,14 @@ export async function getWishList(userId: string) {
     console.log('somathing wrong' + typeError.message);
     throw new Error('somathing wrong' + typeError.message);
   }
-}
+};
 
-export async function getOrders(customerId: string, page: number) {
+export async function getOrders(customerEmail: string, page: number) {
   try {
     await connectToDB();
     const limit = 6
     const skip = (page - 1) * limit;
-    const totalOrders = await Order.countDocuments({ customerClerkId: customerId });
+    const totalOrders = await Order.countDocuments({ customerEmail });
     if (!totalOrders) {
       return JSON.parse(JSON.stringify({
         totalOrders
@@ -197,7 +197,7 @@ export async function getOrders(customerId: string, page: number) {
     }
     const totalPages = Math.ceil(totalOrders / limit);
     const orders = await Order.find({
-      customerClerkId: customerId,
+      customerEmail
     }).populate({ path: "products.product", model: Product }).sort({ createdAt: 'desc' }).limit(limit).skip(skip);
 
     return JSON.parse(JSON.stringify({
@@ -210,8 +210,8 @@ export async function getOrders(customerId: string, page: number) {
     console.log("[customerId_GET", err);
     throw new Error('Internal Server Error')
 
-  }
-}
+  };
+};
 
 export async function getRelatedProducts(_id: string, category: string, collections: string[]) {
   try {
@@ -233,44 +233,7 @@ export async function getRelatedProducts(_id: string, category: string, collecti
     console.log("[related_GET", err)
     throw new Error('Internal Server Error')
   }
-}
-
-
-//for strip checkout form
-export const reduceStock = async (cartItems: OrderProducts[]) => {
-  await connectToDB();
-  for (const order of cartItems) {
-    //  const order = cartItems;
-    const product = await Product.findById(order.item._id);
-    if (!product) throw new Error("Product Not Found");
-
-    // Reduce the general product stock
-    if (product.stock >= order.quantity) {
-      product.stock -= order.quantity;
-      product.sold += order.quantity;
-    } else {
-      console.error(`Not enough stock for product: ${order.item._id}`);
-      throw new Error("Not enough stock for this Product");
-    }
-
-    // Find the matching variant
-    if (order.size || order.color || order.variantId) {
-      const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
-      if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.item._id}, size: ${order.size}, color: ${order.color}`);
-
-      // Reduce the variant stock
-      if (variant.quantity! >= order.quantity) {
-        variant.quantity! -= order.quantity;
-      } else {
-        console.error(`Not enough stock for variant: ${order.item._id}, size: ${order.size}, color: ${order.color}`);
-        throw new Error("Not enough stock for this variant");
-      }
-    }
-    await product.save();
-
-    revalidatePath(`/products/${order.item._id}`);
-  };
-}
+};
 
 //for COD form & stripe webhook
 export const stockReduce = async (products: OrderProductCOD[]) => {
@@ -290,7 +253,7 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
     }
 
     // Find the matching variant
-    if (order.size || order.color || order.variantId) {
+    if (order.size || order.color && order.variantId) {
       const variant = product.variants.find((v: Variant) => v._id!.toString() === order.variantId);
       if (!variant) throw new Error(`Variant not ${order.variantId} found for product: ${order.product}, size: ${order.size}, color: ${order.color}`);
 
@@ -306,5 +269,5 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
     revalidatePath(`/products/${order.product}`);
     revalidatePath('/orders')
   };
-}
+};
 
