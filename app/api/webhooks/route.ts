@@ -46,11 +46,10 @@ export const POST = async (req: NextRequest) => {
           product: item.price.product.metadata.productId,
           color: item.price.product.metadata.color || undefined,
           size: item.price.product.metadata.size || undefined,
-          quantity: item.price.product.metadata.quantity,
           variantId: item.price.product.metadata.variantId || undefined,
+          quantity: item.quantity,
         }
       });
-console.log(orderItems);
 
       const exchangeRate = retrieveSession.metadata?.exchange_rate ? parseFloat(retrieveSession.metadata!.exchange_rate) : 1;
       const totalAmountInUSD = session.amount_total

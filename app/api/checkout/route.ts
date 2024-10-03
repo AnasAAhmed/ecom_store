@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { v4 as uuidv4 } from 'uuid';
-import { reduceStock } from "@/lib/actions/actions";
 
 
 export async function OPTIONS(data: any,) {
@@ -15,7 +14,6 @@ export async function OPTIONS(data: any,) {
 
 
 export async function POST(req: NextRequest) {
-  const idempotencyKey = uuidv4();
   try {
     const { cartItems, customer, currency, exchangeRate } = await req.json();
     if (!cartItems || !customer || !currency || !exchangeRate) {
@@ -62,14 +60,8 @@ export async function POST(req: NextRequest) {
       cancel_url: `${process.env.ECOM_STORE_URL}/cart`,
 
     }, {
-      idempotencyKey
+      idempotencyKey: uuidv4(),
     });
-    // try {
-    //   await reduceStock(cartItems);
-    // } catch (reduceStockError) {
-    //   console.error("Error during stock reduction:", reduceStockError);
-    //   return new NextResponse("Failed to reduce stock", { status: 500 });
-    // }
     return OPTIONS(session);
   } catch (err) {
     console.log("[checkout_POST]", err);
