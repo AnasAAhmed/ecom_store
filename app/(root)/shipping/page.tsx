@@ -72,7 +72,6 @@ const Shipping = () => {
       shippingRate: `${shippingRate} (${(shippingRateNumber * exchangeRate).toFixed()})`,
       exchangeRate,
       currency,
-      status: 'COD & Processing',
     };
 
     try {
@@ -86,9 +85,7 @@ const Shipping = () => {
         const errorResponse = await response.json();
         toast.error(errorResponse.message || 'Failed to place order');
       } else {
-        cart.clearCart();
-        toast.success('Order Placed Successfully');
-        router.push('/orders');
+        router.push('/payment_success');
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'An error occurred');

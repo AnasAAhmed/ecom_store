@@ -3,11 +3,10 @@ import { toast } from "react-hot-toast";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 interface CartItem {
-  item: ProductType;
+  item: CartProductType;
   quantity: number;
   color?: string;
   size?: string;
-  stock: number;
   variantId?: string;
 }
 
@@ -18,7 +17,7 @@ interface CartStore {
   increaseQuantity: (idToIncrease: string) => void;
   decreaseQuantity: (idToDecrease: string) => void;
   clearCart: () => void;
-  // updateStock: (itemId: string, newStock: number) => void;
+  updateStock: () => Promise<void>;
 }
 
 const useCart = create(
@@ -26,7 +25,7 @@ const useCart = create(
     (set, get) => ({
       cartItems: [],
       addItem: (data: CartItem) => {
-        const { item, quantity, color, size, stock, variantId } = data;
+        const { item, quantity, color, size, variantId } = data;
         const currentItems = get().cartItems;
         const isExisting = currentItems.find(
           (cartItem) => cartItem.item._id === item._id
@@ -38,7 +37,7 @@ const useCart = create(
           );
         };
 
-        set({ cartItems: [...newCartItems, { item, quantity, color, size, stock, variantId }] });
+        set({ cartItems: [...newCartItems, { item, quantity, color, size, variantId }] });
         toast.success("Item added to cart");
       },
       removeItem: (idToRemove: string) => {
@@ -51,7 +50,7 @@ const useCart = create(
       increaseQuantity: async (idToIncrease: string) => {
         const newCartItems = get().cartItems.map((cartItem) => {
           if (cartItem.item._id === idToIncrease) {
-            if (cartItem.quantity < cartItem.stock) {
+            if (cartItem.quantity < cartItem.item.stock) {
               return { ...cartItem, quantity: cartItem.quantity + 1 };
             } else {
               toast.error("Cannot add more, stock limit reached");
@@ -72,6 +71,62 @@ const useCart = create(
         });
         set({ cartItems: newCartItems });
       },
+      updateStock: async () => {
+        const currentItems = get().cartItems;
+        const productIds = currentItems.map((cartItem) => cartItem.item._id);
+      
+        const response = await fetch('/api/products', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Product-IDs': JSON.stringify(productIds),
+          },
+        });
+      
+        if (!response.ok) {
+          throw new Error('Failed to fetch products stock');
+        }
+      
+        const updatedProducts = await response.json();
+      
+        const updatedCartItems = currentItems.map((cartItem) => {
+          const updatedProduct = updatedProducts.find((p: any) => p._id === cartItem.item._id);
+      
+          if (updatedProduct) {
+            // Check if the product has variants
+            if (updatedProduct.variants && updatedProduct.variants.length > 0) {
+              // Find the matching variant by size and color
+              const updatedVariant = updatedProduct.variants.find((variant: any) => {
+                return variant.size === cartItem.size && variant.color === cartItem.color;
+              });
+      
+              if (updatedVariant) {
+                // Update the cart item with the variant stock
+                return { 
+                  ...cartItem, 
+                  item: { 
+                    ...cartItem.item, 
+                    stock: updatedVariant.quantity 
+                  } 
+                };
+              }
+            } else {
+              // If no variants exist, use the general product stock
+              return { 
+                ...cartItem, 
+                item: { 
+                  ...cartItem.item, 
+                  stock: updatedProduct.stock 
+                } 
+              };
+            }
+          }
+          return cartItem;
+        });
+      
+        set({ cartItems: updatedCartItems });
+      },
+      
       clearCart: () => set({ cartItems: [] }),
     }),
     {
@@ -109,7 +164,7 @@ export const useRegion = create<RegionStore>()(
         const currentTime = Date.now();
         const threeDays = 3 * 24 * 3600 * 1000; // 3 days in milliseconds
         const shouldFetch =
-          currency !== 'USD' && currency !== 'PKR' &&// Only fetch if the currency is not USD
+          currency !== 'USD' && currency !== 'PKR' &&// Only fetch if the currency is not USD or PKR
           (currency !== get().currency || !get().lastFetched || currentTime - get().lastFetched! > threeDays);
         if (shouldFetch) {
           let exchangeRate;
@@ -147,8 +202,6 @@ interface UserState {
   user: {
     clerkId: string;
     wishlist: [string];
-    createdAt: string;
-    updatedAt: string;
   } | null;
   setUser: (user: any) => void;
   resetUser: () => void;

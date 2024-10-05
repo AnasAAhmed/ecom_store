@@ -71,7 +71,7 @@ export const POST = async (req: NextRequest) => {
 
       await newOrder.save();
 
-      let customer = await Customer.findOne({ clerkId: customerInfo.clerkId })
+      let customer = await Customer.findOne({ clerkId: customerInfo.clerkId });
 
       if (customer) {
         customer.orders.push(newOrder._id)
@@ -80,7 +80,6 @@ export const POST = async (req: NextRequest) => {
           ...customerInfo,
           orders: [newOrder._id],
         });
-
       };
       await customer.save();
 

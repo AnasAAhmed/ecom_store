@@ -3,8 +3,8 @@ import Collection from "../models/Collection"
 import Order from "../models/Order"
 import Product from "../models/Product"
 import { connectToDB } from "../mongoDB"
-import WishList from "../models/WishList"
 import Review from "../models/Review"
+import Customer from "../models/Customer"
 
 
 
@@ -170,7 +170,7 @@ export async function getWishList(userId: string) {
   try {
     await connectToDB();
 
-    const wishlist = await WishList.findOne({ clerkId: userId })
+    const wishlist = await Customer.findOne({ clerkId: userId })
       .populate({
         path: "wishlist",
         model: Product,
@@ -179,8 +179,8 @@ export async function getWishList(userId: string) {
     return JSON.parse(JSON.stringify(wishlist));
   } catch (error) {
     const typeError = error as Error;
-    console.log('somathing wrong' + typeError.message);
-    throw new Error('somathing wrong' + typeError.message);
+    console.log('something wrong' + typeError.message);
+    throw new Error('something wrong' + typeError.message);
   }
 };
 

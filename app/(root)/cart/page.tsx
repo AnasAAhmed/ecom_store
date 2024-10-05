@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import useCart, { useRegion } from "@/lib/hooks/useCart";
 import { useUser } from "@clerk/nextjs";
-import { LoaderIcon, MinusCircle, PlusCircle, Trash, XCircleIcon } from "lucide-react";
+import { Loader2, LoaderIcon, MinusCircle, PlusCircle, Trash, XCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from 'react-hot-toast';
@@ -17,6 +17,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [expand, setExpand] = useState(false);
   const [message, setMessage] = useState(false);
+  const [isRevalidating, setIsRevalidating] = useState(false);
   const [isCOD, setIsCOD] = useState<string>("NULL");
 
   const cart = useCart();
@@ -95,6 +96,17 @@ const Cart = () => {
     }
   };
 
+  const revalidateStockBeforeCheckout = () => {
+    try {
+      setIsRevalidating(true);
+      cart.updateStock();
+      toast.success('Updating products stock');
+      setExpand(true);
+    } catch (error) {
+      toast.error('error updating products stock' + (error as Error).message);
+    }
+    finally { setIsRevalidating(false); }
+  }
 
 
   return (
@@ -105,10 +117,13 @@ const Cart = () => {
         {cart.cartItems.length === 0 ? (
           <p className="text-body-bold">No item in cart</p>
         ) : (
-          <div>
+          <div className='relative' style={{ opacity: isRevalidating ? 0.30 : 1 }}>
+            {isRevalidating && <div className="absolute right-56 bg-white text-black">
+              <Loader2 size={'4rem'} className='animate-spin' />
+            </div>}
             {cart.cartItems.map((cartItem, i) => (
               <div key={i} className="w-full flex max-sm:flex-col max-sm:gap-3 hover:bg-grey-1 px-4 py-3 items-center max-sm:items-start justify-between">
-                <div className="flex items-center">
+                <div className={`flex items-center ${cartItem.item.stock < 1 && 'opacity-35'}`}>
                   <Image
                     src={cartItem.item.media[0]}
                     width={100}
@@ -125,7 +140,7 @@ const Cart = () => {
                       <p className="text-small-medium">{cartItem.size}</p>
                     )}
                     <p className="text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()} </p>
-                    {cartItem.item.expense && <span className="text-small-medium line-through text-red-1">{currency} {cartItem.item.expense}</span>}
+                    {cartItem.item.expense > 0 && <span className="text-small-medium line-through text-red-1">{currency} {cartItem.item.expense}</span>}
                     {cartItem.item.stock < 5 && <p className="text-small-medium">{`only ${cartItem.item.stock} left`}</p>}
                   </div>
                 </div>
@@ -210,7 +225,7 @@ const Cart = () => {
         }
         {!expand && <button
           className={`border rounded-lg flex justify-center ${cart.cartItems.length === 0 && "cursor-not-allowed"} text-body-bold bg-white py-3 w-full hover:bg-black hover:text-white`}
-          onClick={() => setExpand(true)}
+          onClick={revalidateStockBeforeCheckout}
           disabled={cart.cartItems.length === 0 || totalRounded < 1}
         >
           Proceed

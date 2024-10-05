@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { LoaderIcon } from 'lucide-react';
 import Modal from './Modal';
+import { useRouter } from 'next/navigation';
 
 type OrderManageProps = {
   order: OrderType;
@@ -12,6 +13,7 @@ const CancelOrder = ({ order }: OrderManageProps) => {
   const [loadingUp, setLoadingUp] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter()
   const onClose = () => setIsOpen(false);
 
   useEffect(() => {
@@ -33,6 +35,8 @@ const CancelOrder = ({ order }: OrderManageProps) => {
 
       if (res.ok) {
         setLoadingUp(false);
+        router.refresh();
+        onClose()
         toast.success('Order Canceled successfully we will Contact you in an hour');
       } else {
         toast.error('Internal server error. Please try again.');
@@ -40,7 +44,7 @@ const CancelOrder = ({ order }: OrderManageProps) => {
       }
     } catch (err) {
       setLoadingUp(false);
-      console.error('Error updating order status:', err); 
+      console.error('Error updating order status:', err);
       toast.error('Internal server error. Please try again.');
     }
   };
@@ -52,7 +56,7 @@ const CancelOrder = ({ order }: OrderManageProps) => {
     "Ordered by mistake",
     "Shipping time was too long",
     "Prefer a different product",
-    "Issues with payment",
+    order.method !== "COD" ? "Issues with payment" : '',
     "Concerns about product quality",
     "Other"
   ];
@@ -84,14 +88,15 @@ const CancelOrder = ({ order }: OrderManageProps) => {
                 Shipping address: <span className="text-base-medium leading-8">{order.shippingAddress.street}, {order.shippingAddress.city}, {order.shippingAddress.state}, {order.shippingAddress.postalCode}, {order.shippingAddress.country}, phone:{order.shippingAddress.phone || "null"}</span>
               </p>
               <p className="text-base-bold">
-                Total {!order.status.startsWith('COD')&&'Paid'}: <span className="text-base-medium">${order.totalAmount}</span>
+                Total {!order.status.startsWith('COD') && 'Paid'}: <span className="text-base-medium">${order.totalAmount}</span>
               </p>
               <p className="text-base-bold">
                 Shipping rate: <span className="text-base-medium">({order.currency}) {order.shippingRate}</span>
               </p>
-              <p className="text-base-bold">
-                Status: <span className="text-base-medium ">{order.status}</span>
-              </p>
+              <p className="text-base-bold"
+                  style={{ color: order.status.startsWith('Canceled') ? 'red' : '' }}>
+                  Status: {order.status}
+                </p>
               <p className="text-base-bold">
                 Products: <span className="text-base-medium">{order.products.length}</span>
               </p>
@@ -102,22 +107,22 @@ const CancelOrder = ({ order }: OrderManageProps) => {
                   <th className='border'>color</th>
                   <th className='border'>quantity</th>
                 </thead>
-                  {order.products.map((i)=>(
-                <tbody className='border'>
+                {order.products.map((i) => (
+                  <tbody className='border'>
                     <th className='border'>{i.product.title}</th>
-                    <th className='border'>{i.size||'N/A'}</th>
-                    <th className='border'>{i.color||'N/A'}</th>
+                    <th className='border'>{i.size || 'N/A'}</th>
+                    <th className='border'>{i.color || 'N/A'}</th>
                     <th className='border'>{i.quantity}</th>
-                </tbody>
-                  ))}
+                  </tbody>
+                ))}
               </table>
             </div>
           </div>
-          {!order.status.startsWith('Canceled')&& timeDifference <= 12 && (
+          {!order.status.startsWith('Canceled') && timeDifference <= 12 && (
             <div className='mx-auto print:hidden items-center flex gap-3'>
-              <label htmlFor='dd'>Cancel Order:</label>
-              <select id='dd' className='h-8' value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
-              <option value={''}>Select a reason</option>
+              <label htmlFor='Cancel'>Cancel Order:</label>
+              <select id='Cancel' className='h-8' value={newStatus} onChange={(e) => setNewStatus(e.target.value)}>
+                <option value={''}>Select a reason</option>
                 {cancellationReasons.map((i) => (
                   <option key={i} value={i}>{i}</option>
                 ))}

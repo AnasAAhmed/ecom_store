@@ -1,6 +1,5 @@
-import WishList from "@/lib/models/WishList";
+import Customer from "@/lib/models/Customer";
 import { connectToDB } from "@/lib/mongoDB";
-
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,10 +13,11 @@ export const POST = async (req: NextRequest) => {
 
     await connectToDB();
 
-    const wishList = await WishList.findOne({ clerkId: userId });
+    let wishList = await Customer.findOne({ clerkId: userId });
 
     if (!wishList) {
       return new NextResponse("User not found", { status: 404 });
+
     }
 
     const { productId } = await req.json();
@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     await wishList.save();
-    
+
     return NextResponse.json({ wishList, isLiked }, { status: 200 });
   } catch (err) {
     console.log("[wishlist_POST]", err);

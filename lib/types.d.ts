@@ -29,6 +29,15 @@ type ProductType = {
   createdAt: Date;
   updatedAt: Date;
 }
+type CartProductType = {
+  _id: string;
+  title: string;
+  description: string;
+  media: [string];
+  stock: number;
+  price: number;
+  expense: number;
+}
 
 type OrderProductCOD = {
 

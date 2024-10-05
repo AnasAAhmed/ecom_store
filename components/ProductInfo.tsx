@@ -14,6 +14,8 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
     const price = (productInfo.price * exchangeRate).toFixed();
     const expense = (productInfo.expense * exchangeRate).toFixed();
     const uniqueSizes = Array.from(new Set(productInfo.variants.map(variant => variant.size)));
+    const uniqueColors = Array.from(new Set(productInfo.variants.map(variant => variant.color)));
+    const colorsOfVariantThatisNot0 = selectedVariant && productInfo.variants.filter(v => v.size === selectedVariant.size && v.quantity > 0);
 
     useEffect(() => {
         const availableVariant = productInfo.variants.find(variant => variant.quantity > 0);
@@ -85,17 +87,15 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
             {/* Color Selection */}
             {c.length > 0 && selectedVariant && (
                 <div className="flex mb-4">
-                    {productInfo.variants
-                        .filter(v => v.size === selectedVariant.size && v.quantity > 0)
-                        .map((variant, index) => (
-                            <button
-                                key={index}
-                                className={`${selectedVariant.color === variant.color ? "bg-black text-white" : "bg-white text-gray-800"} border border-black text-gray-800 px-2 py-1 mr-2 rounded-md`}
-                                onClick={() => handleColorChange(variant.color)}
-                            >
-                                {variant.color}
-                            </button>
-                        ))}
+                    {uniqueColors.map((color, index) => (
+                        <button
+                            key={index}
+                            className={`${colorsOfVariantThatisNot0?.find(v => v.color === color) ?'' :'line-through'} ${selectedVariant.color === color ? "bg-black text-white" : "bg-white text-gray-800"} line-througsh border border-black text-gray-800 px-2 py-1 mr-2 rounded-md`}
+                            onClick={() => handleColorChange(color)}
+                        >
+                            {color}
+                        </button>
+                    ))}
                 </div>
             )}
 
@@ -156,12 +156,19 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                 }
                 onClick={() => {
                     cart.addItem({
-                        item: productInfo,
+                        item: {
+                            _id: productInfo._id,
+                            title: productInfo.title,
+                            description: productInfo.description,
+                            media: productInfo.media,
+                            stock: productInfo.variants?.length > 0 ? selectedVariant!.quantity : productInfo.stock,
+                            price: productInfo.price,
+                            expense: productInfo.expense,
+                        },
                         quantity,
-                        stock: productInfo.stock,
                         color: selectedVariant?.color,
-                        size: selectedVariant?.size ,
-                        variantId: selectedVariant?._id 
+                        size: selectedVariant?.size,
+                        variantId: selectedVariant?._id
                     });
                 }}
             >

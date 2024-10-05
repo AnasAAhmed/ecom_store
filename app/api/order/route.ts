@@ -20,25 +20,16 @@ export const POST = async (req: NextRequest) => {
       exchangeRate,
       shippingRate,
       currency,
-      status,
     } = orderData;
 
-    if (!shippingAddress || !products || !shippingRate || !status || !totalAmount || !currency) {
+    if (!shippingAddress || !products || !shippingRate || !totalAmount || !currency) {
       return NextResponse.json({ message: `Please enter All Details` }, { status: 400 });
     }
     if (!customerInfo.clerkId || !customerInfo.email || !customerInfo.name) {
       return NextResponse.json({ message: 'User Details Missing/Login first' }, { status: 400 });
     }
 
-    try {
-      await stockReduce(products);
-    } catch (reduceStockError) {
-      if (reduceStockError instanceof Error) {
-        return NextResponse.json({ message: reduceStockError.message }, { status: 400 });
-      } else {
-        return NextResponse.json({ message: 'An unknown error occurred during stock reduction' }, { status: 400 });
-      }
-    }
+    await stockReduce(products);
 
     const newOrder = new Order({
       shippingAddress,
@@ -47,7 +38,7 @@ export const POST = async (req: NextRequest) => {
       shippingRate,
       customerEmail: customerInfo.email,
       currency,
-      status,
+      status:'COD & Processing',
       method: 'COD',
       exchangeRate
     });

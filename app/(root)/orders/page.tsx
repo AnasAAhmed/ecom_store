@@ -44,7 +44,7 @@ const Orders = async ({ searchParams }: { searchParams: any }) => {
                   style={{ color: order.status.startsWith('Canceled') ? 'red' : '' }}>
                   Status: {order.status}
                 </p>
-                {order.status.startsWith('Canceled') &&
+                {order.method !== 'COD' && order.status.startsWith('Canceled') &&
                   <p className="text-base-bold flex flex-col max-w-60 gap-1" >
                     Contact for refund:
                     <a href="tel:example@gmail.com" className="hover:underline">Call to: example@gmail.com</a>
