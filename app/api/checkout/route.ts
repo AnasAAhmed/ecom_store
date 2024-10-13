@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         price_data: {
           currency: currency.toLowerCase(),
           product_data: {
-            name: cartItem.item.title,
+            name: `${cartItem.item.title}${cartItem.size ? ` (Size: ${cartItem.size})` : ''}${cartItem.color ? ` (Color: ${cartItem.color})` : ''}`,
             images: [cartItem.item.media[0]],
             metadata: {
               productId: cartItem.item._id,

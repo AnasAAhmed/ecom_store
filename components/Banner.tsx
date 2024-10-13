@@ -14,9 +14,9 @@ type BannerProps = {
 
 const Banner = ({ imgUrl, text, heading, textColor, shade, link, buttonText, scrollDown }: BannerProps) => {
   return (
-    <div className="px-3 py-6 mt-9 md:mt-0 md:px-6">
+    <div className="px-3 py-6 md:mt-0 md:px-6">
 
-      <div className="relative w-full h-[400px] rounded-xl  sm:h-[500px] md:h-[600px] bg-cover bg-center" style={{ backgroundImage: `url(${imgUrl})` }}>
+      <div className="relative w-full h-[200px] rounded-xl sm:h-[500px] md:h-[600px] bg-cover bg-center" style={{ backgroundImage: `url(${imgUrl})` }}>
         <div className={`absolute inset-0  opacity-60 rounded-xl`}
           style={{ background: `linear-gradient(to bottom, ${shade} 0%, transparent 100%)` }}>
         </div>

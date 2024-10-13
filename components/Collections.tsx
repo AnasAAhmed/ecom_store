@@ -1,10 +1,10 @@
-import { getCollections } from "@/lib/actions/actions";
 import { slugify, unSlugify } from "@/lib/utils/features";
 import Image from "next/image";
 import Link from "next/link";
 
-const Collections = async () => {
-  const collections = await getCollections();
+const Collections = async ({ collections }: { collections: CollectionType[] | string }) => {
+
+  if (typeof collections === 'string') return collections||'Please checkout your Internet';
 
   return (
     <div className="flex flex-col items-center gap-10 py-8 px-5 my-[4rem]">

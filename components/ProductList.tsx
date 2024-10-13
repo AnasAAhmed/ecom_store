@@ -2,18 +2,19 @@ import { getProducts } from "@/lib/actions/actions";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 
-const ProductList = async () => {
+const ProductList = async ({ latestProducts }: { latestProducts: ProductType[] | string }) => {
 
-  const products = await getProducts();
+  if (typeof latestProducts === 'string') return latestProducts || 'Please checkout your Internet';
+
   return (
     <div className="flex flex-col items-center gap-10 py-8 px-5">
       <p className="text-heading2-bold">Latest Products</p>
-      {!products || products.length === 0 ? (
+      {!latestProducts || latestProducts.length === 0 ? (
         <p className="text-body-bold">No products found</p>
       ) : (
         <div className="flex flex-wrap justify-center gap-16">
-          {products.map((product: ProductType) => (
-            <ProductCard key={product._id} product={product}/>
+          {latestProducts.map((product: ProductType) => (
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
       )}

@@ -1,7 +1,7 @@
-import Banner from "@/components/Banner";
 import GroupComponent7 from "@/components/Services";
 import { MdEmail } from "react-icons/md";
 import type { Metadata } from 'next';
+import Banner from "@/components/Banner";
 
 export const metadata: Metadata = {
     title: "Borcelle | Contact",

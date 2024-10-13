@@ -6,20 +6,45 @@ import { connectToDB } from "../mongoDB"
 import Review from "../models/Review"
 import Customer from "../models/Customer"
 
-
-
-export async function getCollections() {
+export async function getHomePageProducts() {
   try {
 
+    await connectToDB();
     const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title").limit(6);
 
-    return JSON.parse(JSON.stringify(collections))
+    const bestSellingProducts = await Product.find()
+      .sort({ sold: -1, ratings: -1, createdAt: "desc" })
+      .select("-category -description -variants -timestamps")
+      .limit(4);
 
+    const latestProducts = await Product.find()
+      .sort({ createdAt: "desc" })
+      .select("-category -description -variants -timestamps")
+      .limit(8);
+
+    return JSON.parse(JSON.stringify({
+      collections,
+      bestSellingProducts,
+      latestProducts
+    }))
   } catch (err) {
     console.log("[collections_GET]", err)
-    throw new Error('Internal Server Error')
+    return ('Internal Server Error')
   }
 };
+
+// export async function getCollections() {
+//   try {
+
+//     const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title").limit(6);
+
+//     return JSON.parse(JSON.stringify(collections))
+
+//   } catch (err) {
+//     console.log("[collections_GET]", err)
+//     throw new Error('Internal Server Error')
+//   }
+// };
 
 export async function getCollectionDetails(title: string) {
   try {
@@ -81,38 +106,38 @@ export async function getSearchProducts(query: string, page: number) {
   }
 };
 
-export async function getProducts() {
-  try {
-    await connectToDB();
+// export async function getProducts() {
+//   try {
+//     await connectToDB();
 
-    const products = await Product.find()
-      .sort({ createdAt: "desc" })
-      .select("-category -description -variants -timestamps")
-      .limit(8);
+//     const products = await Product.find()
+//       .sort({ createdAt: "desc" })
+//       .select("-category -description -variants -timestamps")
+//       .limit(8);
 
-    return JSON.parse(JSON.stringify(products))
-  } catch (err) {
-    console.log("[products_GET]", err);
-    throw new Error('Internal Server Error')
+//     return JSON.parse(JSON.stringify(products))
+//   } catch (err) {
+//     console.log("[products_GET]", err);
+//     throw new Error('Internal Server Error')
 
-  }
-};
+//   }
+// };
 
-export async function getBestSellingProducts() {
-  try {
-    await connectToDB();
+// export async function getBestSellingProducts() {
+//   try {
+//     await connectToDB();
 
-    const products = await Product.find()
-      .sort({ sold: -1, ratings: -1, createdAt: "desc" })
-      .select("-category -description -variants -timestamps")
-      .limit(4);
+//     const products = await Product.find()
+//       .sort({ sold: -1, ratings: -1, createdAt: "desc" })
+//       .select("-category -description -variants -timestamps")
+//       .limit(4);
 
-    return JSON.parse(JSON.stringify(products));
-  } catch (err) {
-    console.log("[products_GET]", err);
-    throw new Error('Internal Server Error');
-  }
-};
+//     return JSON.parse(JSON.stringify(products));
+//   } catch (err) {
+//     console.log("[products_GET]", err);
+//     throw new Error('Internal Server Error');
+//   }
+// };
 export async function getProductDetails(slug: string) {
   try {
     await connectToDB();
@@ -131,8 +156,8 @@ export async function getProductDetails(slug: string) {
 export async function getProductDetailsForSeo(slug: string) {
   try {
     await connectToDB();
-    const regexPattern = slug.replace(/-/g, " ") ; 
-    const product = await Product.findOne({ 
+    const regexPattern = slug.replace(/-/g, " ");
+    const product = await Product.findOne({
       $or: [
         { title: { $regex: regexPattern, $options: 'i' } },  // Search by title with spaces
         { slug: { $regex: slug, $options: 'i' } }            // Search by exact or similar slug

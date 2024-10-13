@@ -5,8 +5,14 @@ import ProductList from "@/components/ProductList";
 import GroupComponent7 from "@/components/Services";
 import Banner from "@/components/Banner";
 import Social from "@/components/Social";
+import { getHomePageProducts } from "@/lib/actions/actions";
 
-export default function Home() {
+export default async function Home() {
+
+  const data = await getHomePageProducts();
+  const collections = data.collections || 'Internal server Error';
+  const bestSellingProducts = data.bestSellingProducts || 'Internal server Error';
+  const latestProducts = data.latestProducts || 'Internal server Error';
   return (
     <>
       <Banner
@@ -18,8 +24,8 @@ export default function Home() {
         link="/search"
         buttonText="Shop"
       />
-      <Collections />
-      <ProductList />
+      <Collections collections={collections}/>
+      <ProductList latestProducts={latestProducts}/>
       <Banner
         heading="Summer Collection 2024"
         text="Embrace the warmth with our stylish and comfortable summer wear "
@@ -29,7 +35,7 @@ export default function Home() {
         link="/search?query=summer"
         buttonText="Shop Now"
       />
-      <BestSellingProductsList />
+      <BestSellingProductsList bestSellingProducts={bestSellingProducts}/>
       <BlogSection />
       <Social />
       <GroupComponent7

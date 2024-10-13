@@ -31,7 +31,10 @@ export default function RootLayout({
 
           <Navbar />
           <Suspense fallback={<Loader />}>
+          <div className="max-sm:mt-20">
+
             {children}
+          </div>
           </Suspense>
           <Footer />
         </ClerkProvider>

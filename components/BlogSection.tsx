@@ -14,7 +14,7 @@ const BlogSection = () => {
           <GroupComponent3 blogCardImage="https://figma-to-code-ecom-design.vercel.app/rectangle-15@2x.png" />
         </div>
         <div className="flex flex-col items-center">
-          <Link href="/blog" className="text-lg font-medium" onClick={()=>window.scroll(0,0)}>View All Posts</Link>
+          <Link href="/blog" className="text-lg font-medium">View All Posts</Link>
           <div className="border-t-2 border-black w-16 mt-2"></div>
         </div>
       </section>

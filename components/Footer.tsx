@@ -53,14 +53,14 @@ const Footer = () => {
             </div>
             <div className="relative font-medium z-[1]">Privacy Policies</div>
             <div className="relative font-medium z-[1]">Help</div>
-            <div className="flex-1 flex flex-wrap items-start justify-start gap-[0.687rem] min-w-[11.625rem] text-[0.875rem] text-darkgray">
+            <form className="flex-1 flex flex-wrap items-start justify-start gap-[0.687rem] min-w-[11.625rem] text-[0.875rem] text-darkgray">
               <div className="flex-1 flex flex-col items-start justify-start gap-[0.187rem]">
-                <input type="email" placeholder="Enter your Email" className="h-[1.313rem] relative inline-block  z-[1] border border-black py-4 px-2 rounded-sm" />
+                <input type="email" required placeholder="Enter your Email" className="h-[1.313rem] relative inline-block  z-[1] border border-black py-4 px-2 rounded-sm" />
               </div>
               <div className="w-[4.688rem] flex flex-col items-start justify-start gap-[0.187rem]">
-                <button className=" bg-black p-2 rounded-md text-white hover:opacity-45">SUBSCRIBE</button>
+                <button type="submit" className=" bg-black p-2 rounded-md text-white hover:opacity-45">SUBSCRIBE</button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="h-screen flex justify-center items-center">
+    <div className="sm:mt-8 mt-24 flex justify-center items-center">
       <SignIn />
     </div>
   );

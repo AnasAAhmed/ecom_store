@@ -35,7 +35,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="hidden sm:flex justify-between items-center w-full bg-black text-white h-10 py-2 px-4">
+      <nav className="hidden sm:flex justify-between items-center w-full bg-black text-white h-10 py-2 px-4">
         <h1 className="font-mono text-heading2-bold">50% Off</h1>
         <div className="flex gap-4 text-base-bold">
           {["watch", "hat", "shoes", "kids", "women", "men"].map((item) => (
@@ -49,9 +49,9 @@ const Navbar = () => {
           ))}
         </div>
         <h1>Help: +(84) 546-6789</h1>
-      </div>
+      </nav>
 
-      <div className="sticky max-sm:fixed top-0 z-30 w-full bg-white shadow-md">
+      <nav className="sticky max-sm:fixed top-0 z-30 w-full bg-white shadow-md">
         <div className="flex justify-between items-center p-2">
           <Link href="/">
             <Image src="/logo.png" priority alt="logo" width={130} height={100} />
@@ -95,22 +95,29 @@ const Navbar = () => {
 
           {/* Mobile search bar */}
         </div>
-        <div className="flex sm:hidden w-[80%] mt-2 items-center border rounded-lg px-4 py-1">
-          <input
-            className="outline-none w-full"
-            placeholder="Search..."
-            value={query}
-            onKeyDown={onKeyDown}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <Search onClick={handleSearch} className="cursor-pointer h-4 w-4 hover:text-blue-500" />
+        <div className="px-4 flex sm:hidden pb-2">
+          <div className="flex sm:hidden w-full items-center border rounded-lg px-4 py-1">
+            <input
+              className="outline-none w-full"
+              placeholder="Search..."
+              value={query}
+              onKeyDown={onKeyDown}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Search onClick={handleSearch} className="cursor-pointer h-4 w-4 hover:text-blue-500" />
+          </div>
         </div>
         {/* Mobile Modal */}
         <Modal isOpen={isOpen} onClose={toggleModal} overLay={true}>
-          <div className="flex flex-col p-3 gap-3 bg-white rounded-lg border">
-            {["Home", "Shop", "Contact", "Wishlist", "Orders"].map((name, idx) => (
-              <Link key={idx} href={user ? `/${name.toLowerCase()}` : "/sign-in"} onClick={toggleModal}>
-                {name}
+          <ul className="flex flex-col p-3 gap-3 bg-white rounded-lg border">
+
+            {["/", "/search", "/contact", "/wishlist", "/orders"].map((name, idx) => (
+              <Link
+                key={idx}
+                href={name}
+                onClick={toggleModal}>
+                                {["Home", "Shop", "Contact", "Wishlist", "Orders"][idx]}
+
               </Link>
             ))}
             <Link href="/cart" className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white" onClick={toggleModal}>
@@ -118,9 +125,9 @@ const Navbar = () => {
               <span>Cart ({cart.cartItems.length})</span>
             </Link>
             <Currency className="sm:hidden" />
-          </div>
+          </ul>
         </Modal>
-      </div>
+      </nav>
     </>
   );
 };
