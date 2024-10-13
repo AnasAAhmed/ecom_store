@@ -1,4 +1,3 @@
-import { getBestSellingProducts } from "@/lib/actions/actions";
 import ProductCard from "./ProductCard";
 
 const BestSellingProductsList = async ({ bestSellingProducts }: { bestSellingProducts: ProductType[] | string }) => {
