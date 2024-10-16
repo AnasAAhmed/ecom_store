@@ -157,7 +157,6 @@ const ProductInfo = ({ productInfo }: { productInfo: ProductType }) => {
                         item: {
                             _id: productInfo._id,
                             title: productInfo.title,
-                            description: productInfo.description,
                             media: productInfo.media,
                             expense: productInfo.expense,
                             stock: selectedVariant?.quantity || productInfo.stock,
