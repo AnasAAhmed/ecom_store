@@ -11,7 +11,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-// Define the shipping schema with radio validation
 const shippingSchema = z.object({
   street: z.string().min(15, "Street address must be at least 15 characters"),
   city: z.string().min(4, "City must be at least 4 characters"),
@@ -22,7 +21,6 @@ const shippingSchema = z.object({
   shippingRate: z.enum(['Fast (COD)', 'Standard (COD)']),
 });
 
-// Component for Shipping
 const Shipping = () => {
   const { user } = useUser();
   const cart = useCart();

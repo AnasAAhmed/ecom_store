@@ -3,6 +3,7 @@
 import useCart from "@/lib/hooks/useCart";
 import Link from "next/link";
 import { useEffect } from "react";
+export const dynamic = 'force-static';
 
 const SuccessfulPayment = () => {
   const cart = useCart();

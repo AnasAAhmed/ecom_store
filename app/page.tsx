@@ -57,7 +57,7 @@ export default async function Home() {
     </>
   );
 }
-
+export const revalidate = 43200;
 
 // import BestSellingProductsList from "@/components/BestSellingPro";
 // import BlogSection from "@/components/BlogSection";
