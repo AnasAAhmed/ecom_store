@@ -25,7 +25,7 @@ export const POST = async (req: NextRequest) => {
     if (!shippingAddress || !products || !shippingRate || !totalAmount || !currency) {
       return NextResponse.json({ message: `Please enter All Details` }, { status: 400 });
     }
-    if (!customerInfo.clerkId || !customerInfo.email || !customerInfo.name) {
+    if (!customerInfo.clerkId || !customerInfo.email ) {
       return NextResponse.json({ message: 'User Details Missing/Login first' }, { status: 400 });
     }
 

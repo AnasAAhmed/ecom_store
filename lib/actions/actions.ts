@@ -119,8 +119,15 @@ export async function getProductDetails(slug: string) {
     if (!product) {
       return null;
     };
+    const relatedProducts = await Product.find({
+      $or: [
+        { category: product.category },
+        { collections: { $in: product.collections } }
+      ],
+      _id: { $ne: product._id }
+    }).select("-description -category -timestamps");
+    return JSON.parse(JSON.stringify({ product, relatedProducts }))
 
-    return JSON.parse(JSON.stringify(product))
   } catch (err) {
     console.log("[productId_GET]", err);
     throw new Error('Internal Server Error')
@@ -140,7 +147,6 @@ export async function getProductDetailsForSeo(slug: string) {
     if (!product) {
       return null;
     };
-
     return JSON.parse(JSON.stringify(product))
   } catch (err) {
     console.log("[productId_GET]", err);
@@ -152,12 +158,11 @@ export async function getProductDetailsForSeo(slug: string) {
 export async function getProductReviews(productId: string, page: number) {
   try {
     const skip = (page - 1) * 4;
-    await connectToDB();
-    const totalReviews = await Review.countDocuments({ productId });
+    await connectToDB(); 
     const reviews = await Review.find({ productId }).limit(4).skip(skip);
 
 
-    return JSON.parse(JSON.stringify({ reviews, totalReviews }))
+    return JSON.parse(JSON.stringify(reviews ))
   } catch (err) {
     console.log("[productId_GET]", err);
     throw new Error('Internal Server Error')
@@ -212,27 +217,23 @@ export async function getOrders(customerEmail: string, page: number) {
   };
 };
 
-export async function getRelatedProducts(_id: string, category: string, collections: string[]) {
-  try {
-    await connectToDB()
+// export async function getRelatedProducts(_id: string, category: string, collections: string[]) {
+//   try {
+//     await connectToDB()
 
-    const relatedProducts = await Product.find({
-      $or: [
-        { category: category },
-        { collections: { $in: collections } }
-      ],
-      _id: { $ne: _id }
-    }).select("-description -category -timestamps");
+//     const relatedProducts = await Product.find({
+//       $or: [
+//         { category: category },
+//         { collections: { $in: collections } }
+//       ],
+//       _id: { $ne: _id }
+//     }).select("-description -category -timestamps");
 
-    if (!relatedProducts) {
-      throw new Error('No related products found')
-    }
-    return JSON.parse(JSON.stringify(relatedProducts))
-  } catch (err) {
-    console.log("[related_GET", err)
-    throw new Error('Internal Server Error')
-  }
-};
+//     return JSON.parse(JSON.stringify(relatedProducts))
+//   } catch (err) {
+//     console.log("[related_GET", err)
+//     throw new Error('Internal Server Error')
+//   }
 
 //for COD form & stripe webhook
 export const stockReduce = async (products: OrderProductCOD[]) => {

@@ -1,18 +1,20 @@
-import dynamic from 'next/dynamic';
 import Banner from "@/components/Banner";
 import { getBestSellingProducts, getCollections, getProducts } from "@/lib/actions/actions";
 import Collections from '@/components/Collections';
 import ProductList from '@/components/ProductList';
 import BestSellingProductsList from '@/components/BestSellingPro';
-const BlogSection = dynamic(() => import('@/components/BlogSection'), { ssr: false });
-const Social = dynamic(() => import('@/components/Social'), { ssr: false });
-const GroupComponent7 = dynamic(() => import('@/components/Services'), { ssr: false });
+import BlogSection from "@/components/BlogSection";
+import Social from "@/components/Social";
+import GroupComponent7 from "@/components/Services";
+
+export const dynamic = 'force-static';
+
 
 export default async function Home() {
   const [collections, latestProducts, bestSellingProducts] = await Promise.all([
-    getCollections() || 'Internal server Error',
-    getProducts() || 'Internal server Error',
-    getBestSellingProducts() || 'Internal server Error',
+    getCollections(),
+    getProducts(),
+    getBestSellingProducts(),
   ]);
 
   return (
@@ -56,7 +58,6 @@ export default async function Home() {
   );
 }
 
-export const revalidate = false; 
 
 // import BestSellingProductsList from "@/components/BestSellingPro";
 // import BlogSection from "@/components/BlogSection";

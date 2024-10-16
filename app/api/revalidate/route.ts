@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Path is required" }, { status: 400 });
         }
 
-        revalidatePath(pathToRevalidate);
+        revalidatePath('/');
 
         return NextResponse.json({ message: `Revalidation triggered for path: ${pathToRevalidate}` }, {
             status: 200,
