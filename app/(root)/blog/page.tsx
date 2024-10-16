@@ -8,6 +8,7 @@ export const metadata: Metadata= {
   title: "Borcelle | Blog",
   description: "Explore our BLog",
 };
+export const dynamic = 'force-static';
 const Blog: NextPage = () => {
     return (
         <div>

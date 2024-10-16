@@ -74,7 +74,7 @@ const useCart = create(
       updateStock: async () => {
         const currentItems = get().cartItems;
         const productIds = currentItems.map((cartItem) => cartItem.item._id);
-      
+
         const response = await fetch('/api/products', {
           method: 'GET',
           headers: {
@@ -82,51 +82,47 @@ const useCart = create(
             'Product-IDs': JSON.stringify(productIds),
           },
         });
-      
+
         if (!response.ok) {
           throw new Error('Failed to fetch products stock');
         }
-      
+
         const updatedProducts = await response.json();
-      
+
         const updatedCartItems = currentItems.map((cartItem) => {
           const updatedProduct = updatedProducts.find((p: any) => p._id === cartItem.item._id);
-      
+
           if (updatedProduct) {
-            // Check if the product has variants
             if (updatedProduct.variants && updatedProduct.variants.length > 0) {
-              // Find the matching variant by size and color
               const updatedVariant = updatedProduct.variants.find((variant: any) => {
                 return variant.size === cartItem.size && variant.color === cartItem.color;
               });
-      
+
               if (updatedVariant) {
-                // Update the cart item with the variant stock
-                return { 
-                  ...cartItem, 
-                  item: { 
-                    ...cartItem.item, 
-                    stock: updatedVariant.quantity 
-                  } 
+                return {
+                  ...cartItem,
+                  item: {
+                    ...cartItem.item,
+                    stock: updatedVariant.quantity
+                  }
                 };
               }
             } else {
-              // If no variants exist, use the general product stock
-              return { 
-                ...cartItem, 
-                item: { 
-                  ...cartItem.item, 
-                  stock: updatedProduct.stock 
-                } 
+              return {
+                ...cartItem,
+                item: {
+                  ...cartItem.item,
+                  stock: updatedProduct.stock
+                }
               };
             }
           }
           return cartItem;
         });
-      
+
         set({ cartItems: updatedCartItems });
       },
-      
+
       clearCart: () => set({ cartItems: [] }),
     }),
     {

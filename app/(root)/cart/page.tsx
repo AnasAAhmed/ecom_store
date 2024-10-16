@@ -97,15 +97,16 @@ const Cart = () => {
   };
 
   const revalidateStockBeforeCheckout = () => {
+    setIsRevalidating(true);
     try {
-      setIsRevalidating(true);
       cart.updateStock();
       toast.success('Updating products stock');
+      setTimeout(() => setIsRevalidating(false), 2000);
       setExpand(true);
     } catch (error) {
       toast.error('error updating products stock' + (error as Error).message);
+      setIsRevalidating(false);
     }
-    finally { setIsRevalidating(false); }
   }
 
 
@@ -132,39 +133,44 @@ const Cart = () => {
                     alt="product"
                   />
                   <div className="flex flex-col gap-3 ml-4">
-                    <Link href={`products/${slugify(cartItem.item.title)}`} className="text-body-bold">{cartItem.item.title}</Link>
+                    <Link href={`products/${slugify(cartItem.item.title)}`} className="text-body-bold line-clamp-2 max-w-[32rem]">{cartItem.item.title}</Link>
+
                     {cartItem.color && (
-                      <p className="text-small-medium">{cartItem.color}</p>
+                      <p className="text-small-medium">
+                        {cartItem.color && cartItem.color}
+                        {cartItem.color && cartItem.size && '/'}
+                        {cartItem.size && cartItem.size}</p>
                     )}
-                    {cartItem.size && (
-                      <p className="text-small-medium">{cartItem.size}</p>
-                    )}
-                    <p className="text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()} </p>
-                    {cartItem.item.expense > 0 && <span className="text-small-medium line-through text-red-1">{currency} {cartItem.item.expense}</span>}
+
                     {cartItem.item.stock < 5 && <p className="text-small-medium">{`only ${cartItem.item.stock} left`}</p>}
                   </div>
                 </div>
+                <div className='flex gap-2 justify-center flex-col'>
 
-                {cartItem.item.stock > 0 ? (
-                  <div className="flex gap-4 items-center">
-                    <MinusCircle
-                      className="hover:text-red-1 cursor-pointer"
-                      onClick={() => cart.decreaseQuantity(cartItem.item._id)}
-                    />
-                    <p className="text-body-bold">{cartItem.quantity}</p>
-                    <PlusCircle
-                      className="hover:text-red-1 cursor-pointer"
-                      onClick={() => cart.increaseQuantity(cartItem.item._id)}
-                    />
-                  </div>
-                ) : (
-                  <p className='text-red-1 font-semibold'>Not Available</p>
-                )}
+                  <p className="flex gap-1 text-small-medium">{currency} {(cartItem.item.price * exchangeRate).toFixed()}
+                    {cartItem.item.expense > 0 && <span className="line-through text-[12px] text-red-1">{currency} {cartItem.item.expense}</span>}
+                  </p>
+                  {cartItem.item.stock > 0 ? (
+                    <div className="flex gap-4 items-center">
+                      <MinusCircle
+                        className="hover:text-red-1 cursor-pointer"
+                        onClick={() => cart.decreaseQuantity(cartItem.item._id)}
+                      />
+                      <p className="text-body-bold">{cartItem.quantity}</p>
+                      <PlusCircle
+                        className="hover:text-red-1 cursor-pointer"
+                        onClick={() => cart.increaseQuantity(cartItem.item._id)}
+                      />
+                    </div>
+                  ) : (
+                    <p className='text-red-1 text-[10px] font-semibold'>Not Available</p>
+                  )}
 
-                <Trash
-                  className="hover:text-red-1 cursor-pointer"
-                  onClick={() => cart.removeItem(cartItem.item._id)}
-                />
+                  <Trash
+                    className="hover:text-red-1 self-center cursor-pointer"
+                    onClick={() => cart.removeItem(cartItem.item._id)}
+                  />
+                </div>
               </div>
             ))}
           </div>

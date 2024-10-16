@@ -1,13 +1,11 @@
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 
-const ProductList = async ({ latestProducts }: { latestProducts: ProductType[] | string }) => {
-
-  if (typeof latestProducts === 'string') return latestProducts || 'Please checkout your Internet';
+const ProductList = async ({ latestProducts }: { latestProducts: ProductType[] }) => {
 
   return (
     <div className="flex flex-col items-center gap-10 py-8 px-5">
-      <p className="text-heading2-bold">Latest Products</p>
+      <p className="text-heading3-bold sm:text-heading2-bold">Latest Products</p>
       {!latestProducts || latestProducts.length === 0 ? (
         <p className="text-body-bold">No products found</p>
       ) : (

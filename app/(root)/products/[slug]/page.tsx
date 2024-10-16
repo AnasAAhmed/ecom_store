@@ -116,7 +116,6 @@ const ProductDetails = async ({
   );
 };
 
-// Dynamic content handling
 export const dynamic = "force-dynamic";
 
 export default ProductDetails;

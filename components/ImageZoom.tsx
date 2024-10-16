@@ -51,7 +51,7 @@ interface ImageZoomProps {
           />
         </div>
         
-        <img src={src} alt={alt} className="w-full rounded-lg shadow-xl md:hidden md:h-[500px] h-[300px] object-cover" />
+        <img src={src} alt={alt} className="w-full rounded-lg md:hidden md:h-[500px] h-[300px] object-cover" />
       </>
     );
   };

@@ -108,25 +108,25 @@ const Navbar = () => {
           </div>
         </div>
         {/* Mobile Modal */}
-        <Modal isOpen={isOpen} onClose={toggleModal} overLay={true}>
-          <ul className="flex flex-col p-3 gap-3 bg-white rounded-lg border">
+        {isOpen && <div className="fixed flex sm:hidden right-10 top-8 items-center justify-center bg-opacity-50 z-50">
+          <ul onBlur={toggleModal} className="flex flex-col p-3 gap-3 bg-white animate-modal rounded-lg border">
 
             {["/", "/search", "/contact", "/wishlist", "/orders"].map((name, idx) => (
               <Link
                 key={idx}
                 href={name}
                 onClick={toggleModal}>
-                                {["Home", "Shop", "Contact", "Wishlist", "Orders"][idx]}
+                {["Home", "Shop", "Contact", "Wishlist", "Orders"][idx]}
 
               </Link>
             ))}
+            <Currency className="sm:hidden" />
             <Link href="/cart" className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white" onClick={toggleModal}>
               <ShoppingCart />
               <span>Cart ({cart.cartItems.length})</span>
             </Link>
-            <Currency className="sm:hidden" />
           </ul>
-        </Modal>
+        </div>}
       </nav>
     </>
   );

@@ -6,45 +6,19 @@ import { connectToDB } from "../mongoDB"
 import Review from "../models/Review"
 import Customer from "../models/Customer"
 
-export async function getHomePageProducts() {
+
+export async function getCollections() {
   try {
 
-    await connectToDB();
     const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title").limit(6);
 
-    const bestSellingProducts = await Product.find()
-      .sort({ sold: -1, ratings: -1, createdAt: "desc" })
-      .select("-category -description -variants -timestamps")
-      .limit(4);
+    return JSON.parse(JSON.stringify(collections))
 
-    const latestProducts = await Product.find()
-      .sort({ createdAt: "desc" })
-      .select("-category -description -variants -timestamps")
-      .limit(8);
-
-    return JSON.parse(JSON.stringify({
-      collections,
-      bestSellingProducts,
-      latestProducts
-    }))
   } catch (err) {
     console.log("[collections_GET]", err)
-    return ('Internal Server Error')
+    throw new Error('Internal Server Error')
   }
 };
-
-// export async function getCollections() {
-//   try {
-
-//     const collections = await Collection.find().sort({ createdAt: "desc" }).select("image title").limit(6);
-
-//     return JSON.parse(JSON.stringify(collections))
-
-//   } catch (err) {
-//     console.log("[collections_GET]", err)
-//     throw new Error('Internal Server Error')
-//   }
-// };
 
 export async function getCollectionDetails(title: string) {
   try {
@@ -91,7 +65,7 @@ export async function getSearchProducts(query: string, page: number) {
         { tags: { $in: [new RegExp(query, 'i')] } },
       ],
     })
-      .select('-category -description -variants -timestamps')
+      .select('-category -description -timestamps')
       .skip(skip)
       .limit(limit);
 
@@ -106,38 +80,38 @@ export async function getSearchProducts(query: string, page: number) {
   }
 };
 
-// export async function getProducts() {
-//   try {
-//     await connectToDB();
+export async function getProducts() {
+  try {
+    await connectToDB();
 
-//     const products = await Product.find()
-//       .sort({ createdAt: "desc" })
-//       .select("-category -description -variants -timestamps")
-//       .limit(8);
+    const products = await Product.find()
+      .sort({ createdAt: "desc" })
+      .select("-category -description -timestamps")
+      .limit(8);
 
-//     return JSON.parse(JSON.stringify(products))
-//   } catch (err) {
-//     console.log("[products_GET]", err);
-//     throw new Error('Internal Server Error')
+    return JSON.parse(JSON.stringify(products))
+  } catch (err) {
+    console.log("[products_GET]", err);
+    throw new Error('Internal Server Error 500');
+  }
+};
 
-//   }
-// };
+export async function getBestSellingProducts() {
+  try {
+    await connectToDB();
 
-// export async function getBestSellingProducts() {
-//   try {
-//     await connectToDB();
+    const products = await Product.find()
+      .sort({ sold: -1, ratings: -1, createdAt: "desc" })
+      .select("-category -description -timestamps")
+      .limit(4);
 
-//     const products = await Product.find()
-//       .sort({ sold: -1, ratings: -1, createdAt: "desc" })
-//       .select("-category -description -variants -timestamps")
-//       .limit(4);
+    return JSON.parse(JSON.stringify(products));
+  } catch (err) {
+    console.log("[products_GET]", err);
+    throw new Error('Internal Server Error 500');
 
-//     return JSON.parse(JSON.stringify(products));
-//   } catch (err) {
-//     console.log("[products_GET]", err);
-//     throw new Error('Internal Server Error');
-//   }
-// };
+  }
+};
 export async function getProductDetails(slug: string) {
   try {
     await connectToDB();
@@ -248,7 +222,7 @@ export async function getRelatedProducts(_id: string, category: string, collecti
         { collections: { $in: collections } }
       ],
       _id: { $ne: _id }
-    }).select("-description -variants -category -timestamps");
+    }).select("-description -category -timestamps");
 
     if (!relatedProducts) {
       throw new Error('No related products found')

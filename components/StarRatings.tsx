@@ -13,7 +13,7 @@ const StarRatings = ({ rating }: { rating: number }) => {
 
                     <FaStarHalfAlt className="text-blue-500 " />
                 ) : (
-                    <AiOutlineStar className="text-blue-500 mt-[0.15rem] text-[1.2rem]" />
+                    <AiOutlineStar className="text-blue-500 mt-[0.15rem] text-[1.1rem]" />
                 )}
             </span>
         )

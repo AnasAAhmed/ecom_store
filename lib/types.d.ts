@@ -32,7 +32,6 @@ type ProductType = {
 type CartProductType = {
   _id: string;
   title: string;
-  description: string;
   media: [string];
   stock: number;
   price: number;

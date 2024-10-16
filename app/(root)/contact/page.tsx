@@ -7,6 +7,7 @@ export const metadata: Metadata = {
     title: "Borcelle | Contact",
     description: "Contact Us 24/7",
 };
+export const dynamic = 'force-static';
 const Contact = () => {
     return (
         <>

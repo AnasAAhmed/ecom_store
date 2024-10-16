@@ -1,14 +1,13 @@
 import { slugify, unSlugify } from "@/lib/utils/features";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-const Collections = async ({ collections }: { collections: CollectionType[] | string }) => {
-
-  if (typeof collections === 'string') return collections||'Please checkout your Internet';
+const Collections = async ({ collections }: { collections: CollectionType[] }) => {
 
   return (
     <div className="flex flex-col items-center gap-10 py-8 px-5 my-[4rem]">
-      <p className="text-heading1-bold">Collections</p>
+      <p className="text-heading2-bold sm:text-heading1-bold">Collections</p>
       {!collections || collections.length === 0 ? (
         <p className="text-body-bold">No collections found</p>
       ) : (
