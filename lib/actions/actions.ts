@@ -38,7 +38,7 @@ export async function getCollectionDetails(title: string) {
 
 export async function getSearchProducts(query: string, page: number) {
   const limit = 6;
-
+  const search = query ? decodeURIComponent(query) : '';
   try {
     await connectToDB();
 
@@ -46,9 +46,9 @@ export async function getSearchProducts(query: string, page: number) {
 
     const totalProducts = await Product.countDocuments({
       $or: [
-        { title: { $regex: query, $options: 'i' } },
-        { category: { $regex: query, $options: 'i' } },
-        { tags: { $in: [new RegExp(query, 'i')] } },
+        { title: { $regex: search, $options: 'i' } },
+        { category: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } },
       ],
     });
     if (!totalProducts) {
@@ -217,23 +217,6 @@ export async function getOrders(customerEmail: string, page: number) {
   };
 };
 
-// export async function getRelatedProducts(_id: string, category: string, collections: string[]) {
-//   try {
-//     await connectToDB()
-
-//     const relatedProducts = await Product.find({
-//       $or: [
-//         { category: category },
-//         { collections: { $in: collections } }
-//       ],
-//       _id: { $ne: _id }
-//     }).select("-description -category -timestamps");
-
-//     return JSON.parse(JSON.stringify(relatedProducts))
-//   } catch (err) {
-//     console.log("[related_GET", err)
-//     throw new Error('Internal Server Error')
-//   }
 
 //for COD form & stripe webhook
 export const stockReduce = async (products: OrderProductCOD[]) => {
@@ -266,8 +249,9 @@ export const stockReduce = async (products: OrderProductCOD[]) => {
       }
     }
     await product.save();
+
+    revalidatePath('/');
     revalidatePath(`/products/${order.product}`);
-    revalidatePath('/orders')
   };
 };
 

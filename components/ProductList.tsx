@@ -1,16 +1,16 @@
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 
-const ProductList = async ({ latestProducts }: { latestProducts: ProductType[] }) => {
+const ProductList = async ({ Products, heading }: { Products: ProductType[], heading: string }) => {
 
   return (
-    <div className="flex flex-col items-center gap-10 py-8 px-5">
-      <p className="text-heading3-bold sm:text-heading2-bold">Latest Products</p>
-      {!latestProducts || latestProducts.length === 0 ? (
+    <div className="flex flex-col items-center gap-10 py-8 px-3 sm:px-5">
+      <p className="text-heading3-bold sm:text-heading2-bold">{heading}</p>
+      {!Products || Products.length === 0 ? (
         <p className="text-body-bold">No products found</p>
       ) : (
-        <div className="flex flex-wrap justify-center gap-16">
-          {latestProducts.map((product: ProductType) => (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+          {Products.map((product: ProductType) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>

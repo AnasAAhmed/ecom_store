@@ -89,8 +89,10 @@ const Navbar = () => {
               <ShoppingCart />
               <span>Cart ({cart.cartItems.length})</span>
             </Link>
-            <Menu onClick={toggleModal} className="lg:hidden cursor-pointer" />
-            {user ? <UserButton afterSignOutUrl="/sign-in" /> : <Link href="/sign-in"><CircleUserRound /></Link>}
+            <button onClick={toggleModal} onBlur={() => setIsOpen(false)}>
+            <Menu className="md:hidden cursor-pointer" />
+            </button>
+            {user ? <UserButton /> : <Link href="/sign-in"><CircleUserRound /></Link>}
           </div>
 
           {/* Mobile search bar */}
@@ -108,20 +110,20 @@ const Navbar = () => {
           </div>
         </div>
         {/* Mobile Modal */}
-        {isOpen && <div className="fixed flex sm:hidden right-10 top-8 items-center justify-center bg-opacity-50 z-50">
-          <ul onBlur={toggleModal} className="flex flex-col p-3 gap-3 bg-white animate-modal rounded-lg border">
+        {isOpen && <div className="fixed flex md:hidden right-10 top-8 items-center justify-center bg-opacity-50 z-50">
+          <ul className="flex flex-col p-3 gap-3 bg-white animate-modal rounded-lg border">
 
-            {["/", "/search", "/contact", "/wishlist", "/orders"].map((name, idx) => (
+            {["/", "/search", "/contact","/blog", "/wishlist", "/orders"].map((name, idx) => (
               <Link
                 key={idx}
                 href={name}
-                onClick={toggleModal}>
-                {["Home", "Shop", "Contact", "Wishlist", "Orders"][idx]}
+                >
+                {["Home", "Shop", "Contact","Blog", "Wishlist", "Orders"][idx]}
 
               </Link>
             ))}
             <Currency className="sm:hidden" />
-            <Link href="/cart" className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white" onClick={toggleModal}>
+            <Link href="/cart" className="flex items-center gap-3 border rounded-lg px-2 py-1 hover:bg-black hover:text-white" >
               <ShoppingCart />
               <span>Cart ({cart.cartItems.length})</span>
             </Link>

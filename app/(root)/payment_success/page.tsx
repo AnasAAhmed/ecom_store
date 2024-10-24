@@ -22,12 +22,12 @@ const SuccessfulPayment = () => {
       >
         CONTINUE TO SHOPPING
       </Link> 
-      <Link
+      <a
         href="/orders"
         className="p-4 rounded-md border text-base-bold hover:bg-black hover:text-white"
       >
         Check Order
-      </Link>
+      </a>
     </div>
   );
 };

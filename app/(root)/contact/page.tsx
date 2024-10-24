@@ -15,7 +15,7 @@ const Contact = () => {
                 <Banner
                     heading="Contact"
                     text="24/7 Service available."
-                    imgUrl={'https://figma-to-code-ecom-design.vercel.app/banner-image@2x.png'}
+                    imgUrl={'https://www.shutterstock.com/image-photo/contact-us-telephone-envelope-letter-600nw-2369194627.jpg'}
                     shade=""
                     textColor="gray-800"
                     link="/search"

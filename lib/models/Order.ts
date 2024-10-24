@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
     phone: String,
     country: String,
   },
-  shippingRate: String,
+  shippingRate: String, 
   totalAmount: Number,
   currency: String,
   method: String,

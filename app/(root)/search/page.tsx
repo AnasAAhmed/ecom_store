@@ -14,12 +14,13 @@ const SearchPage = async ({ searchParams }: { searchParams: any }) => {
 
   const data = await getSearchProducts(query, page);
   return (
-    <div className='px-10 py-5 '>
+    <div className='sm:px-10 px-3 py-8 '>
       {query && <p className='text-heading3-bold my-10'>Search results for {query}</p>}
       <div className='min-h-[80vh]'>
 
         {data.totalProducts > 0 ? (
-          <div className='flex mt-12 flex-wrap justify-center gap-16'>
+                 <div className="grid grid-cols-2 justify-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+
             {data.products.map((product: ProductType) => (
               <ProductCard key={product._id} product={product} />
             ))}
